@@ -36,7 +36,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-@TeleOp(name="Main_Drive", group="Linear Opmode")
+@TeleOp(name="Arm_Testing", group="Linear Opmode")
 
 public class Arm_Testing extends LinearOpMode {
 
@@ -57,7 +57,7 @@ public class Arm_Testing extends LinearOpMode {
 
 
         //setup the arm sensitivity value
-        double armSensitivity = 1;
+        double armSensitivity = 1.6;
 
 
 
