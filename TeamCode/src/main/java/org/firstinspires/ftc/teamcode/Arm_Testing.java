@@ -75,7 +75,8 @@ public class Arm_Testing extends LinearOpMode {
                 armMotor.setPower(-armSensitivity);
             }
             else{
-                armMotor.getZeroPowerBehavior();
+                armMotor.setPower(0);
+                armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             }
 
 

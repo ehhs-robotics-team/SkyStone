@@ -153,6 +153,15 @@ public class autoVuforia extends LinearOpMode {
     private float phoneYRotate    = 0;
     private float phoneZRotate    = 0;
 
+
+    //setup the values that are needed
+    double drivePower = 0.8;
+
+    //setup SIMPLE X, Y, and Z values
+    double xPos = 0;
+    double yPos = 0;
+    double zPos = 0;
+
     @Override public void runOpMode() {
 
 
@@ -166,16 +175,16 @@ public class autoVuforia extends LinearOpMode {
         b_rightDrive = hardwareMap.get(DcMotor.class, "b_rightDrive");
 
         //reverse the right motors
-        f_rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        b_rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        f_leftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        b_leftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        f_rightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        b_rightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        f_leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        b_leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        f_rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        b_rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        //setup the values that are needed
-        double driveSensitivity = 1.5;
 
-        //setup SIMPLE X, Y, and Z values
-        double xPos = 0;
-        double yPos = 0;
-        double zPos = 0;
 
 
 
@@ -361,14 +370,12 @@ public class autoVuforia extends LinearOpMode {
         // AFTER you hit Init on the Driver Station, use the "options menu" to select "Camera Stream"
         // Tap the preview window to receive a fresh image.
 
+
+
+
         targetsSkyStone.activate();
         while (!isStopRequested()) {
 
-            //Continue to setup the variables to get the position of the robot
-            VectorF trans = lastLocation.getTranslation();
-            xPos = trans.get(0) / mmPerInch;
-            yPos = trans.get(1) / mmPerInch;
-            zPos = trans.get(2) / mmPerInch;
 
 
 
@@ -405,41 +412,61 @@ public class autoVuforia extends LinearOpMode {
                 telemetry.addData("Visible Target", "none");
             }
             telemetry.update();
+
+            if (targetVisible) {
+                //Continue to setup the variables to get the position of the robot
+                VectorF trans = lastLocation.getTranslation();
+                xPos = trans.get(0) / mmPerInch;
+                yPos = trans.get(1) / mmPerInch;
+                zPos = trans.get(2) / mmPerInch;
+
+
+                //attempt to move based on vuforia position
+                if (xPos > -20) {
+                    forward();
+                } else if (xPos < -20){
+                    telemetry.addData("Attempting to brake at:", "X:" + xPos + " Y:" + yPos + " Z:" + zPos);
+                    telemetry.update();
+                    stopRobot();;
+                }
+            }
         }
 
         // Disable Tracking when we are done;
         targetsSkyStone.deactivate();
+
+
+
+
+
     }
-
-
-
     //Functions for simple movement of the robot
     public void forward(){
-        f_leftDrive.setPower(1);
-        b_leftDrive.setPower(1);
-        f_rightDrive.setPower(1);
-        b_rightDrive.setPower(1);
+        f_leftDrive.setPower(drivePower);
+        b_leftDrive.setPower(drivePower);
+        f_rightDrive.setPower(drivePower);
+        b_rightDrive.setPower(drivePower);
     }
 
     public void backward(){
-        f_leftDrive.setPower(-1);
-        b_leftDrive.setPower(-1);
-        f_rightDrive.setPower(-1);
-        b_rightDrive.setPower(-1);
+        f_leftDrive.setPower(-drivePower);
+        b_leftDrive.setPower(-drivePower);
+        f_rightDrive.setPower(-drivePower);
+        b_rightDrive.setPower(-drivePower);
     }
 
     public void left(){
-        f_leftDrive.setPower(1);
-        b_leftDrive.setPower(1);
-        f_rightDrive.setPower(-1);
-        b_rightDrive.setPower(-1);
+        f_leftDrive.setPower(drivePower);
+        b_leftDrive.setPower(drivePower);
+        f_rightDrive.setPower(-drivePower);
+        b_rightDrive.setPower(-drivePower);
     }
 
     public void right(){
-        f_leftDrive.setPower(-1);
-        b_leftDrive.setPower(-1);
-        f_rightDrive.setPower(1);
-        b_rightDrive.setPower(1);
+        f_leftDrive.setPower(-drivePower);
+        b_leftDrive.setPower(-drivePower);
+        f_rightDrive.setPower(drivePower);
+        b_rightDrive.setPower(drivePower);
     }
 
     public void stopRobot(){
@@ -447,5 +474,14 @@ public class autoVuforia extends LinearOpMode {
         b_leftDrive.setPower(0);
         f_rightDrive.setPower(0);
         b_rightDrive.setPower(0);
+        telemetry.addData("Ended braking at :", "X:" + xPos + " Y:" + yPos + " Z:" + zPos);
+        telemetry.update();
     }
+
+
+
+
+
 }
+
+
