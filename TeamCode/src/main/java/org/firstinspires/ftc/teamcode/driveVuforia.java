@@ -187,8 +187,8 @@ public class driveVuforia extends LinearOpMode {
 
         //setup the values that are needed
         double driveSensitivity = 1.5;
-        double clawUpPosition = 0;
-        double clawDownPosition = 0.4;
+        double clawUpPosition = 1.0;
+        double clawDownPosition = 0.55;
 
 
 
@@ -398,6 +398,7 @@ public class driveVuforia extends LinearOpMode {
                 rightClaw.setPosition(clawDownPosition);
                 leftClaw.setPosition(clawDownPosition);
             }
+
 
 
 
