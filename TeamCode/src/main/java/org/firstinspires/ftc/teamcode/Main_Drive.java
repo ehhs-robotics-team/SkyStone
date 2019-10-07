@@ -41,6 +41,7 @@ import com.qualcomm.robotcore.util.Range;
 
 
 @TeleOp(name="Main_Drive", group="Linear Opmode")
+@Disabled
 public class Main_Drive extends LinearOpMode {
 
     // Declare the motor variables

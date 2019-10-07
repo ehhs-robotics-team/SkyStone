@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -97,6 +98,10 @@ public class driveVuforia extends LinearOpMode {
     private DcMotor b_leftDrive = null;
     private DcMotor b_rightDrive = null;
 
+    //Declare the variables for the claw servos
+    private Servo leftClaw = null;
+    private Servo rightClaw = null;
+
 
 
 
@@ -159,17 +164,31 @@ public class driveVuforia extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
+
+        //map the motors
         f_leftDrive  = hardwareMap.get(DcMotor.class, "f_leftDrive");
         f_rightDrive = hardwareMap.get(DcMotor.class, "f_rightDrive");
         b_leftDrive = hardwareMap.get(DcMotor.class, "b_leftDrive");
         b_rightDrive = hardwareMap.get(DcMotor.class, "b_rightDrive");
 
+        //map the claw servos
+        leftClaw = hardwareMap.get(Servo.class, "leftClaw");
+        rightClaw = hardwareMap.get(Servo.class, "rightClaw");
+
         //reverse the right motors
         f_rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         b_rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        //reverse one of the claw servos
+        rightClaw.setDirection(Servo.Direction.REVERSE);
+
+
+
+
         //setup the values that are needed
         double driveSensitivity = 1.5;
+        double clawUpPosition = 0;
+        double clawDownPosition = 0.4;
 
 
 
@@ -369,6 +388,19 @@ public class driveVuforia extends LinearOpMode {
             //right wheels
             f_rightDrive.setPower(gamepad1.right_stick_y / driveSensitivity);
             b_rightDrive.setPower(gamepad1.right_stick_y / driveSensitivity);
+
+            //SETUP the claw to work with the controller
+            if (gamepad1.y){
+                leftClaw.setPosition(clawUpPosition);
+                rightClaw.setPosition(clawUpPosition);
+            }
+            if (gamepad1.b){
+                rightClaw.setPosition(clawDownPosition);
+                leftClaw.setPosition(clawDownPosition);
+            }
+
+
+
 
             // check all the trackable targets to see which one (if any) is visible.
             targetVisible = false;
