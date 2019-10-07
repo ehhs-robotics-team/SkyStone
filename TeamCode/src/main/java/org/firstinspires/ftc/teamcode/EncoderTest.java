@@ -62,8 +62,8 @@ public class EncoderTest extends LinearOpMode {
     private DcMotor b_leftDrive = null;
     private DcMotor b_rightDrive = null;
 
-    //static final double     COUNTS_PER_MOTOR_REV    = 1120 ;    // REV HD Hex motor with 40:! gearbox
-    static final double     COUNTS_PER_MOTOR_TETRIX   = 1478.4;    // REV HD Hex motor with 40:! gearbox
+    //static final double     COUNTS_PER_MOTOR_REV    = 1120 ;    // REV HD Hex motor with 40:1 gearbox
+    static final double     COUNTS_PER_MOTOR_TETRIX   = 1478.4;    // Tetrix Matrix 12V motor with 52.8:1 gearbox
     static final double     DRIVE_GEAR_REDUCTION    = 1.0;     // This is < 1.0 if geared UP
     static final double     WHEEL_DIAMETER_INCHES   = 4.0;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_TETRIX * DRIVE_GEAR_REDUCTION) /
@@ -95,6 +95,7 @@ public class EncoderTest extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
+        encoderDrive(1.0,10,10,30);
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -146,11 +147,11 @@ public class EncoderTest extends LinearOpMode {
             b_leftDrive.setPower(Math.abs(speedD));
             b_rightDrive.setPower(Math.abs(speedD));
 
-            // keep looping while we are still active, and there is time left, and both motors are running.
-            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+            // keep looping while we are still active, and there is time left, and all motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when ANY motor hits
             // its target position, the motion will stop.  This is "safer" in the event that the robot will
             // always end the motion as soon as possible.
-            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // However, if you require that ALL motors have finished their moves before the robot continues
             // onto the next step, use (isBusy() || isBusy()) in the loop test.
             while (opModeIsActive() &&
                     (runtime.seconds() < timeoutS) &&
