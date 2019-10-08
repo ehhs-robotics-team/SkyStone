@@ -132,14 +132,14 @@ public class EncoderTest extends LinearOpMode {
             // Turn On RUN_TO_POSITION
             //f_leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             //f_rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            b_leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            b_rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            f_leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            f_rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
             // reset the timeout time and start motion.
             runtime.reset();
-            b_leftDrive.setPower(Math.abs(speedD));
-            b_rightDrive.setPower(Math.abs(speedD));
+            f_leftDrive.setPower(Math.abs(speedD));
+            f_rightDrive.setPower(Math.abs(speedD));
 
             // keep looping while we are still active, and there is time left, and all motors are running.
             // Note: We use (isBusy() && isBusy()) in the loop test, which means that when ANY motor hits
