@@ -142,8 +142,6 @@ public class EncoderTest extends LinearOpMode {
 
             // reset the timeout time and start motion.
             runtime.reset();
-            f_leftDrive.setPower(Math.abs(speedD));
-            f_rightDrive.setPower(Math.abs(speedD));
             b_leftDrive.setPower(Math.abs(speedD));
             b_rightDrive.setPower(Math.abs(speedD));
 
@@ -156,6 +154,9 @@ public class EncoderTest extends LinearOpMode {
             while (opModeIsActive() &&
                     (runtime.seconds() < timeoutS) &&
                     (b_leftDrive.isBusy() && b_rightDrive.isBusy())) {
+                // set the front wheels to move with the back wheels
+                f_leftDrive.setPower(Math.abs(speedD));
+                f_rightDrive.setPower(Math.abs(speedD));
                 // Display data for the driver.
                 telemetry.addData("Path1", "Running to %7d :%7d", newb_LeftTarget, newb_RightTarget);
                 telemetry.addData("Path2", "Running at %7d :%7d",
