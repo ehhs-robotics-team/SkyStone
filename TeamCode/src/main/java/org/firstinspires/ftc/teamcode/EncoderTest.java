@@ -97,6 +97,7 @@ public class EncoderTest extends LinearOpMode {
         runtime.reset();
         encoderDrive(1.0,10,10,30);
 
+
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
@@ -126,7 +127,7 @@ public class EncoderTest extends LinearOpMode {
             //newf_LeftTarget = f_leftDrive.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
            // newf_RightTarget = f_rightDrive.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
             newb_RightTarget = b_rightDrive.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
-            newb_LeftTarget = b_rightDrive.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
+            newb_LeftTarget = b_leftDrive.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
 
             //f_leftDrive.setTargetPosition(newf_LeftTarget);
             //f_rightDrive.setTargetPosition(newf_RightTarget);
