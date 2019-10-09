@@ -89,6 +89,12 @@ public class EncoderTest extends LinearOpMode {
         f_rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         b_rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        //set the motors to brake when power equals zero
+        f_rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        b_rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        f_leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        b_leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         //setup the values that are needed
         double driveSensitivity = 1.5;
 
