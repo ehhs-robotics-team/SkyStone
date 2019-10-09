@@ -115,8 +115,7 @@ public class EncoderTest extends LinearOpMode {
     public void encoderDrive(double speedD,
                              double leftInches, double rightInches,
                              double timeoutS) {
-        //int newf_LeftTarget;
-        //int newf_RightTarget;
+
         int newf_RightTarget;
         int newf_LeftTarget;
 
@@ -127,11 +126,12 @@ public class EncoderTest extends LinearOpMode {
             newf_RightTarget = f_rightDrive.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
             newf_LeftTarget = f_leftDrive.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
 
-
             f_leftDrive.setTargetPosition(newf_LeftTarget);
             f_rightDrive.setTargetPosition(newf_RightTarget);
 
             // Turn On RUN_TO_POSITION
+            //f_leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            //f_rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             f_leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             f_rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 

@@ -41,8 +41,7 @@ import com.qualcomm.robotcore.util.Range;
 
 
 @TeleOp(name="Main_Drive", group="Linear Opmode")
-
-
+@Disabled
 public class Main_Drive extends LinearOpMode {
 
     // Declare the motor variables
@@ -96,7 +95,6 @@ public class Main_Drive extends LinearOpMode {
             b_rightDrive.setPower(gamepad1.right_stick_y / driveSensitivity);
 
 
-            /*
             //Gear system that will allow the driver to increase or decrease the power of the wheels
             if (gamepad1.left_bumper){
                 driveSensitivity = 1.5;
@@ -105,7 +103,6 @@ public class Main_Drive extends LinearOpMode {
             if (gamepad1.right_bumper){
                 driveSensitivity = 1;
             }
-            */
 
             // Show the elapsed game time and wheel power.
 
