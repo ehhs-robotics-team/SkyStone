@@ -101,8 +101,10 @@ public class EncoderTest extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
-        encoderDrive(1.0,-10,-10,30);
-        encoderDrive(1.0,10,-10,30);
+        // we have determined that speed is the indicator for direction
+        //should we add a direction parameter to determine direction?
+        // test case: try to move one motor zero inches and the other in a positive inches direction
+        encoderDrive(1.0,10,10,30);
 
 
         // run until the end of the match (driver presses STOP)
@@ -119,9 +121,7 @@ public class EncoderTest extends LinearOpMode {
      *  2) Move runs out of time
      *  3) Driver stops the opmode running.
      */
-    public void encoderDrive(double speedD,
-                             double leftInches, double rightInches,
-                             double timeoutS) {
+    public void encoderDrive(double speedD, double leftInches, double rightInches, double timeoutS) {
 
         int newf_RightTarget;
         int newf_LeftTarget;
@@ -144,9 +144,10 @@ public class EncoderTest extends LinearOpMode {
 
 
             // reset the timeout time and start motion.
+            // power is set to negative speed to make the bot move in the forward direction established by the builders
             runtime.reset();
-            f_leftDrive.setPower(Math.abs(speedD));
-            f_rightDrive.setPower(Math.abs(speedD));
+            f_leftDrive.setPower(-speedD);
+            f_rightDrive.setPower(-speedD);
 
             // keep looping while we are still active, and there is time left, and all motors are running.
             // Note: We use (isBusy() && isBusy()) in the loop test, which means that when ANY motor hits
@@ -158,8 +159,8 @@ public class EncoderTest extends LinearOpMode {
                     (runtime.seconds() < timeoutS) &&
                     (f_leftDrive.isBusy() && f_rightDrive.isBusy())) {
                 // set the front wheels to move with the back wheels
-                b_leftDrive.setPower(Math.abs(speedD));
-                b_rightDrive.setPower(Math.abs(speedD));
+                b_leftDrive.setPower(-speedD);
+                b_rightDrive.setPower(-speedD);
                 // Display data for the driver.
                 telemetry.addData("Path1", "Running to %7d :%7d", newf_LeftTarget, newf_RightTarget);
                 telemetry.addData("Path2", "Running at %7d :%7d",
