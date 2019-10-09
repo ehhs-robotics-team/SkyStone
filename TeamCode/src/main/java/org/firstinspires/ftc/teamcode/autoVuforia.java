@@ -374,6 +374,7 @@ public class autoVuforia extends LinearOpMode {
 
 
         targetsSkyStone.activate();
+        waitForStart();
         while (!isStopRequested()) {
 
 
