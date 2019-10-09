@@ -101,7 +101,8 @@ public class EncoderTest extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
-        encoderDrive(1.0,10,10,30);
+        encoderDrive(1.0,-10,-10,30);
+        encoderDrive(1.0,10,-10,30);
 
 
         // run until the end of the match (driver presses STOP)
