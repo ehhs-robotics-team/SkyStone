@@ -422,7 +422,7 @@ public class autoVuforia extends LinearOpMode {
 
 
                 //attempt to turn to a test angle
-                turnToHeading(calcAngle());
+                turnToHeading(calcAngle(40, 60));
 
 
 
