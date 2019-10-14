@@ -470,7 +470,7 @@ public class autoVuforia extends LinearOpMode {
 
     public void turnToHeading(double angle){
         if(angle < 0) {
-            if (Math.abs(currentHeading - angle) > 5) {
+            if (Math.abs(currentHeading - angle) > 20) {
                 left();
             }
             else{
@@ -478,7 +478,7 @@ public class autoVuforia extends LinearOpMode {
             }
         }
         else{
-            if (Math.abs(currentHeading - angle) > 5) {
+            if (Math.abs(currentHeading - angle) > 20) {
                 right();
             }
             else{
