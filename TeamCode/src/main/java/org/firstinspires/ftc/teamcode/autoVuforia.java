@@ -157,10 +157,15 @@ public class autoVuforia extends LinearOpMode {
     //setup the values that are needed
     double drivePower = 0.8;
 
-    //setup SIMPLE X, Y, and Z values
+    //setup SIMPLE X, Y, and Z values and heading
     double xPos = 0;
     double yPos = 0;
     double zPos = 0;
+    double currentHeading = 0;
+
+
+    //Declare the public translation variable
+    public VectorF translation = null;
 
     @Override public void runOpMode() {
 
@@ -401,36 +406,49 @@ public class autoVuforia extends LinearOpMode {
             // Provide feedback as to where the robot is located (if we know).
             if (targetVisible) {
                 // express position (translation) of robot in inches.
-                VectorF translation = lastLocation.getTranslation();
+                translation = lastLocation.getTranslation();
                 telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
                         translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
 
                 // express the rotation of the robot in degrees.
                 Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
                 telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
+                //Continue to setup the variables to get the position of the robot
+                translation = lastLocation.getTranslation();
+                xPos = translation.get(0) / mmPerInch;
+                yPos = translation.get(1) / mmPerInch;
+                zPos = translation.get(2) / mmPerInch;
+                currentHeading = rotation.thirdAngle;
+
+
+                //attempt to turn to a test angle
+                turnToHeading(calcAngle());
+
+
+
+
             }
             else {
                 telemetry.addData("Visible Target", "none");
             }
             telemetry.update();
 
-            if (targetVisible) {
-                //Continue to setup the variables to get the position of the robot
-                VectorF trans = lastLocation.getTranslation();
-                xPos = trans.get(0) / mmPerInch;
-                yPos = trans.get(1) / mmPerInch;
-                zPos = trans.get(2) / mmPerInch;
+            /*if (targetVisible) {
 
 
-                //attempt to move based on vuforia position
+
+                attempt to move based on vuforia position
                 if (xPos > -20) {
                     forward();
                 } else if (xPos < -20){
                     telemetry.addData("Attempting to brake at:", "X:" + xPos + " Y:" + yPos + " Z:" + zPos);
                     telemetry.update();
-                    stopRobot();;
+                    stopRobot();
                 }
+
             }
+            */
+
         }
 
         // Disable Tracking when we are done;
@@ -442,6 +460,34 @@ public class autoVuforia extends LinearOpMode {
 
     }
     //Functions for simple movement of the robot
+
+    //calculates the angle we need to turn the robot to
+    public double calcAngle(double targetX, double targetY){
+        double deltaY = targetY - yPos;
+        double deltaX = targetX - xPos;
+        return (Math.atan(deltaY / deltaX));
+    }
+
+    public void turnToHeading(double angle){
+        if(angle < 0) {
+            if (Math.abs(currentHeading - angle) > 5) {
+                left();
+            }
+            else{
+                stopRobot();
+            }
+        }
+        else{
+            if (Math.abs(currentHeading - angle) > 5) {
+                right();
+            }
+            else{
+                stopRobot();
+            }
+        }
+
+    }
+
     public void forward(){
         f_leftDrive.setPower(drivePower);
         b_leftDrive.setPower(drivePower);
