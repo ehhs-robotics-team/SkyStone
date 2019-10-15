@@ -422,7 +422,7 @@ public class autoVuforia extends LinearOpMode {
 
 
                 //attempt to turn to a test angle
-                turnToHeading(calcAngle(40, 60));
+                turnToHeading(calcAngle(20, -48));
 
 
 
@@ -461,16 +461,19 @@ public class autoVuforia extends LinearOpMode {
     }
     //Functions for simple movement of the robot
 
-    //calculates the angle we need to turn the robot to
+    //calculates the angle we need to turn the robot to a heading
     public double calcAngle(double targetX, double targetY){
         double deltaY = targetY - yPos;
         double deltaX = targetX - xPos;
         return (Math.atan(deltaY / deltaX));
     }
-
+    //turns the robot to a heading given an angle
     public void turnToHeading(double angle){
-        if(angle < 0) {
-            if (Math.abs(currentHeading - angle) > 20) {
+        if(!targetVisible) {
+            telemetry.addData("oof", "oof");
+        }else
+        if(angle > 0) {
+            if (Math.abs(currentHeading - (angle+90)) > 10) {
                 left();
             }
             else{
@@ -478,7 +481,7 @@ public class autoVuforia extends LinearOpMode {
             }
         }
         else{
-            if (Math.abs(currentHeading - angle) > 20) {
+            if (Math.abs(currentHeading - angle) > 10) {
                 right();
             }
             else{
