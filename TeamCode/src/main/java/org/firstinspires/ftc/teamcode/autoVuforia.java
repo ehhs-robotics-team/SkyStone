@@ -471,9 +471,10 @@ public class autoVuforia extends LinearOpMode {
     public void turnToHeading(double angle){
         if(!targetVisible) {
             telemetry.addData("oof", "oof");
+            stopRobot();
         }else
         if(angle > 0) {
-            if (Math.abs(currentHeading - (angle+90)) > 10) {
+            if (Math.abs(currentHeading - (angle)) > 10) {
                 left();
             }
             else{
