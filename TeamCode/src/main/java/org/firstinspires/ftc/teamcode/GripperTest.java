@@ -31,17 +31,20 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-@TeleOp(name="Arm_Testing", group="Linear Opmode")
+@TeleOp(name="Gripper_Testing", group="Linear Opmode")
 
 public class GripperTest extends LinearOpMode {
 
     // Declare the motor variables
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor armMotor = null;
+    //map the gripper's servo
+    private CRServo gripperServo = null;
 
 
     @Override
@@ -53,6 +56,8 @@ public class GripperTest extends LinearOpMode {
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
         armMotor  = hardwareMap.get(DcMotor.class, "armMotor");
+        gripperServo = hardwareMap.get(CRServo .class, "gripperServo");
+
 
 
         //setup the arm sensitivity value
@@ -67,31 +72,19 @@ public class GripperTest extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            //bind the arm motor to the controller's D-Pad
-            if(gamepad1.dpad_up) {
-                armMotor.setPower(armSensitivity);
-            }else if(gamepad1.dpad_down){
-                armMotor.setPower(-armSensitivity);
-            }
-            else{
-                armMotor.setPower(0);
-                armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            }
-
-
-            //EMERGENCY Shutoff
-            if (gamepad1.a){
-                armSensitivity = 0;
-                armMotor.setPower(armSensitivity);
-                armMotor.setPower(0);
-                armMotor.getZeroPowerBehavior();
-
-                break;
-            }
-
-
-
-
+            // power of a CR servo is between -1 and 1;
+            // triggers give values between 0 and 1;
+            // Their difference must be a value between -1 and 1
+            double power = gamepad1.left_trigger-gamepad1.right_trigger;
+            telemetry.addData("Gripper Power", power);
+            gripperServo.setPower(power);
+            /*if (gamepad1.left_trigger > 0){
+                gripperServo.setPower(-1);
+            } else if (gamepad1.right_trigger > 0){
+                gripperServo.setPower(1);
+            } else {
+                gripperServo.setPower(0.5);
+            }*/
 
 
             // Show the elapsed game time and wheel power.
