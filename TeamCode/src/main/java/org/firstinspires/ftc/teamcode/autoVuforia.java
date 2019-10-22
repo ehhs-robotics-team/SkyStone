@@ -89,7 +89,6 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 public class autoVuforia extends LinearOpMode {
 
 
-
     //DRIVE TRAIN MOTOR VARIABLES
     // Declare the motor variables
     private ElapsedTime runtime = new ElapsedTime();
@@ -99,9 +98,6 @@ public class autoVuforia extends LinearOpMode {
     private DcMotor b_rightDrive = null;
 
 
-
-
-
     // IMPORTANT:  For Phone Camera, set 1) the camera source and 2) the orientation, based on how your phone is mounted:
     // 1) Camera Source.  Valid choices are:  BACK (behind screen) or FRONT (selfie side)
     // 2) Phone Orientation. Choices are: PHONE_IS_PORTRAIT = true (portrait) or PHONE_IS_PORTRAIT = false (landscape)
@@ -109,7 +105,7 @@ public class autoVuforia extends LinearOpMode {
     // NOTE: If you are running on a CONTROL HUB, with only one USB WebCam, you must select CAMERA_CHOICE = BACK; and PHONE_IS_PORTRAIT = false;
     //
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
-    private static final boolean PHONE_IS_PORTRAIT = false  ;
+    private static final boolean PHONE_IS_PORTRAIT = false;
 
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
@@ -128,8 +124,8 @@ public class autoVuforia extends LinearOpMode {
 
     // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
     // We will define some constants and conversions here
-    private static final float mmPerInch        = 25.4f;
-    private static final float mmTargetHeight   = (6) * mmPerInch;          // the height of the center of the target image above the floor
+    private static final float mmPerInch = 25.4f;
+    private static final float mmTargetHeight = (6) * mmPerInch;          // the height of the center of the target image above the floor
 
     // Constant for Stone Target
     private static final float stoneZ = 2.00f * mmPerInch;
@@ -143,15 +139,15 @@ public class autoVuforia extends LinearOpMode {
 
     // Constants for perimeter targets
     private static final float halfField = 72 * mmPerInch;
-    private static final float quadField  = 36 * mmPerInch;
+    private static final float quadField = 36 * mmPerInch;
 
     // Class Members
     private OpenGLMatrix lastLocation = null;
     private VuforiaLocalizer vuforia = null;
     private boolean targetVisible = false;
-    private float phoneXRotate    = 0;
-    private float phoneYRotate    = 0;
-    private float phoneZRotate    = 0;
+    private float phoneXRotate = 0;
+    private float phoneYRotate = 0;
+    private float phoneZRotate = 0;
 
 
     //setup the values that are needed
@@ -167,14 +163,15 @@ public class autoVuforia extends LinearOpMode {
     //Declare the public translation variable
     public VectorF translation = null;
 
-    @Override public void runOpMode() {
+    @Override
+    public void runOpMode() {
 
 
         //DRIVE TRAIN MOTOR SETUP
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        f_leftDrive  = hardwareMap.get(DcMotor.class, "f_leftDrive");
+        f_leftDrive = hardwareMap.get(DcMotor.class, "f_leftDrive");
         f_rightDrive = hardwareMap.get(DcMotor.class, "f_rightDrive");
         b_leftDrive = hardwareMap.get(DcMotor.class, "b_leftDrive");
         b_rightDrive = hardwareMap.get(DcMotor.class, "b_rightDrive");
@@ -205,7 +202,7 @@ public class autoVuforia extends LinearOpMode {
         // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraDirection   = CAMERA_CHOICE;
+        parameters.cameraDirection = CAMERA_CHOICE;
 
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
@@ -299,7 +296,7 @@ public class autoVuforia extends LinearOpMode {
 
         front1.setLocation(OpenGLMatrix
                 .translation(-halfField, -quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , 90)));
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 90)));
 
         front2.setLocation(OpenGLMatrix
                 .translation(-halfField, quadField, mmTargetHeight)
@@ -315,7 +312,7 @@ public class autoVuforia extends LinearOpMode {
 
         rear1.setLocation(OpenGLMatrix
                 .translation(halfField, quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , -90)));
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
 
         rear2.setLocation(OpenGLMatrix
                 .translation(halfField, -quadField, mmTargetHeight)
@@ -344,19 +341,19 @@ public class autoVuforia extends LinearOpMode {
 
         // Rotate the phone vertical about the X axis if it's in portrait mode
         if (PHONE_IS_PORTRAIT) {
-            phoneXRotate = 90 ;
+            phoneXRotate = 90;
 
         }
 
         // Next, translate the camera lens to where it is on the robot.
         // In this example, it is centered (left to right), but forward of the middle of the robot, and above ground level.
-        final float CAMERA_FORWARD_DISPLACEMENT  = 4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot center
+        final float CAMERA_FORWARD_DISPLACEMENT = 4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot center
         final float CAMERA_VERTICAL_DISPLACEMENT = 8.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
-        final float CAMERA_LEFT_DISPLACEMENT     = 0;     // eg: Camera is ON the robot's center line
+        final float CAMERA_LEFT_DISPLACEMENT = 0;     // eg: Camera is ON the robot's center line
 
         OpenGLMatrix robotFromCamera = OpenGLMatrix
-                    .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
-                    .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
+                .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
 
         /**  Let all the trackable listeners know where the phone is.  */
         for (VuforiaTrackable trackable : allTrackables) {
@@ -376,25 +373,21 @@ public class autoVuforia extends LinearOpMode {
         // Tap the preview window to receive a fresh image.
 
 
-
-
         targetsSkyStone.activate();
         waitForStart();
         while (!isStopRequested()) {
 
 
-
-
             // check all the trackable targets to see which one (if any) is visible.
             targetVisible = false;
             for (VuforiaTrackable trackable : allTrackables) {
-                if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
+                if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
                     telemetry.addData("Visible Target", trackable.getName());
                     targetVisible = true;
 
                     // getUpdatedRobotLocation() will return null if no new information is available since
                     // the last time that call was made, or if the trackable is not currently visible.
-                    OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
+                    OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
                     if (robotLocationTransform != null) {
                         lastLocation = robotLocationTransform;
                     }
@@ -422,13 +415,10 @@ public class autoVuforia extends LinearOpMode {
 
 
                 //attempt to turn to a test angle
-                turnToHeading(calcAngle(20, -48));
+                turnToHeading(0);
 
 
-
-
-            }
-            else {
+            } else {
                 telemetry.addData("Visible Target", "none");
             }
             telemetry.update();
@@ -455,41 +445,33 @@ public class autoVuforia extends LinearOpMode {
         targetsSkyStone.deactivate();
 
 
-
-
-
     }
     //Functions for simple movement of the robot
 
     //calculates the angle we need to turn the robot to a heading
-    public double calcAngle(double targetX, double targetY){
+    public double calcAngle(double targetX, double targetY) {
         double deltaY = targetY - yPos;
         double deltaX = targetX - xPos;
-        return (Math.atan(deltaY / deltaX));
-    }
-    //turns the robot to a heading given an angle
-    public void turnToHeading(double angle){
-        if(!targetVisible) {
-            telemetry.addData("oof", "oof");
-            stopRobot();
-        }else
-        if(angle > 0) {
-            if (Math.abs(currentHeading - (angle)) > 10) {
-                left();
-            }
-            else{
-                stopRobot();
-            }
+        double angle360 =  (Math.atan(deltaY / deltaX));
+        if(angle360 <= 180){
+            return angle360;
+        }else{
+            return (angle360 - 360);
         }
-        else{
-            if (Math.abs(currentHeading - angle) > 10) {
+    }
+
+    //turns the robot to a heading given a heading (must be a value between -180 and 180)
+    public void turnToHeading(double angle) {
+        if (Math.abs(currentHeading - angle) < 10) {
+            stopRobot();
+        } else {
+            if (angle > currentHeading) {
                 right();
             }
-            else{
-                stopRobot();
+            if (currentHeading > angle) {
+                left();
             }
         }
-
     }
 
     public void forward(){
