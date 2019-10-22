@@ -125,6 +125,8 @@ public class EncoderTest extends LinearOpMode {
 
         int newf_RightTarget;
         int newf_LeftTarget;
+        leftInches /= 2.4;
+        rightInches /= 2.4;
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
@@ -146,8 +148,12 @@ public class EncoderTest extends LinearOpMode {
             // reset the timeout time and start motion.
             // power is set to negative speed to make the bot move in the forward direction established by the builders
             runtime.reset();
-            f_leftDrive.setPower(-speedD);
-            f_rightDrive.setPower(-speedD);
+            f_leftDrive.setPower(speedD);
+            f_rightDrive.setPower(speedD);
+
+            // set the front wheels to move with the back wheels
+            b_leftDrive.setPower(speedD);
+            b_rightDrive.setPower(speedD);
 
             // keep looping while we are still active, and there is time left, and all motors are running.
             // Note: We use (isBusy() && isBusy()) in the loop test, which means that when ANY motor hits
@@ -158,9 +164,7 @@ public class EncoderTest extends LinearOpMode {
             while (opModeIsActive() &&
                     (runtime.seconds() < timeoutS) &&
                     (f_leftDrive.isBusy() && f_rightDrive.isBusy())) {
-                // set the front wheels to move with the back wheels
-                b_leftDrive.setPower(-speedD);
-                b_rightDrive.setPower(-speedD);
+
                 // Display data for the driver.
                 telemetry.addData("Path1", "Running to %7d :%7d", newf_LeftTarget, newf_RightTarget);
                 telemetry.addData("Path2", "Running at %7d :%7d",
