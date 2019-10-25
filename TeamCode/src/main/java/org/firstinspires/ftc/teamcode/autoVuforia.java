@@ -447,7 +447,7 @@ public class autoVuforia extends LinearOpMode {
                     }
 
                 }else{
-                    turnToHeading(180);
+                    turnToHeading(0);
                 }
 
 
