@@ -105,6 +105,7 @@ public class EncoderTest extends LinearOpMode {
         //should we add a direction parameter to determine direction?
         // test case: try to move one motor zero inches and the other in a positive inches direction
         encoderDrive(1.0,10,10,30);
+        encoderDrive(1.0,-10,-10,30);
 
 
         // run until the end of the match (driver presses STOP)
@@ -149,10 +150,9 @@ public class EncoderTest extends LinearOpMode {
 
 
             // reset the timeout time and start motion.
-            // power is set to negative speed to make the bot move in the forward direction established by the builders
             runtime.reset();
-            f_leftDrive.setPower(-speedD);
-            f_rightDrive.setPower(-speedD);
+            f_leftDrive.setPower(speedD);
+            f_rightDrive.setPower(speedD);
 
             // keep looping while we are still active, and there is time left, and all motors are running.
             // Note: We use (isBusy() && isBusy()) in the loop test, which means that when ANY motor hits
