@@ -104,8 +104,8 @@ public class EncoderTest extends LinearOpMode {
         // we have determined that speed is the indicator for direction
         //should we add a direction parameter to determine direction?
         // test case: try to move one motor zero inches and the other in a positive inches direction
-        encoderDrive(1.0,10,10,30);
-        encoderDrive(1.0,-10,-10,30);
+        encoderDrive(1.0,20,20,30);
+        encoderDrive(1.0,-20,-20,30);
 
 
         // run until the end of the match (driver presses STOP)
@@ -151,8 +151,12 @@ public class EncoderTest extends LinearOpMode {
 
             // reset the timeout time and start motion.
             runtime.reset();
-            f_leftDrive.setPower(speedD);
-            f_rightDrive.setPower(speedD);
+            b_leftDrive.setPower(speedD);
+            b_rightDrive.setPower(speedD);
+            f_rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            f_leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            // set the front wheels to move with the back wheels
+
 
             // keep looping while we are still active, and there is time left, and all motors are running.
             // Note: We use (isBusy() && isBusy()) in the loop test, which means that when ANY motor hits
@@ -163,9 +167,6 @@ public class EncoderTest extends LinearOpMode {
             while (opModeIsActive() &&
                     (runtime.seconds() < timeoutS) &&
                     (f_leftDrive.isBusy() && f_rightDrive.isBusy())) {
-                // set the front wheels to move with the back wheels
-                b_leftDrive.setPower(-speedD);
-                b_rightDrive.setPower(-speedD);
                 // Display data for the driver.
                 telemetry.addData("Path1", "Running to %7d :%7d", newf_LeftTarget, newf_RightTarget);
                 telemetry.addData("Path2", "Running at %7d :%7d",
@@ -186,6 +187,8 @@ public class EncoderTest extends LinearOpMode {
             b_leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             b_rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
+        telemetry.addData("Drive status: ", "complete");
+        telemetry.update();
     }
 
 }
