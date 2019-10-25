@@ -126,6 +126,11 @@ public class EncoderTest extends LinearOpMode {
         int newf_RightTarget;
         int newf_LeftTarget;
 
+        //We divide the input of inches by 2.4 for more accurate movement as determined through testing.
+        //During testing, the robot moved 24 inches instead of 10.
+        leftInches /= 2.4;
+        rightInches /=2.4;
+
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
