@@ -34,6 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -97,6 +98,16 @@ public class autoVuforia extends LinearOpMode {
     private DcMotor b_leftDrive = null;
     private DcMotor b_rightDrive = null;
 
+    //Declare the variables for the claw servos
+    private Servo leftClaw = null;
+    private Servo rightClaw = null;
+
+
+
+    //setup sensitivity variables
+    double clawUpPosition = 1.0;
+    double clawDownPosition = 0.55;
+
 
     // IMPORTANT:  For Phone Camera, set 1) the camera source and 2) the orientation, based on how your phone is mounted:
     // 1) Camera Source.  Valid choices are:  BACK (behind screen) or FRONT (selfie side)
@@ -153,6 +164,9 @@ public class autoVuforia extends LinearOpMode {
     //setup the values that are needed
     double drivePower = 0.8;
 
+    //variable to see if turn is completed or not
+    public boolean completedTurn = false;
+
     //setup SIMPLE X, Y, and Z values and heading
     double xPos = 0;
     double yPos = 0;
@@ -185,6 +199,13 @@ public class autoVuforia extends LinearOpMode {
         b_leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         f_rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         b_rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        //map the claw servos
+        leftClaw = hardwareMap.get(Servo.class, "leftClaw");
+        rightClaw = hardwareMap.get(Servo.class, "rightClaw");
+
+        //reverse one of the claw servos
+        rightClaw.setDirection(Servo.Direction.REVERSE);
 
 
 
@@ -372,7 +393,8 @@ public class autoVuforia extends LinearOpMode {
         // AFTER you hit Init on the Driver Station, use the "options menu" to select "Camera Stream"
         // Tap the preview window to receive a fresh image.
 
-
+        //a temp variable to determine whether to signal to the operators that the turn is complete
+        boolean signalComplete = false;
         targetsSkyStone.activate();
         waitForStart();
         while (!isStopRequested()) {
@@ -415,7 +437,19 @@ public class autoVuforia extends LinearOpMode {
 
 
                 //attempt to turn to a test angle
-                turnToHeading(0);
+                if (completedTurn) {
+
+                    if (!signalComplete){
+                        clawDown();
+                        sleep(500);
+                        clawUp();
+                        signalComplete = true;
+                    }
+
+                }else{
+                    turnToHeading(180);
+                }
+
 
 
             } else {
@@ -460,10 +494,12 @@ public class autoVuforia extends LinearOpMode {
         }
     }
 
-    //turns the robot to a heading given a heading (must be a value between -180 and 180)
+    //turns the robot to a heading given a heading (must be a value between -180 and 180).
+    // Returns true if the robot has completed the turn, and returns false if the robot is still turning
     public void turnToHeading(double angle) {
         if (Math.abs(currentHeading - angle) < 10) {
             stopRobot();
+            completedTurn = true;
         } else {
             if (angle > currentHeading) {
                 right();
@@ -472,6 +508,7 @@ public class autoVuforia extends LinearOpMode {
                 left();
             }
         }
+
     }
 
     public void forward(){
@@ -509,6 +546,18 @@ public class autoVuforia extends LinearOpMode {
         b_rightDrive.setPower(0);
         telemetry.addData("Ended braking at :", "X:" + xPos + " Y:" + yPos + " Z:" + zPos);
         telemetry.update();
+    }
+
+
+    //Control methods for the claw
+    public void clawDown(){
+        leftClaw.setPosition(clawDownPosition);
+        rightClaw.setPosition(clawUpPosition);
+    }
+
+    public void clawUp(){
+        rightClaw.setPosition(clawUpPosition);
+        leftClaw.setPosition(clawUpPosition);
     }
 
 
