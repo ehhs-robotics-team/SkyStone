@@ -68,6 +68,8 @@ public class EncoderTest extends LinearOpMode {
     static final double     WHEEL_DIAMETER_INCHES   = 4.0;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_TETRIX * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
+    static final double     DRIVE_SPEED             = 0.8;
+    static final double     TURN_SPEED              = 0.7;
 
     @Override
     public void runOpMode() {
@@ -99,21 +101,30 @@ public class EncoderTest extends LinearOpMode {
         double driveSensitivity = 1.5;
 
         // Wait for the game to start (driver presses PLAY)
+        // Send telemetry message to signify robot waiting;
+        telemetry.addData("Status", "Resetting Encoders");    //
+        telemetry.update();
+
+        b_leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        b_rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        b_leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        b_rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        // Send telemetry message to indicate successful Encoder reset
+        telemetry.addData("Path0",  "Starting at %7d :%7d",
+                b_leftDrive.getCurrentPosition(),
+                b_rightDrive.getCurrentPosition());
+        telemetry.update();
+
         waitForStart();
-        runtime.reset();
-        // we have determined that speed is the indicator for direction
-        //should we add a direction parameter to determine direction?
-        // test case: try to move one motor zero inches and the other in a positive inches direction
-        encoderDrive(1.0,20,20,30);
-        encoderDrive(1.0,-20,-20,30);
-
-
-        // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
-
-
-        }
+        //call the encoder function
+        //first - move forward 20 inches
+        //second - turn right 12 inches
+        encoderDrive(DRIVE_SPEED,20,20,30);
+        encoderDrive(TURN_SPEED,12,-12,30);
     }
+
     /*
      *  Method to perform a relative move, based on encoder counts.
      *  Encoders are not reset as the move is based on the current position.
@@ -124,35 +135,33 @@ public class EncoderTest extends LinearOpMode {
      */
     public void encoderDrive(double speedD, double leftInches, double rightInches, double timeoutS) {
 
-        int newf_RightTarget;
-        int newf_LeftTarget;
+        int new_RightTarget;
+        int new_LeftTarget;
 
         //We divide the input of inches by 2.4 for more accurate movement as determined through testing.
         //During testing, the robot moved 24 inches instead of 10.
-        leftInches /= 2.4;
-        rightInches /=2.4;
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
-            newf_RightTarget = f_rightDrive.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
-            newf_LeftTarget = f_leftDrive.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
+            new_RightTarget = b_rightDrive.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
+            new_LeftTarget = b_leftDrive.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
 
-            f_leftDrive.setTargetPosition(newf_LeftTarget);
-            f_rightDrive.setTargetPosition(newf_RightTarget);
+            b_leftDrive.setTargetPosition(new_LeftTarget);
+            b_rightDrive.setTargetPosition(new_RightTarget);
 
             // Turn On RUN_TO_POSITION
             //f_leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             //f_rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            f_leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            f_rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            b_leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            b_rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
             // reset the timeout time and start motion.
             runtime.reset();
-            b_leftDrive.setPower(speedD);
-            b_rightDrive.setPower(speedD);
+            b_leftDrive.setPower(Math.abs(speedD));
+            b_rightDrive.setPower(Math.abs(speedD));
             f_rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             f_leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             // set the front wheels to move with the back wheels
@@ -166,12 +175,12 @@ public class EncoderTest extends LinearOpMode {
             // onto the next step, use (isBusy() || isBusy()) in the loop test.
             while (opModeIsActive() &&
                     (runtime.seconds() < timeoutS) &&
-                    (f_leftDrive.isBusy() && f_rightDrive.isBusy())) {
+                    (b_leftDrive.isBusy() && b_rightDrive.isBusy())) {
                 // Display data for the driver.
-                telemetry.addData("Path1", "Running to %7d :%7d", newf_LeftTarget, newf_RightTarget);
+                telemetry.addData("Path1", "Running to %7d :%7d", new_LeftTarget, new_RightTarget);
                 telemetry.addData("Path2", "Running at %7d :%7d",
-                        f_leftDrive.getCurrentPosition(),
-                        f_rightDrive.getCurrentPosition());
+                        b_leftDrive.getCurrentPosition(),
+                        b_rightDrive.getCurrentPosition());
                 telemetry.update();
             }
 
