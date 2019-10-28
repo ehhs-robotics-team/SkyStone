@@ -157,7 +157,7 @@ public class navByVuforia extends LinearOpMode {
     private OpenGLMatrix lastLocation = null;
     private VuforiaLocalizer vuforia = null;
 
-
+    //Global Variables for "methodizing" vuforia
     private List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
     private VuforiaTrackables targetsSkyStone = null;
 
@@ -172,7 +172,7 @@ public class navByVuforia extends LinearOpMode {
     double drivePower = 0.8;
 
     //variable to see if turn is completed or not
-    public boolean completedTurn = false;
+    private boolean isTurning = false;
 
     //setup SIMPLE X, Y, and Z values and heading
     double xPos = 0;
@@ -198,10 +198,10 @@ public class navByVuforia extends LinearOpMode {
         b_rightDrive = hardwareMap.get(DcMotor.class, "b_rightDrive");
 
         //reverse the right motors
-        f_leftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        b_leftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        f_rightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        b_rightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        f_leftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        b_leftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        f_rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        b_rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         f_leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         b_leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         f_rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -219,94 +219,100 @@ public class navByVuforia extends LinearOpMode {
 
 
 
-
+        initVuforia();
         waitForStart();
+        runtime.reset();
 
-        while(opModeIsActive()) {
-            left();
+        while(!isStopRequested()) {
+            navigateVuforia();
         }
-
+        // Disable Tracking when we are done;
+        targetsSkyStone.deactivate();
 
 
     }
 
 
     public void navigateVuforia(){
-        while (!isStopRequested()) {
 
+        telemetry.addData("stage","1");
+        telemetry.update();
 
-            // check all the trackable targets to see which one (if any) is visible.
-            targetVisible = false;
-            for (VuforiaTrackable trackable : allTrackables) {
-                if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
-                    telemetry.addData("Visible Target", trackable.getName());
-                    targetVisible = true;
-
-                    // getUpdatedRobotLocation() will return null if no new information is available since
-                    // the last time that call was made, or if the trackable is not currently visible.
-                    OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
-                    if (robotLocationTransform != null) {
-                        lastLocation = robotLocationTransform;
-                    }
-                    break;
-
-                }
-            }
-
-            // Provide feedback as to where the robot is located (if we know).
-            if (targetVisible) {
-                // express position (translation) of robot in inches.
-                translation = lastLocation.getTranslation();
-                telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
-                        translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
-
-                // express the rotation of the robot in degrees.
-                Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
-                telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
-                //Continue to setup the variables to get the position of the robot
-                translation = lastLocation.getTranslation();
-                xPos = translation.get(0) / mmPerInch;
-                yPos = translation.get(1) / mmPerInch;
-                zPos = translation.get(2) / mmPerInch;
-                currentHeading = rotation.thirdAngle;
-
-
-                //attempt to turn to a test angle
-                if (completedTurn) {
-                    telemetry.addData("Turn Status", "Complete");
-                    telemetry.update();
-
-                }else{
-                    turnToHeading(0);
-                }
-
-
-
-            } else {
-                telemetry.addData("Visible Target", "none");
-            }
+        // check all the trackable targets to see which one (if any) is visible.
+        targetVisible = false;
+        for (VuforiaTrackable trackable : allTrackables) {
+            telemetry.addData("stage","1.50000");
             telemetry.update();
+            if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
+                telemetry.addData("Visible Target", trackable.getName());
+                targetVisible = true;
 
-            /*if (targetVisible) {
-
-
-
-                attempt to move based on vuforia position
-                if (xPos > -20) {
-                    forward();
-                } else if (xPos < -20){
-                    telemetry.addData("Attempting to brake at:", "X:" + xPos + " Y:" + yPos + " Z:" + zPos);
-                    telemetry.update();
-                    stopRobot();
+                // getUpdatedRobotLocation() will return null if no new information is available since
+                // the last time that call was made, or if the trackable is not currently visible.
+                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
+                if (robotLocationTransform != null) {
+                    lastLocation = robotLocationTransform;
                 }
+                break;
 
             }
-            */
-
         }
 
-        // Disable Tracking when we are done;
-        targetsSkyStone.deactivate();
+        telemetry.addData("stage","2");
+        telemetry.update();
+
+        // Provide feedback as to where the robot is located (if we know).
+        if (targetVisible) {
+            // express position (translation) of robot in inches.
+            translation = lastLocation.getTranslation();
+            telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
+                    translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
+
+            // express the rotation of the robot in degrees.
+            Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
+            telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
+            //Continue to setup the variables to get the position of the robot
+            translation = lastLocation.getTranslation();
+            xPos = translation.get(0) / mmPerInch;
+            yPos = translation.get(1) / mmPerInch;
+            zPos = translation.get(2) / mmPerInch;
+            currentHeading = rotation.thirdAngle;
+
+
+            isTurning = turnToHeading(0);
+
+            //attempt to turn to a test angle
+            if (!isTurning) {
+                telemetry.addData("Turn Status", "Complete");
+                telemetry.update();
+            }
+
+
+
+        } else {
+            telemetry.addData("Visible Target", "none");
+        }
+        telemetry.update();
+
+        /*if (targetVisible) {
+
+
+
+            attempt to move based on vuforia position
+            if (xPos > -20) {
+                forward();
+            } else if (xPos < -20){
+                telemetry.addData("Attempting to brake at:", "X:" + xPos + " Y:" + yPos + " Z:" + zPos);
+                telemetry.update();
+                stopRobot();
+            }
+
+        }
+        */
+
+
+
+
     }
 
 
@@ -333,18 +339,24 @@ public class navByVuforia extends LinearOpMode {
 
     //turns the robot to a heading given a heading (must be a value between -180 and 180).
     // Returns true if the robot has completed the turn, and returns false if the robot is still turning
-    public void turnToHeading(double angle) {
-        if (Math.abs(currentHeading - angle) < 10) {
+    public boolean turnToHeading(double targetHeading) {
+        //turn the heading to a 0-360
+        if (Math.abs(currentHeading - targetHeading) <= 10) {
             stopRobot();
-            completedTurn = true;
+
+            //Have a global variable so that we check if the robot is turning or not anywhere in the program
+            isTurning = false;
         } else {
-            if (angle > currentHeading) {
-                right();
-            }
-            if (currentHeading > angle) {
+            isTurning = true;
+            if (targetHeading > currentHeading) {
                 left();
             }
+            if (currentHeading > targetHeading) {
+                right();
+            }
+
         }
+        return isTurning;
 
     }
 
@@ -446,7 +458,6 @@ public class navByVuforia extends LinearOpMode {
         rear2.setName("Rear Perimeter 2");
 
         // For convenience, gather together all the trackable objects in one easily-iterable collection */
-        List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
         allTrackables.addAll(targetsSkyStone);
 
 
