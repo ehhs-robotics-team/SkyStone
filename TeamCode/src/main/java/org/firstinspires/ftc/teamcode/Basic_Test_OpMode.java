@@ -38,7 +38,7 @@ public class Basic_Test_OpMode extends AutoOP {
 
     @Override
     public void main(){
-        initVuforia();
+
 
     }
 }
