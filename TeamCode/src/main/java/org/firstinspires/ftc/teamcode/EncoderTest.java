@@ -62,14 +62,13 @@ public class EncoderTest extends LinearOpMode {
     private DcMotor b_leftDrive = null;
     private DcMotor b_rightDrive = null;
 
-    //static final double     COUNTS_PER_MOTOR_REV    = 1120 ;    // REV HD Hex motor with 40:1 gearbox
     static final double     COUNTS_PER_MOTOR_TETRIX   = 1478.4;    // Tetrix Matrix 12V motor with 52.8:1 gearbox
-    static final double     DRIVE_GEAR_REDUCTION    = 1.0;     // This is < 1.0 if geared UP
+    static final double     DRIVE_GEAR_REDUCTION    = 2.0;     // This is < 1.0 if geared UP
     static final double     WHEEL_DIAMETER_INCHES   = 4.0;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_TETRIX * DRIVE_GEAR_REDUCTION) /
-            (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double     DRIVE_SPEED             = 0.8;
-    static final double     TURN_SPEED              = 0.7;
+                                                        (WHEEL_DIAMETER_INCHES * 3.1415);
+    static final double     DRIVE_SPEED             = 0.6;
+    static final double     TURN_SPEED              = 0.5;
 
     @Override
     public void runOpMode() {
@@ -92,10 +91,10 @@ public class EncoderTest extends LinearOpMode {
         b_rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //set the motors to brake when power equals zero
-        f_rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        b_rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        f_leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        b_leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //f_rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //b_rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //f_leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //b_leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //setup the values that are needed
         double driveSensitivity = 1.5;
@@ -121,8 +120,9 @@ public class EncoderTest extends LinearOpMode {
         //call the encoder function
         //first - move forward 20 inches
         //second - turn right 12 inches
-        encoderDrive(DRIVE_SPEED,20,20,30);
+        encoderDrive(DRIVE_SPEED,48,48,30);
         encoderDrive(TURN_SPEED,12,-12,30);
+        encoderDrive(DRIVE_SPEED, -24, -24, 20);
     }
 
     /*
@@ -152,8 +152,6 @@ public class EncoderTest extends LinearOpMode {
             b_rightDrive.setTargetPosition(new_RightTarget);
 
             // Turn On RUN_TO_POSITION
-            //f_leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            //f_rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             b_leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             b_rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
