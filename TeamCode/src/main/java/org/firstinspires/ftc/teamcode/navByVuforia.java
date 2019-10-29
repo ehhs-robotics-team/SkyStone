@@ -169,7 +169,7 @@ public class navByVuforia extends LinearOpMode {
 
 
     //setup the values that are needed
-    double drivePower = 0.8;
+    double drivePower = 0.25;
 
     //variable to see if turn is completed or not
     private boolean isTurning = false;
@@ -235,14 +235,10 @@ public class navByVuforia extends LinearOpMode {
 
     public void navigateVuforia(){
 
-        telemetry.addData("stage","1");
-        telemetry.update();
-
         // check all the trackable targets to see which one (if any) is visible.
         targetVisible = false;
         for (VuforiaTrackable trackable : allTrackables) {
-            telemetry.addData("stage","1.50000");
-            telemetry.update();
+
             if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
                 telemetry.addData("Visible Target", trackable.getName());
                 targetVisible = true;
@@ -257,9 +253,6 @@ public class navByVuforia extends LinearOpMode {
 
             }
         }
-
-        telemetry.addData("stage","2");
-        telemetry.update();
 
         // Provide feedback as to where the robot is located (if we know).
         if (targetVisible) {
@@ -341,7 +334,7 @@ public class navByVuforia extends LinearOpMode {
     // Returns true if the robot has completed the turn, and returns false if the robot is still turning
     public boolean turnToHeading(double targetHeading) {
         //turn the heading to a 0-360
-        if (Math.abs(currentHeading - targetHeading) <= 10) {
+        if (Math.abs(currentHeading - targetHeading) <= 5) {
             stopRobot();
 
             //Have a global variable so that we check if the robot is turning or not anywhere in the program
