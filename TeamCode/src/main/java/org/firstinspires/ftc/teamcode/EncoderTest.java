@@ -63,7 +63,7 @@ public class EncoderTest extends LinearOpMode {
     private DcMotor b_rightDrive = null;
 
     static final double     COUNTS_PER_MOTOR_TETRIX   = 1478.4;    // Tetrix Matrix 12V motor with 52.8:1 gearbox
-    static final double     DRIVE_GEAR_REDUCTION    = 2.0;     // This is < 1.0 if geared UP
+    static final double     DRIVE_GEAR_REDUCTION    = 2.0;     // This is < 2.0 if geared UP
     static final double     WHEEL_DIAMETER_INCHES   = 4.0;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_TETRIX * DRIVE_GEAR_REDUCTION) /
                                                         (WHEEL_DIAMETER_INCHES * 3.1415);
@@ -91,10 +91,10 @@ public class EncoderTest extends LinearOpMode {
         b_rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //set the motors to brake when power equals zero
-        //f_rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //b_rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //f_leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //b_leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        f_rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        b_rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        f_leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        b_leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //setup the values that are needed
         double driveSensitivity = 1.5;
@@ -120,9 +120,9 @@ public class EncoderTest extends LinearOpMode {
         //call the encoder function
         //first - move forward 20 inches
         //second - turn right 12 inches
-        encoderDrive(DRIVE_SPEED,48,48,30);
-        encoderDrive(TURN_SPEED,12,-12,30);
-        encoderDrive(DRIVE_SPEED, -24, -24, 20);
+        encoderDrive(TURN_SPEED,15,-15,30);
+        encoderDrive(TURN_SPEED,-15,15,30);
+        encoderDrive(TURN_SPEED, 30, -30, 30);
     }
 
     /*
@@ -138,16 +138,12 @@ public class EncoderTest extends LinearOpMode {
         int new_RightTarget;
         int new_LeftTarget;
 
-        //We divide the input of inches by 2.4 for more accurate movement as determined through testing.
-        //During testing, the robot moved 24 inches instead of 10.
-
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
             new_RightTarget = b_rightDrive.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
             new_LeftTarget = b_leftDrive.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
-
             b_leftDrive.setTargetPosition(new_LeftTarget);
             b_rightDrive.setTargetPosition(new_RightTarget);
 
@@ -162,7 +158,6 @@ public class EncoderTest extends LinearOpMode {
             b_rightDrive.setPower(Math.abs(speedD));
             f_rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             f_leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            // set the front wheels to move with the back wheels
 
 
             // keep looping while we are still active, and there is time left, and all motors are running.
