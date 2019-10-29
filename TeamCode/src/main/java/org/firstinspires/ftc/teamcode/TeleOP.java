@@ -70,17 +70,21 @@ public abstract class TeleOP extends LinearOpMode {
     //DRIVE TRAIN MOTOR VARIABLES
     // Declare the motor variables
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor f_leftDrive = null;
-    private DcMotor f_rightDrive = null;
-    private DcMotor b_leftDrive = null;
-    private DcMotor b_rightDrive = null;
+    DcMotor f_leftDrive = null;
+    DcMotor f_rightDrive = null;
+    DcMotor b_leftDrive = null;
+    DcMotor b_rightDrive = null;
 
     //Declare the variables for the claw servos
-    private Servo leftClaw = null;
-    private Servo rightClaw = null;
+    Servo leftClaw = null;
+    Servo rightClaw = null;
 
     //Declare the gripper's servo variable
-    private CRServo gripperServo = null;
+    CRServo gripperServo = null;
+
+    double driveSensitivity;
+    double clawUpPosition;
+    double clawDownPosition;
 
 
 

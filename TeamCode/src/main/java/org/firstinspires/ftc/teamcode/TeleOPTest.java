@@ -1,4 +1,4 @@
-/* Copyright (c) 2019 FIRST. All rights reserved.
+/* Copyright (c) 2017 FIRST. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted (subject to the limitations in the disclaimer below) provided that
@@ -29,44 +29,16 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
-import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
-
-/**
- * This is an example program to show how to use the parent teleOP class
- */
+import org.firstinspires.ftc.teamcode.TeleOP;
 
 
-@TeleOp(name="TeleOP child test", group ="LinearOpmode")
-public class BasicTeleOP extends TeleOP {
+@TeleOp(name="TFOD Test", group="Linear Opmode")
 
+public class TeleOPTest extends TeleOP {
 
     @Override
-    public void main(){
-
+    public void main() {
         //MAP DRIVE TRAIN TO CONTROLLER
         // Send calculated power to wheels
         //left wheels
@@ -79,26 +51,22 @@ public class BasicTeleOP extends TeleOP {
         b_rightDrive.setPower(gamepad1.right_stick_y / driveSensitivity);
 
         //SETUP the claw to work with the controller
-        if (gamepad1.y){
+        if (gamepad1.y) {
             leftClaw.setPosition(clawUpPosition);
             rightClaw.setPosition(clawUpPosition);
         }
-        if (gamepad1.b){
+        if (gamepad1.b) {
             rightClaw.setPosition(clawDownPosition);
             leftClaw.setPosition(clawDownPosition);
         }
 
 
         //SETUP and add the ability to use the gripper; bind controls on the controller to operate the gripper's servo
-        if (gamepad1.left_bumper){
+        if (gamepad1.left_bumper) {
             gripperServo.setPower(1);
-        }
-
-        else if (gamepad1.right_bumper){
+        } else if (gamepad1.right_bumper) {
             gripperServo.setPower(-1);
-        }
-
-        else{
+        } else {
             gripperServo.setPower(0);
         }
     }
