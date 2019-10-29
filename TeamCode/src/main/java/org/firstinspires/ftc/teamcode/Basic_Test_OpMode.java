@@ -29,10 +29,12 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 
-@TeleOp(name="TFOD Test", group="Linear Opmode")
+@TeleOp(name="Basic OpMode", group="Linear Opmode")
+@Disabled
 
 public class Basic_Test_OpMode extends AutoOP {
 

@@ -1,4 +1,4 @@
-/* Copyright (c) 2017 FIRST. All rights reserved.
+/* Copyright (c) 2019 FIRST. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted (subject to the limitations in the disclaimer below) provided that
@@ -30,9 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -46,8 +44,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,18 +53,43 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
-import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.FRONT;
-
 
 /**
- * This file contains the autonomous code for the FTC 15116 Nuclear Nerdz robot
- * "Neil Armstrong" for the 2019-20 Skystone Competition.
+ * This 2019-2020 OpMode illustrates the basics of using the Vuforia localizer to determine
+ * positioning and orientation of robot on the SKYSTONE FTC field.
+ * The code is structured as a LinearOpMode
+ *
+ * When images are located, Vuforia is able to determine the position and orientation of the
+ * image relative to the camera.  This sample code then combines that information with a
+ * knowledge of where the target images are on the field, to determine the location of the camera.
+ *
+ * From the Audience perspective, the Red Alliance station is on the right and the
+ * Blue Alliance Station is on the left.
+
+ * Eight perimeter targets are distributed evenly around the four perimeter walls
+ * Four Bridge targets are located on the bridge uprights.
+ * Refer to the Field Setup manual for more specific location details
+ *
+ * A final calculation then uses the location of the camera on the robot to determine the
+ * robot's location and orientation on the field.
+ *
+ * @see VuforiaLocalizer
+ * @see VuforiaTrackableDefaultListener
+ * see  skystone/doc/tutorial/FTC_FieldCoordinateSystemDefinition.pdf
+ *
+ * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
+ * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list.
+ *
+ * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
+ * is explained below.
  *
  */
 
-@Autonomous(name="Auto Parent", group="Linear Opmode")
-@Disabled
-public abstract class AutoOP extends LinearOpMode {
+
+@Autonomous(name="Test Vuforia Navigation", group ="Concept")
+public class navByVuforia extends LinearOpMode {
+
+
     //DRIVE TRAIN MOTOR VARIABLES
     // Declare the motor variables
     private ElapsedTime runtime = new ElapsedTime();
@@ -116,8 +137,8 @@ public abstract class AutoOP extends LinearOpMode {
 
     // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
     // We will define some constants and conversions here
-    public static final float mmPerInch = 25.4f;
-    public static final float mmTargetHeight = (6) * mmPerInch;          // the height of the center of the target image above the floor
+    private static final float mmPerInch = 25.4f;
+    private static final float mmTargetHeight = (6) * mmPerInch;          // the height of the center of the target image above the floor
 
     // Constant for Stone Target
     private static final float stoneZ = 2.00f * mmPerInch;
@@ -134,25 +155,25 @@ public abstract class AutoOP extends LinearOpMode {
     private static final float quadField = 36 * mmPerInch;
 
     // Class Members
-    public OpenGLMatrix lastLocation = null;
+    private OpenGLMatrix lastLocation = null;
     private VuforiaLocalizer vuforia = null;
 
-
-    public List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
+    //Global Variables for "methodizing" vuforia
+    private List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
     private VuforiaTrackables targetsSkyStone = null;
 
 
-    public boolean targetVisible = false;
-    public float phoneXRotate = 0;
-    public float phoneYRotate = 0;
-    public float phoneZRotate = 0;
+    private boolean targetVisible = false;
+    private float phoneXRotate = 0;
+    private float phoneYRotate = 0;
+    private float phoneZRotate = 0;
 
 
     //setup the values that are needed
     double drivePower = 0.25;
 
     //variable to see if turn is completed or not
-    public boolean completedTurn = false;
+    private boolean isTurning = false;
 
     //setup SIMPLE X, Y, and Z values and heading
     double xPos = 0;
@@ -164,11 +185,6 @@ public abstract class AutoOP extends LinearOpMode {
     //Declare the public translation variable
     public VectorF translation = null;
 
-
-
-    /*
-     * Code to run ONCE when the driver hits INIT
-     */
     @Override
     public void runOpMode() {
 
@@ -199,99 +215,98 @@ public abstract class AutoOP extends LinearOpMode {
         //reverse one of the claw servos
         rightClaw.setDirection(Servo.Direction.REVERSE);
 
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
 
 
 
-        //Run the child autonomous run
-        main();
+
+
+        initVuforia();
+        waitForStart();
+        runtime.reset();
+
+        while(!isStopRequested()) {
+            navigateVuforia();
+        }
+        // Disable Tracking when we are done;
+        targetsSkyStone.deactivate();
+
 
     }
 
 
-    /*
-     * method for children autonomous opmodes to override and insert case specific moves.
-     */
-    public abstract void main();
-
-
     public void navigateVuforia(){
-        while (!isStopRequested()) {
 
+        // check all the trackable targets to see which one (if any) is visible.
+        targetVisible = false;
+        for (VuforiaTrackable trackable : allTrackables) {
 
-            // check all the trackable targets to see which one (if any) is visible.
-            targetVisible = false;
-            for (VuforiaTrackable trackable : allTrackables) {
-                if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
-                    telemetry.addData("Visible Target", trackable.getName());
-                    targetVisible = true;
+            if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
+                telemetry.addData("Visible Target", trackable.getName());
+                targetVisible = true;
 
-                    // getUpdatedRobotLocation() will return null if no new information is available since
-                    // the last time that call was made, or if the trackable is not currently visible.
-                    OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
-                    if (robotLocationTransform != null) {
-                        lastLocation = robotLocationTransform;
-                    }
-                    break;
-
+                // getUpdatedRobotLocation() will return null if no new information is available since
+                // the last time that call was made, or if the trackable is not currently visible.
+                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
+                if (robotLocationTransform != null) {
+                    lastLocation = robotLocationTransform;
                 }
-            }
-
-            // Provide feedback as to where the robot is located (if we know).
-            if (targetVisible) {
-                // express position (translation) of robot in inches.
-                translation = lastLocation.getTranslation();
-                telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
-                        translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
-
-                // express the rotation of the robot in degrees.
-                Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
-                telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
-                //Continue to setup the variables to get the position of the robot
-                translation = lastLocation.getTranslation();
-                xPos = translation.get(0) / mmPerInch;
-                yPos = translation.get(1) / mmPerInch;
-                zPos = translation.get(2) / mmPerInch;
-                currentHeading = rotation.thirdAngle;
-
-
-                //attempt to turn to a test angle
-                if (completedTurn) {
-                    telemetry.addData("Turn Status", "Complete");
-                    telemetry.update();
-
-                }else{
-                    turnToHeading(0);
-                }
-
-
-
-            } else {
-                telemetry.addData("Visible Target", "none");
-            }
-            telemetry.update();
-
-            /*if (targetVisible) {
-
-
-
-                attempt to move based on vuforia position
-                if (xPos > -20) {
-                    forward();
-                } else if (xPos < -20){
-                    telemetry.addData("Attempting to brake at:", "X:" + xPos + " Y:" + yPos + " Z:" + zPos);
-                    telemetry.update();
-                    stopRobot();
-                }
+                break;
 
             }
-            */
-
         }
 
-        // Disable Tracking when we are done;
-        targetsSkyStone.deactivate();
+        // Provide feedback as to where the robot is located (if we know).
+        if (targetVisible) {
+            // express position (translation) of robot in inches.
+            translation = lastLocation.getTranslation();
+            telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
+                    translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
+
+            // express the rotation of the robot in degrees.
+            Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
+            telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
+            //Continue to setup the variables to get the position of the robot
+            translation = lastLocation.getTranslation();
+            xPos = translation.get(0) / mmPerInch;
+            yPos = translation.get(1) / mmPerInch;
+            zPos = translation.get(2) / mmPerInch;
+            currentHeading = rotation.thirdAngle;
+
+
+            isTurning = turnToHeading(0);
+
+            //attempt to turn to a test angle
+            if (!isTurning) {
+                telemetry.addData("Turn Status", "Complete");
+                telemetry.update();
+            }
+
+
+
+        } else {
+            telemetry.addData("Visible Target", "none");
+        }
+        telemetry.update();
+
+        /*if (targetVisible) {
+
+
+
+            attempt to move based on vuforia position
+            if (xPos > -20) {
+                forward();
+            } else if (xPos < -20){
+                telemetry.addData("Attempting to brake at:", "X:" + xPos + " Y:" + yPos + " Z:" + zPos);
+                telemetry.update();
+                stopRobot();
+            }
+
+        }
+        */
+
+
+
+
     }
 
 
@@ -318,18 +333,24 @@ public abstract class AutoOP extends LinearOpMode {
 
     //turns the robot to a heading given a heading (must be a value between -180 and 180).
     // Returns true if the robot has completed the turn, and returns false if the robot is still turning
-    public void turnToHeading(double angle) {
-        if (Math.abs(currentHeading - angle) < 10) {
+    public boolean turnToHeading(double targetHeading) {
+        //turn the heading to a 0-360
+        if (Math.abs(currentHeading - targetHeading) <= 5) {
             stopRobot();
-            completedTurn = true;
+
+            //Have a global variable so that we check if the robot is turning or not anywhere in the program
+            isTurning = false;
         } else {
-            if (angle > currentHeading) {
-                right();
-            }
-            if (currentHeading > angle) {
+            isTurning = true;
+            if (targetHeading > currentHeading) {
                 left();
             }
+            if (currentHeading > targetHeading) {
+                right();
+            }
+
         }
+        return isTurning;
 
     }
 
@@ -568,4 +589,8 @@ public abstract class AutoOP extends LinearOpMode {
 
 
 
+
+
 }
+
+
