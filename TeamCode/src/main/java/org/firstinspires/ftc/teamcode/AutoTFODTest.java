@@ -32,72 +32,16 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-@TeleOp(name="Arm_Testing", group="Linear Opmode")
+@TeleOp(name="TFOD Test", group="Linear Opmode")
 
-public class Arm_Testing extends LinearOpMode {
-
-    // Declare the motor variables
-    private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor armMotor = null;
-
+public class AutoTFODTest extends AutoOP {
 
     @Override
-    public void runOpMode() {
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
+    public void main(){
+        initVuforia();
 
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
-        armMotor  = hardwareMap.get(DcMotor.class, "armMotor");
-
-
-        //setup the arm sensitivity value
-        double armSensitivity = 1.6;
-
-
-
-        // Wait for the game to start (driver presses PLAY)
-        waitForStart();
-        runtime.reset();
-
-        // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
-
-            //bind the arm motor to the controller's D-Pad
-            if(gamepad1.dpad_up) {
-                armMotor.setPower(armSensitivity);
-            }else if(gamepad1.dpad_down){
-                armMotor.setPower(-armSensitivity);
-            }
-            else{
-                armMotor.setPower(0);
-                armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            }
-
-
-            //EMERGENCY Shutoff
-            if (gamepad1.a){
-                armSensitivity = 0;
-                armMotor.setPower(armSensitivity);
-                armMotor.setPower(0);
-                armMotor.getZeroPowerBehavior();
-
-                break;
-            }
-
-
-
-
-
-
-            // Show the elapsed game time and wheel power.
-
-            telemetry.update();
-        }
     }
 }
