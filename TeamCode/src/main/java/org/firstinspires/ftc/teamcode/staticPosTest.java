@@ -30,23 +30,20 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+
+import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
-import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
+
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 
 
-@Autonomous(name="spinTest", group="Linear Opmode")
+@Autonomous(name="staticPosTest", group="Linear Opmode")
 
-public class spinTest extends AutoOP {
+public class staticPosTest extends AutoOP {
 
     @Override
     public void main(){
@@ -55,12 +52,12 @@ public class spinTest extends AutoOP {
         waitForStart();
         while(opModeIsActive()){
 
-            spinTestMethod();
+            staticPosTestMethod();
 
         }
     }
 
-    public void spinTestMethod() {
+    public void staticPosTestMethod() {
 
         // check all the trackable targets to see which one (if any) is visible.
         targetVisible = false;

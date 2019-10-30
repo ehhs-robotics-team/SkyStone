@@ -30,23 +30,24 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+
+import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
-import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
+
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 
-
+//this program will get the average time between updates
 @Autonomous(name="spinTest", group="Linear Opmode")
 
-public class spinTest extends AutoOP {
+public class averageUpdateTest extends AutoOP {
+
+    double totalTime = 0;
+    double averageTime = 0;
+    double timesUpdated = 0;
 
     @Override
     public void main(){
@@ -55,21 +56,35 @@ public class spinTest extends AutoOP {
         waitForStart();
         while(opModeIsActive()){
 
-            spinTestMethod();
+            runtime.reset();
+
+            testAverageMethod();
+
+            //add the time between this update and the last to the total value variable
+            totalTime += runtime.seconds();
+
+            telemetry.addData("This Update Time: ", runtime.seconds());
+            runtime.reset();
+            timesUpdated += 1;
+            averageTime = (totalTime / timesUpdated);
+            telemetry.addData("Average Update Time: ", averageTime);
+            telemetry.update();
 
         }
     }
 
-    public void spinTestMethod() {
+    public void testAverageMethod() {
+
+        //variables that will track the time between updates
 
         // check all the trackable targets to see which one (if any) is visible.
         targetVisible = false;
         for (VuforiaTrackable trackable : allTrackables) {
             if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
-                telemetry.addData("Visible Target", trackable.getName());
                 targetVisible = true;
 
                 // getUpdatedRobotLocation() will return null if no new information is available since
+
                 // the last time that call was made, or if the trackable is not currently visible.
                 OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
                 if (robotLocationTransform != null) {
@@ -82,14 +97,11 @@ public class spinTest extends AutoOP {
 
         // Provide feedback as to where the robot is located (if we know).
         if (targetVisible) {
+
             // express position (translation) of robot in inches.
             translation = lastLocation.getTranslation();
-            telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
-                    translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
-
             // express the rotation of the robot in degrees.
             Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
-            telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
             //Continue to setup the variables to get the position of the robot
             translation = lastLocation.getTranslation();
             xPos = translation.get(0) / mmPerInch;
@@ -98,9 +110,8 @@ public class spinTest extends AutoOP {
             currentHeading = rotation.thirdAngle;
 
 
-
         }
-        telemetry.update();
+
     }
 
 }
