@@ -29,23 +29,23 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 
-@TeleOp(name="TeleOP Template", group="Linear Opmode")
-@Disabled
-public class TeleOPTemplate extends TeleOP {
+@TeleOp(name="TeleOP Arm Test", group="Linear Opmode")
+
+public class TeleOPArmTest extends TeleOP {
 
     @Override
     public void main() {
-        //Code to send controls to robot
+
         waitForStart();
 
         while(opModeIsActive()){
-            //  //right wheels
-            //  f_rightDrive.setPower(gamepad1.right_stick_y / driveSensitivity);
-            //  b_rightDrive.setPower(gamepad1.right_stick_y / driveSensitivity);
+            armElbow.setPower(gamepad1.right_stick_y);
+            armShoulder.setPower(gamepad1.left_stick_y);
+
+
         }
     }
 }
