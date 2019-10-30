@@ -69,11 +69,14 @@ public abstract class TeleOP extends LinearOpMode {
 
     //DRIVE TRAIN MOTOR VARIABLES
     // Declare the motor variables
-    private ElapsedTime runtime = new ElapsedTime();
+    ElapsedTime runtime = new ElapsedTime();
     DcMotor f_leftDrive = null;
     DcMotor f_rightDrive = null;
     DcMotor b_leftDrive = null;
     DcMotor b_rightDrive = null;
+
+    DcMotor armShoulder = null;
+    DcMotor armElbow = null;
 
     //Declare the variables for the claw servos
     Servo leftClaw = null;
@@ -102,6 +105,9 @@ public abstract class TeleOP extends LinearOpMode {
         f_rightDrive = hardwareMap.get(DcMotor.class, "f_rightDrive");
         b_leftDrive = hardwareMap.get(DcMotor.class, "b_leftDrive");
         b_rightDrive = hardwareMap.get(DcMotor.class, "b_rightDrive");
+
+        armElbow = hardwareMap.get(DcMotor.class, "arm_elbow");
+        armShoulder = hardwareMap.get(DcMotor.class, "arm_shoulder");
 
         //map the claw servos
         leftClaw = hardwareMap.get(Servo.class, "leftClaw");

@@ -29,48 +29,22 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import org.firstinspires.ftc.teamcode.TeleOP;
 
 
-@TeleOp(name="TeleOPmode Test", group="Linear Opmode")
-
-public class TeleOPTest extends TeleOP {
+@TeleOp(name="TeleOP Template", group="Linear Opmode")
+@Disabled
+public class TeleOPTemplate extends TeleOP {
 
     @Override
     public void main() {
+        //Code to send controls to robot
 
         while(opModeIsActive()){
-            //MAP DRIVE TRAIN TO CONTROLLER
-            // Send calculated power to wheels
-            //left wheels
-            f_leftDrive.setPower(gamepad1.left_stick_y / driveSensitivity);
-            b_leftDrive.setPower(gamepad1.left_stick_y / driveSensitivity);
-
-
-            //right wheels
-            f_rightDrive.setPower(gamepad1.right_stick_y / driveSensitivity);
-            b_rightDrive.setPower(gamepad1.right_stick_y / driveSensitivity);
-
-            //SETUP the claw to work with the controller
-            if (gamepad1.y) {
-                leftClaw.setPosition(clawUpPosition);
-                rightClaw.setPosition(clawUpPosition);
-            }
-            if (gamepad1.b) {
-                rightClaw.setPosition(clawDownPosition);
-                leftClaw.setPosition(clawDownPosition);
-            }
-
-
-            //SETUP and add the ability to use the gripper; bind controls on the controller to operate the gripper's servo
-            if (gamepad1.left_bumper) {
-                gripperServo.setPower(1);
-            } else if (gamepad1.right_bumper) {
-                gripperServo.setPower(-1);
-            } else {
-                gripperServo.setPower(0);
-            }
+            //  //right wheels
+            //  f_rightDrive.setPower(gamepad1.right_stick_y / driveSensitivity);
+            //  b_rightDrive.setPower(gamepad1.right_stick_y / driveSensitivity);
         }
     }
 }
