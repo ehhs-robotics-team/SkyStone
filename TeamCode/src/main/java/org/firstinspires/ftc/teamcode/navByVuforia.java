@@ -273,7 +273,7 @@ public class navByVuforia extends LinearOpMode {
             currentHeading = rotation.thirdAngle;
 
 
-            isTurning = turnToHeading(0);
+            isTurning = turnToHeading(-90);
 
             //attempt to turn to a test angle
             if (!isTurning) {
