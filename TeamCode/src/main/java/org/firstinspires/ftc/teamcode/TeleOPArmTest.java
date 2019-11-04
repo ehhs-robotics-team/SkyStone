@@ -42,8 +42,55 @@ public class TeleOPArmTest extends TeleOP {
         waitForStart();
 
         while(opModeIsActive()){
-            armElbow.setPower(gamepad1.right_stick_y);
-            armShoulder.setPower(gamepad1.left_stick_y);
+
+            // Set wheel power to cube of stick value to give more control near the center:
+            f_leftDrive.setPower(Math.pow(gamepad1.left_stick_y, 3));
+            b_leftDrive.setPower(Math.pow(gamepad1.left_stick_y, 3));
+            f_rightDrive.setPower(Math.pow(gamepad1.right_stick_y, 3));
+            b_rightDrive.setPower(Math.pow(gamepad1.right_stick_y, 3));
+
+            //SETUP the claw to work with the controller
+            if (gamepad1.y) {
+                leftClaw.setPosition(clawUpPosition);
+                rightClaw.setPosition(clawUpPosition);
+            } else if (gamepad1.a) {
+                rightClaw.setPosition(clawDownPosition);
+                leftClaw.setPosition(clawDownPosition);
+            } else {
+                double restPosition = 0.75;
+                rightClaw.setPosition(restPosition);
+                leftClaw.setPosition(restPosition);
+            }
+
+
+            // Set shoulder power to the right trigger, negative or positive depending on the bumper
+            if (gamepad1.right_bumper) {
+                armShoulder.setPower(gamepad1.right_trigger);
+            } else {
+                armShoulder.setPower(-gamepad1.right_trigger);
+            }
+
+
+            // Set elbow power to the left trigger, negative or positive depending on the bumper
+            if (gamepad1.left_bumper) {
+                armElbow.setPower(gamepad1.left_trigger);
+            } else {
+                armElbow.setPower(-gamepad1.left_trigger);
+            }
+
+            double gripperPower = 0.5;
+            if (gamepad1.dpad_right){
+                gripperServo.setPower(gripperPower);
+            } else if (gamepad1.dpad_left){
+                gripperServo.setPower(-gripperPower);
+            } else {
+                gripperServo.setPower(0);
+            }
+
+
+
+
+
 
 
         }
