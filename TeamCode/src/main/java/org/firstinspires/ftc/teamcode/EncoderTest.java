@@ -62,7 +62,7 @@ public class EncoderTest extends LinearOpMode {
     private DcMotor b_leftDrive = null;
     private DcMotor b_rightDrive = null;
 
-    static final double     COUNTS_PER_MOTOR_TETRIX   = 1478.4;    // Tetrix Matrix 12V motor with 52.8:1 gearbox
+    static final double     COUNTS_PER_MOTOR_TETRIX   = 1440;    // Tetrix Matrix 12V motor with 52.8:1 gearbox
     static final double     DRIVE_GEAR_REDUCTION    = 2.0;     // This is < 2.0 if geared UP
     static final double     WHEEL_DIAMETER_INCHES   = 4.0;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_TETRIX * DRIVE_GEAR_REDUCTION) /
@@ -117,12 +117,11 @@ public class EncoderTest extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
-        //call the encoder function
-        //first - move forward 20 inches
-        //second - turn right 12 inches
-        encoderDrive(TURN_SPEED,15,-15,30);
-        encoderDrive(TURN_SPEED,-15,15,30);
-        encoderDrive(TURN_SPEED, 30, -30, 30);
+        //turn test notes: set the direction you want to turn to a positive integer
+        //22.222.. inches per 360 degrees
+        //.06166.. inches per 1 degree
+        //ex: 100 inch turn = 4.5 rotations
+        encoderDrive(TURN_SPEED, 100, -100, 30);
     }
 
     /*
@@ -135,29 +134,38 @@ public class EncoderTest extends LinearOpMode {
      */
     public void encoderDrive(double speedD, double leftInches, double rightInches, double timeoutS) {
 
-        int new_RightTarget;
-        int new_LeftTarget;
+        int newf_RightTarget;
+        int newf_LeftTarget;
+        int newb_RightTarget;
+        int newb_LeftTarget;
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
-            new_RightTarget = b_rightDrive.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
-            new_LeftTarget = b_leftDrive.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
-            b_leftDrive.setTargetPosition(new_LeftTarget);
-            b_rightDrive.setTargetPosition(new_RightTarget);
+            newf_RightTarget = b_rightDrive.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
+            newf_LeftTarget = b_leftDrive.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
+            newb_RightTarget = f_rightDrive.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
+            newb_LeftTarget = f_leftDrive.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
+            b_leftDrive.setTargetPosition(newf_LeftTarget);
+            b_rightDrive.setTargetPosition(newf_RightTarget);
+            f_leftDrive.setTargetPosition(newb_LeftTarget);
+            f_rightDrive.setTargetPosition(newb_RightTarget);
 
             // Turn On RUN_TO_POSITION
             b_leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             b_rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            f_leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            f_rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
             // reset the timeout time and start motion.
             runtime.reset();
             b_leftDrive.setPower(Math.abs(speedD));
             b_rightDrive.setPower(Math.abs(speedD));
-            f_rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            f_leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            f_leftDrive.setPower(Math.abs(speedD));
+            f_rightDrive.setPower(Math.abs(speedD));
+
 
 
             // keep looping while we are still active, and there is time left, and all motors are running.
@@ -168,12 +176,14 @@ public class EncoderTest extends LinearOpMode {
             // onto the next step, use (isBusy() || isBusy()) in the loop test.
             while (opModeIsActive() &&
                     (runtime.seconds() < timeoutS) &&
-                    (b_leftDrive.isBusy() && b_rightDrive.isBusy())) {
+                    (b_leftDrive.isBusy() && b_rightDrive.isBusy() && f_leftDrive.isBusy() && f_leftDrive.isBusy())) {
                 // Display data for the driver.
-                telemetry.addData("Path1", "Running to %7d :%7d", new_LeftTarget, new_RightTarget);
+                telemetry.addData("Path1", "Running to %7d :%7d", newf_LeftTarget, newf_RightTarget);
                 telemetry.addData("Path2", "Running at %7d :%7d",
                         b_leftDrive.getCurrentPosition(),
-                        b_rightDrive.getCurrentPosition());
+                        b_rightDrive.getCurrentPosition(),
+                        f_leftDrive.getCurrentPosition(),
+                        f_rightDrive.getCurrentPosition());
                 telemetry.update();
             }
 
