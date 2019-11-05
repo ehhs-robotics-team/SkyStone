@@ -33,7 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.TeleOP;
 
 
-@TeleOp(name="TeleOPmode Test", group="Linear Opmode")
+@TeleOp(name="TeleOP Drive Test", group="Linear Opmode")
 
 public class TeleOPTest extends TeleOP {
 
