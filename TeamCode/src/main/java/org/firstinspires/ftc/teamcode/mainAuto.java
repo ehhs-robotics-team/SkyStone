@@ -46,7 +46,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 public class mainAuto extends AutoOP {
 
 
-    public robotLocation location = new robotLocation();
+    public robotLocation location;
     @Override
     public void main(){
 
@@ -55,10 +55,7 @@ public class mainAuto extends AutoOP {
 
         while (opModeIsActive()) {
             //series of commands to run the auto program
-            location.checkPosition(5);
-            telemetry.addData("Pos (in)", "{X, Y} = %.1f, %.1f",
-                    location.xPos, location.yPos);
-            telemetry.update();
+            navigateToHeading(0);
         }
 
     }

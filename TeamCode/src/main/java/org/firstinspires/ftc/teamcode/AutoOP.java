@@ -97,7 +97,7 @@ public abstract class AutoOP extends LinearOpMode {
     // NOTE: If you are running on a CONTROL HUB, with only one USB WebCam, you must select CAMERA_CHOICE = BACK; and PHONE_IS_PORTRAIT = false;
     //
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
-    private static final boolean PHONE_IS_PORTRAIT = false;
+    private static final boolean PHONE_IS_PORTRAIT = true;
 
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
@@ -155,10 +155,10 @@ public abstract class AutoOP extends LinearOpMode {
     public boolean completedTurn = false;
 
     //setup SIMPLE X, Y, and Z values and heading
-    double xPos = 0;
-    double yPos = 0;
-    double zPos = 0;
-    double currentHeading = 0;
+    public double xPos = 0;
+    public double yPos = 0;
+    public double zPos = 0;
+    public double currentHeading = 0;
 
 
     //Declare the public translation variable
@@ -216,7 +216,7 @@ public abstract class AutoOP extends LinearOpMode {
     public abstract void main();
 
 
-    public void navigateVuforia(){
+    public void navigateToHeading(double targetHeading){
         while (!isStopRequested()) {
 
 
@@ -254,6 +254,10 @@ public abstract class AutoOP extends LinearOpMode {
                 yPos = translation.get(1) / mmPerInch;
                 zPos = translation.get(2) / mmPerInch;
                 currentHeading = rotation.thirdAngle;
+
+                turnToHeading(targetHeading);
+
+
 
 
 
@@ -523,7 +527,7 @@ public abstract class AutoOP extends LinearOpMode {
 
         // Rotate the phone vertical about the X axis if it's in portrait mode
         if (PHONE_IS_PORTRAIT) {
-            phoneXRotate = 90;
+            phoneXRotate = -90;
 
         }
 

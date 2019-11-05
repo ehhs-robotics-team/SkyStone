@@ -42,16 +42,8 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 
 public class robotLocation extends AutoOP {
-    public double xPos = 0;
-    public double yPos = 0;
-    public double zPos = 0;
-    public double currentHeading = 0;
     public ElapsedTime vuforiaTime = new ElapsedTime();
-    public robotLocation(){
-        this.xPos = 0;
-        this.yPos = 0;
-        this.zPos = 0;
-        this.currentHeading = 0;
+    public robotLocation(double x, double y){
 
     }
 
@@ -99,8 +91,12 @@ public class robotLocation extends AutoOP {
                 currentHeading = rotation.thirdAngle;
 
 
-
             }
+            else{
+                telemetry.addData("Target", "N0t Visible!");
+            }
+            telemetry.update();
+
 
         }
 
