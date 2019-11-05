@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
@@ -54,6 +55,8 @@ import java.util.List;
 @TeleOp(name = "Concept: TensorFlow Object Detection", group = "Concept")
 @Disabled
 public class ConceptTensorFlowObjectDetection extends LinearOpMode {
+
+    private ElapsedTime runtime = new ElapsedTime();
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
@@ -167,5 +170,58 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
         tfodParameters.minimumConfidence = 0.8;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
+    }
+
+    /** returns angle off center of primary stone in frame;
+     *
+     * @param timeoutS
+     * @return
+     */
+    public double angleOfStone(int timeoutS) {
+
+        double returnValue = 360.0;
+        runtime.reset();
+
+        while (opModeIsActive() && runtime.seconds() < timeoutS && returnValue == 360) {
+            telemetry.addData("TFOD", "Running scan");
+            telemetry.update();
+            if (tfod != null) {
+                // getUpdatedRecognitions() will return null if no new information is available since
+                // the last time that call was made.
+                List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+                //updatedRecognitions.clear();
+                //updatedRecognitions = tfod.getUpdatedRecognitions();
+                if (updatedRecognitions != null) {
+                    telemetry.addData("# Object Detected", updatedRecognitions.size());
+
+                    // // If you need to iterate through recognitions
+                    //for (Recognition recognition : updatedRecognitions) {
+
+                    if (updatedRecognitions.size() >= 1) {
+
+                        // Get only the first recognition
+                        Recognition recognition = updatedRecognitions.get(0);
+                        //Or get the last recognition
+                        // Recognition recognition = updatedRecognitions.get(updatedRecognitions.size()-1);
+
+                        String label = recognition.getLabel();
+                        telemetry.addData("TFOD", "ID'd "+label);
+                        telemetry.update();
+
+                        float stoneWidth = recognition.getRight()-recognition.getLeft();
+                        float stoneCenter = recognition.getLeft()+stoneWidth/2;
+                        float screenCenter = 50; // Set to the width of the screen/2
+
+                        returnValue = stoneCenter - screenCenter;
+
+
+
+                        updatedRecognitions.clear();
+                    }
+                    telemetry.update();
+                }
+            }
+        }
+        return returnValue;
     }
 }
