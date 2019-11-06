@@ -90,10 +90,10 @@ public class TeleOPElbowArmAid extends TeleOP {
             telemetry.addData("Elbow Posisiton: ", armShoulder.getCurrentPosition());
 
             // Three things determine the angle of the second arm segment.
-            // 1. position of the encoder and the
+            // 1. position of the encoder
             // 2. known starting position of the arm
-            // 3. The angle of the origin (angle of the 1st arm segment
-            currentElbowAngle = armShoulder.getCurrentPosition()/TICKS_PER_DEGREE + START_SHOULDER_ANGLE+ currentShoulderAngle;
+            // 3. The angle of the origin (angle of the 1st arm segment)
+            currentElbowAngle = armShoulder.getCurrentPosition()/TICKS_PER_DEGREE + START_ELBOW_ANGLE+ currentShoulderAngle;
             telemetry.addData("Elbow Angle: ", currentElbowAngle);
 
             // Uses cosine to determine aid using same logic as first segment
