@@ -29,14 +29,13 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 
-@TeleOp(name="Shoulder Aid", group="Linear Opmode")
+@TeleOp(name="Elbow Aid", group="Linear Opmode")
 //@Disabled
-public class TeleOPArmAid extends TeleOP {
+public class TeleOPElbowArmAid extends TeleOP {
 
     @Override
     public void main() {
@@ -47,44 +46,66 @@ public class TeleOPArmAid extends TeleOP {
         armShoulder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armShoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        double startShoulderAngle = -12; // SEt initial angle to the angle the arm is at resting on the robot (degrees) ;
-        double currentShoulderAngle;
+        armElbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armElbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        // SEt initial angle to the angle the 1st arm segment is at when resting on the robot (degrees) ;
+        final double START_SHOULDER_ANGLE = -12;
+        double currentShoulderAngle = START_SHOULDER_ANGLE;
+
+        // SEt initial angle to the angle the 2nd arm segment is at when resting on the robot (degrees) ;
+        double START_ELBOW_ANGLE = 135;
+        double currentElbowAngle = START_ELBOW_ANGLE;
 
 
         final double TICKS_PER_ROTATION = 1440;
         final double TICKS_PER_DEGREE = TICKS_PER_ROTATION/360;
 
         // Aid at the extremities, to keep the arm still at full horizontal extension.
-        final double MAX_AID = 0.5;
+        final double MAX_SHOULDER_AID = 0.5;
+        final double MAX_ELBOW_AID = 0.25;
 
 
 
         while(opModeIsActive()){
 
-            /*
-            // Set shoulder power to the right trigger, negative or positive depending on the bumper
-            if (gamepad1.right_bumper) {
-                armShoulder.setPower(gamepad1.right_trigger);
-            } else {
-                armShoulder.setPower(-gamepad1.right_trigger);
-            }
-
-             */
-            telemetry.addData("Posisiton", armShoulder.getCurrentPosition());
+            // Shoulder joint controls
+            telemetry.addData("Shoulder Posisiton: ", armShoulder.getCurrentPosition());
 
             // Use the position of the encoder and the known starting position of the arm to determine the angle of the 1st arm segment.
-            currentShoulderAngle = armShoulder.getCurrentPosition()/TICKS_PER_DEGREE + startShoulderAngle;
+            currentShoulderAngle = armShoulder.getCurrentPosition()/TICKS_PER_DEGREE + START_SHOULDER_ANGLE;
+            telemetry.addData("Shoulder Angle: ", currentShoulderAngle );
 
-            // Cosine to determine the appropriate aid to add to the arm to hold it stationary:
-            /*
-                      _- 0 - _
+            // Uses cosine to determine the appropriate aid to add to the arm to hold it stationary:
+            /*        _- 0 - _
                     /         \
                  -max         max
                     \         /
-                       - 0 -
-             */
-            double aid = MAX_AID * Math.cos(Math.toRadians(currentShoulderAngle));
-            telemetry.addData("Shoulder Aid", aid);
+                       - 0 -             */
+            double shoulderAid = MAX_SHOULDER_AID * Math.cos(Math.toRadians(currentShoulderAngle));
+            telemetry.addData("Shoulder Aid: ", shoulderAid);
+
+
+            //Elbow joint controls
+            telemetry.addData("Elbow Posisiton: ", armShoulder.getCurrentPosition());
+
+            // Three things determine the angle of the second arm segment.
+            // 1. position of the encoder and the
+            // 2. known starting position of the arm
+            // 3. The angle of the origin (angle of the 1st arm segment
+            currentElbowAngle = armShoulder.getCurrentPosition()/TICKS_PER_DEGREE + START_SHOULDER_ANGLE+ currentShoulderAngle;
+            telemetry.addData("Elbow Angle: ", currentElbowAngle);
+
+            // Uses cosine to determine aid using same logic as first segment
+            double elbowAid = MAX_ELBOW_AID * Math.cos(Math.toRadians(currentElbowAngle));
+            telemetry.addData("Elbow Aid: ", elbowAid);
+
+
+
+            telemetry.update();
+
+
+
         }
     }
 }
