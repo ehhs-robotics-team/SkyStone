@@ -59,6 +59,7 @@ public class TeleOPElbowArmAid extends TeleOP {
 
 
         final double TICKS_PER_ROTATION = 1440;
+        final double GEAR_RATIO = 1/3;
         final double TICKS_PER_DEGREE = TICKS_PER_ROTATION/360;
 
         // Aid at the extremities, to keep the arm still at full horizontal extension.
@@ -87,13 +88,13 @@ public class TeleOPElbowArmAid extends TeleOP {
 
 
             //Elbow joint controls
-            telemetry.addData("Elbow Posisiton: ", armShoulder.getCurrentPosition());
+            telemetry.addData("Elbow Posisiton: ", armElbow.getCurrentPosition());
 
             // Three things determine the angle of the second arm segment.
             // 1. position of the encoder
             // 2. known starting position of the arm
             // 3. The angle of the origin (angle of the 1st arm segment)
-            currentElbowAngle = armShoulder.getCurrentPosition()/TICKS_PER_DEGREE + START_ELBOW_ANGLE+ currentShoulderAngle;
+            currentElbowAngle = armElbow.getCurrentPosition()/TICKS_PER_DEGREE + START_ELBOW_ANGLE+ currentShoulderAngle;
             telemetry.addData("Elbow Angle: ", currentElbowAngle);
 
             // Uses cosine to determine aid using same logic as first segment
