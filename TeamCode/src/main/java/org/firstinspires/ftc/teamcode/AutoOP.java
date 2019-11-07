@@ -319,10 +319,10 @@ public abstract class AutoOP extends LinearOpMode {
             completedTurn = true;
         } else {
             if (angle > currentHeading) {
-                right();
+                left();
             }
             if (currentHeading > angle) {
-                left();
+                right();
             }
         }
 

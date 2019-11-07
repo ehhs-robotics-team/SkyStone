@@ -55,7 +55,7 @@ public class mainAuto extends AutoOP {
 
         while (opModeIsActive()) {
             //series of commands to run the auto program
-            navigateToHeading(0);
+            navigateToHeading(180);
         }
 
     }
