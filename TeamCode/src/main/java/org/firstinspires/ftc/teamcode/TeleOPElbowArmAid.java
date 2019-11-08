@@ -59,7 +59,9 @@ public class TeleOPElbowArmAid extends TeleOP {
 
 
         final double TICKS_PER_ROTATION = 1440;
-        final double GEAR_RATIO = 1/3;
+        final double SHOULDER_GEAR_RATIO = 1.0/3.0; // Motor:Shoulder Motor turns 3 times per one arm rotation
+        final double ELBOW_GEAR_RATIO = 3.0/8.0; // Motor:Elbow ratio
+
         final double TICKS_PER_DEGREE = TICKS_PER_ROTATION/360;
 
         // Aid at the extremities, to keep the arm still at full horizontal extension.
@@ -74,7 +76,8 @@ public class TeleOPElbowArmAid extends TeleOP {
             telemetry.addData("Shoulder Posisiton: ", armShoulder.getCurrentPosition());
 
             // Use the position of the encoder and the known starting position of the arm to determine the angle of the 1st arm segment.
-            currentShoulderAngle = armShoulder.getCurrentPosition()/TICKS_PER_DEGREE + START_SHOULDER_ANGLE;
+            currentShoulderAngle = (armShoulder.getCurrentPosition()/TICKS_PER_DEGREE)*SHOULDER_GEAR_RATIO;
+            currentShoulderAngle = currentShoulderAngle + START_SHOULDER_ANGLE;
             telemetry.addData("Shoulder Angle: ", currentShoulderAngle );
 
             // Uses cosine to determine the appropriate aid to add to the arm to hold it stationary:
@@ -94,7 +97,9 @@ public class TeleOPElbowArmAid extends TeleOP {
             // 1. position of the encoder
             // 2. known starting position of the arm
             // 3. The angle of the origin (angle of the 1st arm segment)
-            currentElbowAngle = armElbow.getCurrentPosition()/TICKS_PER_DEGREE + START_ELBOW_ANGLE+ currentShoulderAngle;
+            currentElbowAngle = (armElbow.getCurrentPosition()/TICKS_PER_DEGREE)*ELBOW_GEAR_RATIO;
+            currentElbowAngle = currentElbowAngle + START_ELBOW_ANGLE+ currentShoulderAngle;
+
             telemetry.addData("Elbow Angle: ", currentElbowAngle);
 
             // Uses cosine to determine aid using same logic as first segment

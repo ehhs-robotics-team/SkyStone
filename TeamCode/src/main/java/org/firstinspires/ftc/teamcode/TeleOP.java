@@ -120,6 +120,9 @@ public abstract class TeleOP extends LinearOpMode {
         f_rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         b_rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
+
+        armElbow.setDirection(DcMotorSimple.Direction.REVERSE);
+
         //reverse one of the claw servos
         rightClaw.setDirection(Servo.Direction.REVERSE);
 
