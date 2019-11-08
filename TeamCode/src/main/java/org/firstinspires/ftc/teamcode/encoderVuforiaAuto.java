@@ -31,19 +31,10 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
-import org.firstinspires.ftc.teamcode.robotLocation;
-import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
-
 
 @Autonomous(name="mainAuto", group="Linear Opmode")
 
-public class mainAuto extends AutoOP {
+public class encoderVuforiaAuto extends AutoOP{
 
 
     public robotLocation location;
@@ -54,8 +45,7 @@ public class mainAuto extends AutoOP {
         waitForStart();
 
         while (opModeIsActive()) {
-            //series of commands to run the auto program
-            navigateToHeading(180, 10);
+            navigateToHeading(0, 10);
         }
 
     }

@@ -87,6 +87,16 @@ public abstract class AutoOP extends LinearOpMode {
     double clawUpPosition = 1.0;
     double clawDownPosition = 0.55;
 
+    //Declare encoder variables
+    static final double     COUNTS_PER_MOTOR_TETRIX   = 1440;    // Tetrix Matrix 12V motor with 52.8:1 gearbox
+    static final double     DRIVE_GEAR_REDUCTION    = 2.0;     // This is < 2.0 if geared UP
+    static final double     WHEEL_DIAMETER_INCHES   = 4.0;     // For figuring circumference
+    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_TETRIX * DRIVE_GEAR_REDUCTION) /
+            (WHEEL_DIAMETER_INCHES * 3.1415);
+    static final double     DRIVE_SPEED             = 0.6;
+    static final double     TURN_SPEED              = 0.5;
+    public double inchesPerDegrees = 0.06166;
+
 
 
 
@@ -216,7 +226,7 @@ public abstract class AutoOP extends LinearOpMode {
     public abstract void main();
 
 
-    public void navigateToHeading(double targetHeading){
+    public void navigateToHeading(double targetHeading, double timeout){
         while (!isStopRequested()) {
 
 
@@ -255,7 +265,7 @@ public abstract class AutoOP extends LinearOpMode {
                 zPos = translation.get(2) / mmPerInch;
                 currentHeading = rotation.thirdAngle;
 
-                turnToHeading(targetHeading);
+                turnToHeading(targetHeading, timeout);
 
 
 
@@ -300,7 +310,7 @@ public abstract class AutoOP extends LinearOpMode {
     //Functions for simple movement of the robot
 
     //calculates the angle we need to turn the robot to a heading
-    public double calcAngle(double targetX, double targetY) {
+    public double angleFromPosition(double targetX, double targetY) {
         double deltaY = targetY - yPos;
         double deltaX = targetX - xPos;
         double angle360 =  (Math.atan(deltaY / deltaX));
@@ -311,18 +321,20 @@ public abstract class AutoOP extends LinearOpMode {
         }
     }
 
+
+
     //turns the robot to a heading given a heading (must be a value between -180 and 180).
     // Returns true if the robot has completed the turn, and returns false if the robot is still turning
-    public void turnToHeading(double angle) {
+    public void turnToHeading(double angle, double timeout) {
         if (Math.abs(currentHeading - angle) < 10) {
             stopRobot();
             completedTurn = true;
         } else {
             if (angle > currentHeading) {
-                left();
+                encoderTurn(currentHeading - angle, timeout);
             }
             if (currentHeading > angle) {
-                right();
+                encoderTurn(currentHeading - angle, timeout);
             }
         }
 
@@ -559,6 +571,96 @@ public abstract class AutoOP extends LinearOpMode {
         // Tap the preview window to receive a fresh image.
 
         targetsSkyStone.activate();
+    }
+
+    /*
+     *  Method to perform a relative move, based on encoder counts.
+     *  Encoders are not reset as the move is based on the current position.
+     *  Move will stop if any of three conditions occur:
+     *  1) Move gets to the desired position
+     *  2) Move runs out of time
+     *  3) Driver stops the opmode running.
+     */
+    public void encoderDrive(double speedD, double leftInches, double rightInches, double timeoutS) {
+
+        int newf_RightTarget;
+        int newf_LeftTarget;
+        int newb_RightTarget;
+        int newb_LeftTarget;
+
+
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+            //divide the drive inches by two for more accurate movement
+            if (speedD == DRIVE_SPEED){
+                leftInches /= 2;
+                rightInches /= 2;
+            }
+
+            // Determine new target position, and pass to motor controller
+            newf_RightTarget = b_rightDrive.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
+            newf_LeftTarget = b_leftDrive.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
+            newb_RightTarget = f_rightDrive.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
+            newb_LeftTarget = f_leftDrive.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
+            b_leftDrive.setTargetPosition(newf_LeftTarget);
+            b_rightDrive.setTargetPosition(newf_RightTarget);
+            f_leftDrive.setTargetPosition(newb_LeftTarget);
+            f_rightDrive.setTargetPosition(newb_RightTarget);
+
+            // Turn On RUN_TO_POSITION
+            b_leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            b_rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            f_leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            f_rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+            b_leftDrive.setPower(Math.abs(speedD));
+            b_rightDrive.setPower(Math.abs(speedD));
+            f_leftDrive.setPower(Math.abs(speedD));
+            f_rightDrive.setPower(Math.abs(speedD));
+
+
+
+            // keep looping while we are still active, and there is time left, and all motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when ANY motor hits
+            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // always end the motion as soon as possible.
+            // However, if you require that ALL motors have finished their moves before the robot continues
+            // onto the next step, use (isBusy() || isBusy()) in the loop test.
+            while (opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) &&
+                    (b_leftDrive.isBusy() && b_rightDrive.isBusy() && f_leftDrive.isBusy() && f_leftDrive.isBusy())) {
+                // Display data for the driver.
+                telemetry.addData("Path1", "Running to %7d :%7d", newf_LeftTarget, newf_RightTarget);
+                telemetry.addData("Path2", "Running at %7d :%7d",
+                        b_leftDrive.getCurrentPosition(),
+                        b_rightDrive.getCurrentPosition(),
+                        f_leftDrive.getCurrentPosition(),
+                        f_rightDrive.getCurrentPosition());
+                telemetry.update();
+            }
+
+            // Stop all motion;
+            f_leftDrive.setPower(0);
+            f_rightDrive.setPower(0);
+            b_leftDrive.setPower(0);
+            b_rightDrive.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            f_leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            f_rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            b_leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            b_rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+        telemetry.addData("Drive status: ", "complete");
+        telemetry.update();
+    }
+
+    //a method to turn a certain amount of degrees with encoders
+    public void encoderTurn(double degrees, double timeout) {
+        encoderDrive(TURN_SPEED, (-degrees * inchesPerDegrees), (degrees * inchesPerDegrees), timeout);
     }
 
 
