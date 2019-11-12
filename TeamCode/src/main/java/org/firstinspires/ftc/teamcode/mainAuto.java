@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
@@ -39,9 +40,9 @@ import org.firstinspires.ftc.teamcode.robotLocation;
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
-
-
+@Disabled
 @Autonomous(name="mainAuto", group="Linear Opmode")
+
 
 public class mainAuto extends AutoOP {
 
@@ -55,7 +56,7 @@ public class mainAuto extends AutoOP {
 
         while (opModeIsActive()) {
             //series of commands to run the auto program
-            navigateToHeading(180, 10);
+            navigateToHeading(180, 10, 3);
         }
 
     }

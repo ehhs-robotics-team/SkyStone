@@ -45,8 +45,17 @@ public class encoderVuforiaAuto extends AutoOP{
         waitForStart();
 
         while (opModeIsActive()) {
-            navigateToHeading(0, 10);
+            //navigateToHeading(0, 10, 3);
+            //navigateToHeading(90, 10, 3);
+            //navigateToHeading(-90, 10, 3);
+            encoderTurn(90, 10);
+            encoderLinear(24, 10);
+            encoderLinear(24, 10);
+            // Disable Tracking when we are done;
+            targetsSkyStone.deactivate();
+            break;
         }
+
 
     }
 

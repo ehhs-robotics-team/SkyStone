@@ -149,7 +149,7 @@ public abstract class AutoOP extends LinearOpMode {
 
 
     public List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
-    private VuforiaTrackables targetsSkyStone = null;
+    public VuforiaTrackables targetsSkyStone = null;
 
 
     public boolean targetVisible = false;
@@ -226,9 +226,10 @@ public abstract class AutoOP extends LinearOpMode {
     public abstract void main();
 
 
-    public void navigateToHeading(double targetHeading, double timeout){
-        while (!isStopRequested()) {
-
+    ElapsedTime navTime = new ElapsedTime();
+    public void navigateToHeading(double targetHeading, double encoderTimeout, double vuforiaTimeout){
+        navTime.reset();
+        while (!isStopRequested() && navTime.seconds() < vuforiaTimeout) {
 
             // check all the trackable targets to see which one (if any) is visible.
             targetVisible = false;
@@ -248,6 +249,7 @@ public abstract class AutoOP extends LinearOpMode {
                 }
             }
 
+
             // Provide feedback as to where the robot is located (if we know).
             if (targetVisible) {
                 // express position (translation) of robot in inches.
@@ -265,9 +267,9 @@ public abstract class AutoOP extends LinearOpMode {
                 zPos = translation.get(2) / mmPerInch;
                 currentHeading = rotation.thirdAngle;
 
-                turnToHeading(targetHeading, timeout);
-
-
+                turnToHeading(targetHeading, encoderTimeout);
+                stopRobot();
+                break;
 
 
 
@@ -293,10 +295,9 @@ public abstract class AutoOP extends LinearOpMode {
             }
             */
 
+
         }
 
-        // Disable Tracking when we are done;
-        targetsSkyStone.deactivate();
     }
 
 
@@ -346,6 +347,12 @@ public abstract class AutoOP extends LinearOpMode {
         f_rightDrive.setPower(drivePower);
         b_rightDrive.setPower(drivePower);
     }
+
+    public void encoderLinear(double inches, double timeout){
+        encoderDrive(DRIVE_SPEED, inches, inches, timeout);
+    }
+
+
 
     public void backward(){
         f_leftDrive.setPower(-drivePower);
@@ -408,7 +415,7 @@ public abstract class AutoOP extends LinearOpMode {
 
         // Load the data sets for the trackable objects. These particular data
         // sets are stored in the 'assets' part of our application.
-        VuforiaTrackables targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
+        targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
 
         VuforiaTrackable stoneTarget = targetsSkyStone.get(0);
         stoneTarget.setName("Stone Target");
