@@ -53,8 +53,8 @@ public class TeleOPElbowArmAid extends TeleOP {
         final double START_SHOULDER_ANGLE = -12;
         double currentShoulderAngle = START_SHOULDER_ANGLE;
 
-        // SEt initial angle to the angle the 2nd arm segment is at when resting on the robot (degrees) ;
-        double START_ELBOW_ANGLE = 135;
+        // SEt initial angle to the angle the 2nd arm segment is at when raesting on the robot (degrees) ;
+        double START_ELBOW_ANGLE = 160;
         double currentElbowAngle = START_ELBOW_ANGLE;
 
 
@@ -98,7 +98,7 @@ public class TeleOPElbowArmAid extends TeleOP {
             // 2. known starting position of the arm
             // 3. The angle of the origin (angle of the 1st arm segment)
             currentElbowAngle = (armElbow.getCurrentPosition()/TICKS_PER_DEGREE)*ELBOW_GEAR_RATIO;
-            currentElbowAngle = currentElbowAngle + START_ELBOW_ANGLE+ currentShoulderAngle;
+            currentElbowAngle = -currentElbowAngle + -START_ELBOW_ANGLE+ currentShoulderAngle;
 
             telemetry.addData("Elbow Angle: ", currentElbowAngle);
 
