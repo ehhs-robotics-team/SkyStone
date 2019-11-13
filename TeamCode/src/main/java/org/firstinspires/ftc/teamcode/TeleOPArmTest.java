@@ -64,18 +64,25 @@ public class TeleOPArmTest extends TeleOP {
 
 
             // Set shoulder power to the right trigger, negative or positive depending on the bumper
+            calculateShoulderAid();
             if (gamepad1.right_bumper) {
                 armShoulder.setPower(gamepad1.right_trigger);
+                telemetry.addData("shoulder power", gamepad1.right_trigger);
             } else {
                 armShoulder.setPower(-gamepad1.right_trigger);
+                telemetry.addData("shoulder power", -gamepad1.right_trigger);
             }
 
 
             // Set elbow power to the left trigger, negative or positive depending on the bumper
+            calculateElbowAid();
             if (gamepad1.left_bumper) {
                 armElbow.setPower(gamepad1.left_trigger);
+
+                telemetry.addData("elbow power", gamepad1.left_trigger);
             } else {
                 armElbow.setPower(-gamepad1.left_trigger);
+                telemetry.addData("elbow power", -gamepad1.left_trigger);
             }
 
             double gripperPower = 0.5;
@@ -86,6 +93,8 @@ public class TeleOPArmTest extends TeleOP {
             } else {
                 gripperServo.setPower(0);
             }
+
+            telemetry.update();
 
 
 

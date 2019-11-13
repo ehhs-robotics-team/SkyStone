@@ -54,15 +54,18 @@ public class TeleOPElbowArmAid extends TeleOP {
         double currentShoulderAngle = START_SHOULDER_ANGLE;
 
         // SEt initial angle to the angle the 2nd arm segment is at when raesting on the robot (degrees) ;
-        double START_ELBOW_ANGLE = 160;
+        double START_ELBOW_ANGLE = 160-START_SHOULDER_ANGLE;
         double currentElbowAngle = START_ELBOW_ANGLE;
 
 
-        final double TICKS_PER_ROTATION = 1440;
-        final double SHOULDER_GEAR_RATIO = 1.0/3.0; // Motor:Shoulder Motor turns 3 times per one arm rotation
-        final double ELBOW_GEAR_RATIO = 3.0/8.0; // Motor:Elbow ratio
+        final double SHOULDER_TICKS_PER_ROTATION = 1440;
+        final double ELBOW_TICKS_PER_ROTATION = 1120; // Rev motor as per http://www.revrobotics.com/content/docs/Encoder-Guide.pdf
 
-        final double TICKS_PER_DEGREE = TICKS_PER_ROTATION/360;
+        final double SHOULDER_GEAR_RATIO = 1.0/3.0; // Motor:Shoulder Motor turns 3 times per one arm rotation
+        final double ELBOW_GEAR_RATIO = 3.0/8.0; // Motor:Elbow gear ratio
+
+        final double SHOULDER_TICKS_PER_DEGREE = SHOULDER_TICKS_PER_ROTATION/360;
+        final double ELBOW_TICKS_PER_DEGREE = ELBOW_TICKS_PER_ROTATION / 360;
 
         // Aid at the extremities, to keep the arm still at full horizontal extension.
         final double MAX_SHOULDER_AID = 0.5;
@@ -75,8 +78,12 @@ public class TeleOPElbowArmAid extends TeleOP {
             // Shoulder joint controls
             telemetry.addData("Shoulder Posisiton: ", armShoulder.getCurrentPosition());
 
-            // Use the position of the encoder and the known starting position of the arm to determine the angle of the 1st arm segment.
-            currentShoulderAngle = (armShoulder.getCurrentPosition()/TICKS_PER_DEGREE)*SHOULDER_GEAR_RATIO;
+            // Use the position of the encoder and the known starting position of the arm to
+            // determine the angle of the 1st arm segment.
+            currentShoulderAngle = (armShoulder.getCurrentPosition()/SHOULDER_TICKS_PER_DEGREE)*SHOULDER_GEAR_RATIO;
+
+            // Gets the absolute positioning of the 1st arm segment, assuming it always starts from
+            // the "down" position beside the phone mount at START_SHOULDER_ANGLE.
             currentShoulderAngle = currentShoulderAngle + START_SHOULDER_ANGLE;
             telemetry.addData("Shoulder Angle: ", currentShoulderAngle );
 
@@ -97,9 +104,9 @@ public class TeleOPElbowArmAid extends TeleOP {
             // 1. position of the encoder
             // 2. known starting position of the arm
             // 3. The angle of the origin (angle of the 1st arm segment)
-            currentElbowAngle = (armElbow.getCurrentPosition()/TICKS_PER_DEGREE)*ELBOW_GEAR_RATIO;
-            currentElbowAngle = -currentElbowAngle + -START_ELBOW_ANGLE+ currentShoulderAngle;
-
+            currentElbowAngle = (armElbow.getCurrentPosition()/ELBOW_TICKS_PER_DEGREE)*ELBOW_GEAR_RATIO;
+            double adjustedElbowAngle = -currentElbowAngle + START_ELBOW_ANGLE+currentShoulderAngle;
+            telemetry.addData("adjusted Elbow Angle: ", adjustedElbowAngle);
             telemetry.addData("Elbow Angle: ", currentElbowAngle);
 
             // Uses cosine to determine aid using same logic as first segment

@@ -34,7 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 
-@TeleOp(name="Shoulder Aid", group="Linear Opmode")
+@TeleOp(name="Arm Aid Test", group="Linear Opmode")
 //@Disabled
 public class TeleOPArmAid extends TeleOP {
 
@@ -43,48 +43,11 @@ public class TeleOPArmAid extends TeleOP {
         //Code to send controls to robot
         waitForStart();
 
-        // Reset encoder counts;
-        armShoulder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        armShoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        double startShoulderAngle = -12; // SEt initial angle to the angle the arm is at resting on the robot (degrees) ;
-        double currentShoulderAngle;
-
-
-        final double TICKS_PER_ROTATION = 1440;
-        final double TICKS_PER_DEGREE = TICKS_PER_ROTATION/360;
-
-        // Aid at the extremities, to keep the arm still at full horizontal extension.
-        final double MAX_AID = 0.5;
-
-
-
         while(opModeIsActive()){
-
-            /*
-            // Set shoulder power to the right trigger, negative or positive depending on the bumper
-            if (gamepad1.right_bumper) {
-                armShoulder.setPower(gamepad1.right_trigger);
-            } else {
-                armShoulder.setPower(-gamepad1.right_trigger);
-            }
-
-             */
-            telemetry.addData("Posisiton", armShoulder.getCurrentPosition());
-
-            // Use the position of the encoder and the known starting position of the arm to determine the angle of the 1st arm segment.
-            currentShoulderAngle = armShoulder.getCurrentPosition()/TICKS_PER_DEGREE + startShoulderAngle;
-
-            // Cosine to determine the appropriate aid to add to the arm to hold it stationary:
-            /*
-                      _- 0 - _
-                    /         \
-                 -max         max
-                    \         /
-                       - 0 -
-             */
-            double aid = MAX_AID * Math.cos(Math.toRadians(currentShoulderAngle));
-            telemetry.addData("Shoulder Aid", aid);
+            calculateShoulderAid();
+            calculateElbowAid();
         }
+
+
     }
 }
