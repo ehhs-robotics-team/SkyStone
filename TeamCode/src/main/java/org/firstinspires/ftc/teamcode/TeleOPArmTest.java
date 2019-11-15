@@ -32,7 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 
-@TeleOp(name="TeleOP Arm Test", group="Linear Opmode")
+@TeleOp(name="Drive", group="Linear Opmode")
 
 public class TeleOPArmTest extends TeleOP {
 
@@ -41,13 +41,13 @@ public class TeleOPArmTest extends TeleOP {
 
         waitForStart();
 
-        while(opModeIsActive()){
+        while(opModeIsActive()) {
 
             // Set wheel power to cube of stick value to give more control near the center:
-            f_leftDrive.setPower(Math.pow(gamepad1.left_stick_y, 3));
-            b_leftDrive.setPower(Math.pow(gamepad1.left_stick_y, 3));
-            f_rightDrive.setPower(Math.pow(gamepad1.right_stick_y, 3));
-            b_rightDrive.setPower(Math.pow(gamepad1.right_stick_y, 3));
+            f_leftDrive.setPower(-Math.pow(gamepad1.left_stick_y, 3));
+            b_leftDrive.setPower(-Math.pow(gamepad1.left_stick_y, 3));
+            f_rightDrive.setPower(-Math.pow(gamepad1.right_stick_y, 3));
+            b_rightDrive.setPower(-Math.pow(gamepad1.right_stick_y, 3));
 
             //SETUP the claw to work with the controller
             if (gamepad1.y) {
@@ -57,31 +57,44 @@ public class TeleOPArmTest extends TeleOP {
                 rightClaw.setPosition(clawDownPosition);
                 leftClaw.setPosition(clawDownPosition);
             } else {
-                double restPosition = 0.75;
-                rightClaw.setPosition(restPosition);
-                leftClaw.setPosition(restPosition);
+                //double restPosition = 0.75;
+                //rightClaw.setPosition(restPosition);
+                //leftClaw.setPosition(restPosition);
             }
 
+            // Test for ideal shoulder aid power level
+            if (gamepad1.x) {
+                MAX_SHOULDER_AID += 0.000001;
+            } else if (gamepad1.b) {
+                MAX_SHOULDER_AID -= 0.000001;
+            }
+            telemetry.addData("Max Aid", MAX_SHOULDER_AID);
 
             // Set shoulder power to the right trigger, negative or positive depending on the bumper
-            calculateShoulderAid();
-            if (gamepad1.right_bumper) {
-                armShoulder.setPower(gamepad1.right_trigger);
-                telemetry.addData("shoulder power", gamepad1.right_trigger);
+            double shoulderAid = calculateShoulderAid();
+            double sPower = 0;
+            if (gamepad1.right_trigger > shoulderAid) {
+                if (gamepad1.right_bumper) {
+                    sPower = gamepad1.right_trigger/3;
+                } else {
+                    sPower = -gamepad1.right_trigger/3;
+                }
             } else {
-                armShoulder.setPower(-gamepad1.right_trigger);
-                telemetry.addData("shoulder power", -gamepad1.right_trigger);
+                sPower = shoulderAid;
             }
+
+            armShoulder.setPower(sPower);
+            telemetry.addData("shoulder power", sPower);
 
 
             // Set elbow power to the left trigger, negative or positive depending on the bumper
             calculateElbowAid();
             if (gamepad1.left_bumper) {
-                armElbow.setPower(gamepad1.left_trigger);
+                armElbow.setPower(gamepad1.left_trigger/4);
 
                 telemetry.addData("elbow power", gamepad1.left_trigger);
             } else {
-                armElbow.setPower(-gamepad1.left_trigger);
+                armElbow.setPower(-gamepad1.left_trigger/4);
                 telemetry.addData("elbow power", -gamepad1.left_trigger);
             }
 

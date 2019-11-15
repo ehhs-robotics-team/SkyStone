@@ -110,8 +110,8 @@ public abstract class TeleOP extends LinearOpMode {
     final double ELBOW_TICKS_PER_DEGREE = ELBOW_TICKS_PER_ROTATION / 360;
 
     // Aid at the extremities, to keep the arm still at full horizontal extension.
-    final double MAX_SHOULDER_AID = 0.2;
-    final double MAX_ELBOW_AID = 0.1;
+    double MAX_SHOULDER_AID = 0.00;
+    double MAX_ELBOW_AID = 0.00;
 
 
 
@@ -177,7 +177,7 @@ public abstract class TeleOP extends LinearOpMode {
 
     public double calculateShoulderAid(){
         // Shoulder joint controls
-        telemetry.addData("Shoulder Posisiton: ", armShoulder.getCurrentPosition());
+        //telemetry.addData("Shoulder Posisiton: ", armShoulder.getCurrentPosition());
 
         // Use the position of the encoder and the known starting position of the arm to
         // determine the angle of the 1st arm segment.
@@ -186,7 +186,7 @@ public abstract class TeleOP extends LinearOpMode {
         // Gets the absolute positioning of the 1st arm segment, assuming it always starts from
         // the "down" position beside the phone mount at START_SHOULDER_ANGLE.
         double adjustedShoulderAngle = currentShoulderAngle + START_SHOULDER_ANGLE;
-        telemetry.addData("Shoulder Angle: ", currentShoulderAngle );
+        telemetry.addData("Shoulder Angle: ", adjustedShoulderAngle );
 
         // Uses cosine to determine the appropriate aid to add to the arm to hold it stationary:
             /*        _- 0 - _
@@ -197,12 +197,12 @@ public abstract class TeleOP extends LinearOpMode {
         double shoulderAid = MAX_SHOULDER_AID * Math.cos(Math.toRadians(adjustedShoulderAngle));
         telemetry.addData("Shoulder Aid: ", shoulderAid);
 
-        return shoulderAid;
+        return shoulderAid*Math.abs(shoulderAid);
     }
 
     public double calculateElbowAid(){
         //Elbow joint controls
-        telemetry.addData("Elbow Posisiton: ", armElbow.getCurrentPosition());
+        //telemetry.addData("Elbow Posisiton: ", armElbow.getCurrentPosition());
 
         // Three things determine the angle of the second arm segment.
         // 1. position of the encoder
