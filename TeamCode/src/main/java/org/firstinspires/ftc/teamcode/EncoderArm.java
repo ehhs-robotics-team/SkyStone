@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 
 @TeleOp(name="Encoder Arm test", group="Linear Opmode")
@@ -39,6 +40,17 @@ public class EncoderArm extends TeleOP {
 
     @Override
     public void main() {
+        encoderTEST1();
+        /*armShoulder.setDirection(DcMotorSimple.Direction.FORWARD);
+        armShoulder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armShoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        waitForStart();
+        encoderArm(.1, 20.0, 3);
+
+         */
+
+    }
+    public void encoderTEST1(){
         //Code to send controls to robot
         waitForStart();
         armShoulder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -73,6 +85,51 @@ public class EncoderArm extends TeleOP {
             }
             //update driver station
             telemetry.update();
+        }
+    }
+    public void encoderArm(double speed,
+                             double degrees,
+                             double timeoutS) {
+        int newTarget;
+
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            newTarget = armShoulder.getCurrentPosition() + (int) (degrees * 1120.0/360.0);
+            armShoulder.setTargetPosition(newTarget);
+
+            // Turn On RUN_TO_POSITION
+            armShoulder.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+            armShoulder.setPower(Math.abs(speed));
+
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // always end the motion as soon as possible.
+            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // onto the next step, use (isBusy() || isBusy()) in the loop test.
+            while (opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) &&
+                    (armShoulder.isBusy())) {
+
+                // Display it for the driver.
+                telemetry.addData("Path1", "Running to %7d", newTarget);
+                telemetry.addData("Path2", "Running at %7d",
+                        armShoulder.getCurrentPosition());
+                telemetry.update();
+            }
+
+            // Stop all motion;
+            armShoulder.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            armShoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            //  sleep(250);   // optional pause after each move
         }
     }
 }

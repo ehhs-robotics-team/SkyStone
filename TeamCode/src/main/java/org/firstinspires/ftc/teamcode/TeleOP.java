@@ -197,7 +197,7 @@ public abstract class TeleOP extends LinearOpMode {
         double shoulderAid = MAX_SHOULDER_AID * Math.cos(Math.toRadians(adjustedShoulderAngle));
         telemetry.addData("Shoulder Aid: ", shoulderAid);
 
-        return shoulderAid*Math.abs(shoulderAid);
+        return shoulderAid;
     }
 
     public double calculateElbowAid(){

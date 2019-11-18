@@ -40,6 +40,7 @@ public class TeleOPArmTest extends TeleOP {
     public void main() {
 
         waitForStart();
+        MAX_SHOULDER_AID = 0.002;
 
         while(opModeIsActive()) {
 
@@ -64,16 +65,18 @@ public class TeleOPArmTest extends TeleOP {
 
             // Test for ideal shoulder aid power level
             if (gamepad1.x) {
-                MAX_SHOULDER_AID += 0.000001;
+                MAX_SHOULDER_AID += 0.001;
             } else if (gamepad1.b) {
-                MAX_SHOULDER_AID -= 0.000001;
+                MAX_SHOULDER_AID -= 0.001;
             }
             telemetry.addData("Max Aid", MAX_SHOULDER_AID);
 
             // Set shoulder power to the right trigger, negative or positive depending on the bumper
             double shoulderAid = calculateShoulderAid();
             double sPower = 0;
-            if (gamepad1.right_trigger > shoulderAid) {
+
+
+            if (gamepad1.right_trigger > Math.abs(shoulderAid)) {
                 if (gamepad1.right_bumper) {
                     sPower = gamepad1.right_trigger/3;
                 } else {
@@ -116,5 +119,14 @@ public class TeleOPArmTest extends TeleOP {
 
 
         }
+    }
+
+    // reset the arm function during play to account for slippage.
+    public void armReset(){
+        // SEt initial angle to the angle the 1st arm segment is at when resting on the robot (degrees) ;
+        currentShoulderAngle = START_SHOULDER_ANGLE;
+
+        // SEt initial angle to the angle the 2nd arm segment is at when raesting on the robot (degrees) ;
+        currentElbowAngle = START_ELBOW_ANGLE;
     }
 }
