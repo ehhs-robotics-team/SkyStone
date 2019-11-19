@@ -29,14 +29,16 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-@TeleOp(name="TFOD Test", group="Linear Opmode")
-@Disabled
+@Autonomous(name="Auto Encoder Arm Test", group="Linear Opmode")
+//@Disabled
 public class ArmAuto extends AutoOP {
 
     DcMotor armShoulder = null;
@@ -62,16 +64,37 @@ public class ArmAuto extends AutoOP {
 
     // Aid at the extremities, to keep the arm still at full horizontal extension.
     double MAX_SHOULDER_AID = 0.002;
-    double MAX_ELBOW_AID = 0.00;
+    double MAX_ELBOW_AID = 0.0005;
 
     @Override
     public void main(){
+        armElbow = hardwareMap.get(DcMotor.class, "arm_elbow");
+        armShoulder = hardwareMap.get(DcMotor.class, "arm_shoulder");
+
+        armShoulder.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        shoulderReset();
+
+
         waitForStart();
 
-        //encoderShoulder(0.1, 10, 1);
-        //double shoulderAid = calculateShoulderAid();
-        //armShoulder.setPower(shoulderAid);
+        encoderShoulder(0.1, 160, 3);
+        encoderElbow(0.1, -20,2);
 
+
+        sleep(3000);
+
+    }
+
+    // reset the arm function during play to account for slippage.
+    public void shoulderReset(){
+        armShoulder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armShoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        // SEt initial angle to the angle the 1st arm segment is at when resting on the robot (degrees) ;
+        currentShoulderAngle = START_SHOULDER_ANGLE;
+
+        // SEt initial angle to the angle the 2nd arm segment is at when raesting on the robot (degrees) ;
+        currentElbowAngle = START_ELBOW_ANGLE;
     }
 
 
@@ -145,7 +168,7 @@ public class ArmAuto extends AutoOP {
         if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
-            newTarget = armShoulder.getCurrentPosition() + (int) (degrees * SHOULDER_TICKS_PER_DEGREE);
+            newTarget = armShoulder.getCurrentPosition() + (int) (degrees * SHOULDER_TICKS_PER_DEGREE / SHOULDER_GEAR_RATIO);
             armShoulder.setTargetPosition(newTarget);
 
             // Turn On RUN_TO_POSITION
@@ -172,8 +195,9 @@ public class ArmAuto extends AutoOP {
                 telemetry.update();
             }
 
+
             // Stop all motion;
-            armShoulder.setPower(0);
+            armShoulder.setPower(calculateShoulderAid());
 
             // Turn off RUN_TO_POSITION
             armShoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -197,7 +221,7 @@ public class ArmAuto extends AutoOP {
         if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
-            newTarget = armElbow.getCurrentPosition() + (int) (degrees * ELBOW_TICKS_PER_DEGREE);
+            newTarget = armElbow.getCurrentPosition() + (int) (-degrees * ELBOW_TICKS_PER_DEGREE/ELBOW_GEAR_RATIO);
             armElbow.setTargetPosition(newTarget);
 
             // Turn On RUN_TO_POSITION
@@ -224,7 +248,7 @@ public class ArmAuto extends AutoOP {
             }
 
             // Stop all motion;
-            armElbow.setPower(0);
+            armElbow.setPower(calculateElbowAid());
 
             // Turn off RUN_TO_POSITION
             armElbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
