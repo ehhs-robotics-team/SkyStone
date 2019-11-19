@@ -674,7 +674,7 @@ public abstract class AutoOP extends LinearOpMode {
 
     //a method to turn a certain amount of degrees with encoders
     public void encoderTurn(double degrees, double timeout) {
-        encoderDrive(TURN_SPEED, (-degrees * inchesPerDegrees), (degrees * inchesPerDegrees), timeout);
+        encoderDrive(TURN_SPEED, (-degrees * inchesPerDegrees * 2), (degrees * inchesPerDegrees * 2), timeout);
     }
 
 

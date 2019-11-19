@@ -29,10 +29,12 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
@@ -40,7 +42,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import java.util.List;
 
 
-@TeleOp(name="Simple SkyStone", group="Linear Opmode")
+@Autonomous(name="Simple SkyStone", group="Linear Opmode")
 
 public class simpleSkyStone extends AutoOP {
 
@@ -51,6 +53,7 @@ public class simpleSkyStone extends AutoOP {
 
     //boolean to see if we can see the skystone or not
     private boolean skystoneVisible = false;
+    private boolean skystoneFound = false;
 
     /**
      * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
@@ -90,15 +93,17 @@ public class simpleSkyStone extends AutoOP {
         waitForStart();
 
         if (opModeIsActive()) {
-            initVuforia();
             while (opModeIsActive()) {
-                skystoneVisible = SkyStoneVisible(3);
-                if (!skystoneVisible){
-                    encoderLinear(8, 5, true);
-                    stopRobot();
-                }
-                else{
-                    encoderTurn(90, 5);
+
+                if (!skystoneFound) {
+                    if (!SkyStoneVisible(0.5)) {
+                        encoderLinear(8, 5, true);
+                        stopRobot();
+                    } else {
+                        encoderLinear(9.5, 5, true);
+                        encoderTurn(87.5, 5);
+                        encoderLinear(-24, 5, true);
+                    }
                 }
             }
         }
@@ -128,7 +133,12 @@ public class simpleSkyStone extends AutoOP {
                         telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
                                 recognition.getRight(), recognition.getBottom());
 
+
+                        float centerPos = recognition.getRight() - recognition.getLeft();
+
+
                         if (recognition.getLabel().equals("Skystone")) {
+                            skystoneFound = true;
                             return true;
                         }
                     }
@@ -138,9 +148,6 @@ public class simpleSkyStone extends AutoOP {
             }
 
 
-            if (tfod != null) {
-                tfod.shutdown();
-            }
         }
 
         return false;
