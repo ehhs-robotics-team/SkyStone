@@ -34,7 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp(name="Drive", group="Linear Opmode")
 
-public class TeleOPArmTest extends TeleOP {
+public class TeleOPDrive extends TeleOP {
 
     @Override
     public void main() {

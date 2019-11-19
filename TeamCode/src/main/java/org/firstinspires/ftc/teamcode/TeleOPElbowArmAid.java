@@ -29,17 +29,20 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 
-@TeleOp(name="Elbow Aid", group="Linear Opmode")
-//@Disabled
+@TeleOp(name="Elbow Aid Development", group="Linear Opmode")
+@Disabled
 public class TeleOPElbowArmAid extends TeleOP {
 
     @Override
     public void main() {
         //Code to send controls to robot
+
+
         waitForStart();
 
         // Reset encoder counts;
