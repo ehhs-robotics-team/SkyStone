@@ -71,7 +71,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 public abstract class AutoOP extends LinearOpMode {
     //DRIVE TRAIN MOTOR VARIABLES
     // Declare the motor variables
-    private ElapsedTime runtime = new ElapsedTime();
+    public ElapsedTime runtime = new ElapsedTime();
     private DcMotor f_leftDrive = null;
     private DcMotor f_rightDrive = null;
     private DcMotor b_leftDrive = null;
