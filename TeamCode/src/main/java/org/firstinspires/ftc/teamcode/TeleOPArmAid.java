@@ -34,20 +34,64 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 
-@TeleOp(name="Arm Aid Test", group="Linear Opmode")
+@TeleOp(name="Arm Aid Tuning", group="Linear Opmode")
 //@Disabled
 public class TeleOPArmAid extends TeleOP {
 
     @Override
     public void main() {
         //Code to send controls to robot
+        MAX_SHOULDER_AID = 0.002;
+        MAX_ELBOW_AID = 0.0005;
+
+        double shoulderAid;
+        double elbowAid;
+
+        double shoulderPower;
+        double elbowPower;
+
         waitForStart();
 
         while(opModeIsActive()){
-            calculateShoulderAid();
-            calculateElbowAid();
+            // Test for ideal shoulder aid power level
+            if (gamepad1.x) {
+                MAX_SHOULDER_AID += 0.001;
+            } else if (gamepad1.b) {
+                MAX_SHOULDER_AID -= 0.001;
+            }
+            telemetry.addData("Max Sh. Aid", MAX_SHOULDER_AID);
+
+
+            // Test for ideal elbow aid power level
+            if (gamepad1.y) {
+                MAX_ELBOW_AID += 0.0005;
+            } else if (gamepad1.a) {
+                MAX_ELBOW_AID -= 0.0005;
+            }
+            telemetry.addData("Max El .Aid", MAX_SHOULDER_AID);
+
+
+            shoulderAid = calculateShoulderAid();
+            elbowAid = calculateElbowAid();
+
+            // Apply shoulder controls with aid adjustment
+            if (gamepad1.right_bumper) {
+                shoulderPower = gamepad1.right_trigger/3;
+            } else {
+                shoulderPower = -gamepad1.right_trigger/3;
+            }
+            shoulderPower += shoulderAid;
+            armShoulder.setPower(shoulderPower);
+
+            // Apply elbow controls with aid adjustment
+            if (gamepad1.left_bumper) {
+                elbowPower = gamepad1.left_trigger/4;
+            } else {
+                elbowPower = -gamepad1.left_trigger/4;
+            }
+            elbowPower += elbowAid;
+            armElbow.setPower(elbowPower);
+
         }
-
-
     }
 }
