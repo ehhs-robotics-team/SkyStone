@@ -81,6 +81,11 @@ public abstract class AutoOP extends LinearOpMode {
     private Servo leftClaw = null;
     private Servo rightClaw = null;
 
+    //the gripper servo
+    CRServo gripperServo = null;
+
+
+
 
 
     //setup sensitivity variables
@@ -142,6 +147,8 @@ public abstract class AutoOP extends LinearOpMode {
     // Constants for perimeter targets
     private static final float halfField = 72 * mmPerInch;
     private static final float quadField = 36 * mmPerInch;
+
+
 
     // Class Members
     public OpenGLMatrix lastLocation = null;
@@ -236,6 +243,10 @@ public abstract class AutoOP extends LinearOpMode {
         //map the claw servos
         leftClaw = hardwareMap.get(Servo.class, "leftClaw");
         rightClaw = hardwareMap.get(Servo.class, "rightClaw");
+
+
+        //map the gripper's servo
+        gripperServo = hardwareMap.get(CRServo.class, "gripperServo");
 
         //reverse one of the claw servos
         rightClaw.setDirection(Servo.Direction.REVERSE);
@@ -888,6 +899,17 @@ public abstract class AutoOP extends LinearOpMode {
             //  sleep(250);   // optional pause after each move
         }
 
+    }
+
+    public void openGripper(long seconds){
+        gripperServo.setPower(0.5);
+        sleep(seconds*1000);
+        gripperServo.setPower(0);
+    }
+    public void closeGripper(long seconds){
+        gripperServo.setPower(-0.5);
+        sleep(seconds*1000);
+        gripperServo.setPower(0);
     }
 }
 
