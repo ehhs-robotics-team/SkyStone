@@ -41,8 +41,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 //@Disabled
 public class ArmAuto extends AutoOP {
 
-    DcMotor armShoulder = null;
-    DcMotor armElbow = null;
+    public DcMotor armShoulder = null;
+    public DcMotor armElbow = null;
 
 
     // SEt initial angle to the angle the 1st arm segment is at when resting on the robot (degrees) ;

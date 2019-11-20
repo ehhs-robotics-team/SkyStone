@@ -51,7 +51,7 @@ public class simpleSkyStone extends AutoOP {
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
 
-    //boolean to see if we can see the skystone or not
+    //boolean to see if we can see the SkyStone or not
     private boolean skystoneVisible = false;
     private boolean skystoneFound = false;
     private Recognition rec = null;
@@ -131,7 +131,7 @@ public class simpleSkyStone extends AutoOP {
 
         encoderElbow(0.1, -20,2);
         encoderShoulder(0.2, 65, 4);
-        encoderLinear(-24,4,true);
+        encoderLinear(6,4,true);
     }
 
 
