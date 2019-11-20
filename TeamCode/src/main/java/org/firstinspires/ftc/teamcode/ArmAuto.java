@@ -77,9 +77,10 @@ public class ArmAuto extends AutoOP {
 
 
         waitForStart();
+        encoderElbow(0.1, -20,5);
+        encoderShoulder(0.2, 65, 10);
 
-        encoderShoulder(0.1, 160, 3);
-        encoderElbow(0.1, -20,2);
+        //encoderShoulder(.2, 20, 5);
 
 
         sleep(3000);
@@ -169,6 +170,7 @@ public class ArmAuto extends AutoOP {
 
             // Determine new target position, and pass to motor controller
             newTarget = armShoulder.getCurrentPosition() + (int) (degrees * SHOULDER_TICKS_PER_DEGREE / SHOULDER_GEAR_RATIO);
+            newTarget *= 2;
             armShoulder.setTargetPosition(newTarget);
 
             // Turn On RUN_TO_POSITION
@@ -222,6 +224,7 @@ public class ArmAuto extends AutoOP {
 
             // Determine new target position, and pass to motor controller
             newTarget = armElbow.getCurrentPosition() + (int) (-degrees * ELBOW_TICKS_PER_DEGREE/ELBOW_GEAR_RATIO);
+            newTarget *= 2;
             armElbow.setTargetPosition(newTarget);
 
             // Turn On RUN_TO_POSITION
