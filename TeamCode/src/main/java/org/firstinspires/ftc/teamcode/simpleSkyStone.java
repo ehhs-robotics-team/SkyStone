@@ -54,6 +54,7 @@ public class simpleSkyStone extends AutoOP {
     //boolean to see if we can see the skystone or not
     private boolean skystoneVisible = false;
     private boolean skystoneFound = false;
+    private Recognition rec = null;
 
     /**
      * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
@@ -100,15 +101,33 @@ public class simpleSkyStone extends AutoOP {
                         encoderLinear(8, 5, true);
                         stopRobot();
                     } else {
-                        encoderLinear(9.5, 5, true);
-                        encoderTurn(87.5, 5);
-                        encoderLinear(-24, 5, true);
+                        //if the robot is centered with the stone in front of the skystone
+                        if (rec.estimateAngleToObject(AngleUnit.DEGREES) < -10){
+                            hitSkyStone(-8);
+                        }
+
+                        //if the robot is centered with the stone before the skystone
+                        else if (rec.estimateAngleToObject(AngleUnit.DEGREES) > 10){
+                            hitSkyStone(8);
+                        }
+
+                        else{
+                            hitSkyStone(0);
+                        }
                     }
                 }
             }
         }
 
 
+    }
+
+
+
+    public void hitSkyStone(double inches){
+        encoderLinear(9.5 + inches, 5, true);
+        encoderTurn(90, 5);
+        encoderLinear(-24, 5, true);
     }
 
 
@@ -127,12 +146,12 @@ public class simpleSkyStone extends AutoOP {
                     int i = 0;
 
                     for (Recognition recognition : updatedRecognitions) {
+                        rec = recognition;
                         telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
                         telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
                                 recognition.getLeft(), recognition.getTop());
                         telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
                                 recognition.getRight(), recognition.getBottom());
-
 
                         float centerPos = recognition.getRight() - recognition.getLeft();
 
@@ -142,6 +161,7 @@ public class simpleSkyStone extends AutoOP {
                             return true;
                         }
                     }
+
                     telemetry.update();
 
                 }
