@@ -128,6 +128,10 @@ public class simpleSkyStone extends AutoOP {
         encoderLinear(9.5 + inches, 5, true);
         encoderTurn(90, 5);
         encoderLinear(-24, 5, true);
+
+        encoderElbow(0.1, -20,2);
+        encoderShoulder(0.2, 65, 4);
+        encoderLinear(-24,4,true);
     }
 
 
