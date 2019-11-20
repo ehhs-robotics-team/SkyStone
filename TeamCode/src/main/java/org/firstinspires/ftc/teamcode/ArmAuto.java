@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -40,6 +41,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @Autonomous(name="Auto Encoder Arm Test", group="Linear Opmode")
 //@Disabled
 public class ArmAuto extends AutoOP {
+
+    CRServo gripperServo = null;
 
     DcMotor armShoulder = null;
     DcMotor armElbow = null;
@@ -68,6 +71,10 @@ public class ArmAuto extends AutoOP {
 
     @Override
     public void main(){
+
+        //map the gripper's servo
+        gripperServo = hardwareMap.get(CRServo.class, "gripperServo");
+
         armElbow = hardwareMap.get(DcMotor.class, "arm_elbow");
         armShoulder = hardwareMap.get(DcMotor.class, "arm_shoulder");
 
@@ -259,5 +266,16 @@ public class ArmAuto extends AutoOP {
             //  sleep(250);   // optional pause after each move
         }
 
+    }
+
+    public void openGripper(long seconds){
+        gripperServo.setPower(0.5);
+        sleep(seconds*1000);
+        gripperServo.setPower(0);
+    }
+    public void closeGripper(long seconds){
+        gripperServo.setPower(-0.5);
+        sleep(seconds*1000);
+        gripperServo.setPower(0);
     }
 }
