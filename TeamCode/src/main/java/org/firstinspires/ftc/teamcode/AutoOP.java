@@ -72,6 +72,8 @@ public abstract class AutoOP extends LinearOpMode {
     //DRIVE TRAIN MOTOR VARIABLES
     // Declare the motor variables
     public ElapsedTime runtime = new ElapsedTime();
+    public ElapsedTime encoderTime = new ElapsedTime();
+
     private DcMotor f_leftDrive = null;
     private DcMotor f_rightDrive = null;
     private DcMotor b_leftDrive = null;
@@ -187,8 +189,8 @@ public abstract class AutoOP extends LinearOpMode {
 
     // Arm control variables
 
-    DcMotor armShoulder = null;
-    DcMotor armElbow = null;
+    public DcMotor armShoulder = null;
+    public DcMotor armElbow = null;
 
 
     // SEt initial angle to the angle the 1st arm segment is at when resting on the robot (degrees) ;
@@ -258,7 +260,7 @@ public abstract class AutoOP extends LinearOpMode {
 
         armShoulder.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        shoulderReset();
+        armReset();
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -276,6 +278,7 @@ public abstract class AutoOP extends LinearOpMode {
      * method for children autonomous opmodes to override and insert case specific moves.
      */
     public abstract void main();
+
 
 
     ElapsedTime navTime = new ElapsedTime();
@@ -407,6 +410,10 @@ public abstract class AutoOP extends LinearOpMode {
         else if (slowDown){
             encoderDrive(slowDownRate, inches, inches, timeout);
         }
+    }
+
+    public void encoderLinear(double inches, double timeout){
+        encoderLinear(inches, timeout, true);
     }
 
 
@@ -728,9 +735,12 @@ public abstract class AutoOP extends LinearOpMode {
 
 
     // reset the arm function during play to account for slippage.
-    public void shoulderReset(){
+    public void armReset(){
         armShoulder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armShoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        armElbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armElbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // SEt initial angle to the angle the 1st arm segment is at when resting on the robot (degrees) ;
         currentShoulderAngle = START_SHOULDER_ANGLE;
 
@@ -817,7 +827,7 @@ public abstract class AutoOP extends LinearOpMode {
             armShoulder.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // reset the timeout time and start motion.
-            runtime.reset();
+            encoderTime.reset();
             armShoulder.setPower(Math.abs(speed));
 
             // keep looping while we are still active, and there is time left, and both motors are running.
@@ -827,7 +837,7 @@ public abstract class AutoOP extends LinearOpMode {
             // However, if you require that BOTH motors have finished their moves before the robot continues
             // onto the next step, use (isBusy() || isBusy()) in the loop test.
             while (opModeIsActive() &&
-                    (runtime.seconds() < timeoutS) &&
+                    (encoderTime.seconds() < timeoutS) &&
                     (armShoulder.isBusy())) {
 
                 // Display it for the driver.
@@ -871,7 +881,7 @@ public abstract class AutoOP extends LinearOpMode {
             armElbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // reset the timeout time and start motion.
-            runtime.reset();
+            encoderTime.reset();
             armElbow.setPower(Math.abs(speed));
 
             // keep looping while we are still active, and there is time left, and both motors are running.
@@ -881,7 +891,7 @@ public abstract class AutoOP extends LinearOpMode {
             // However, if you require that BOTH motors have finished their moves before the robot continues
             // onto the next step, use (isBusy() || isBusy()) in the loop test.
             while (opModeIsActive() &&
-                    (runtime.seconds() < timeoutS) &&
+                    (encoderTime.seconds() < timeoutS) &&
                     (armElbow.isBusy())) {
 
                 // Display it for the driver.
@@ -901,15 +911,27 @@ public abstract class AutoOP extends LinearOpMode {
 
     }
 
-    public void openGripper(long seconds){
-        gripperServo.setPower(0.5);
-        sleep(seconds*1000);
-        gripperServo.setPower(0);
+    public void grabStone(){
+        openGripper(2.0);
+        encoderTurn(5, 5);
+        closeGripper(1.0);
+        encoderTurn(-5,5);
     }
-    public void closeGripper(long seconds){
-        gripperServo.setPower(-0.5);
-        sleep(seconds*1000);
-        gripperServo.setPower(0);
+
+    public void openGripper(double seconds){
+       if(opModeIsActive()) {
+           gripperServo.setPower(0.5);
+           sleep((long) (seconds * 1000));
+           gripperServo.setPower(0);
+       }
+    }
+
+    public void closeGripper(double seconds){
+        if(opModeIsActive()) {
+            gripperServo.setPower(-0.5);
+            sleep((long) (seconds * 1000));
+            gripperServo.setPower(0);
+        }
     }
 }
 

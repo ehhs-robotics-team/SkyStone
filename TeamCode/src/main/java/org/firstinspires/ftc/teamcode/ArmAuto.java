@@ -42,10 +42,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 //@Disabled
 public class ArmAuto extends AutoOP {
 
-    CRServo gripperServo = null;
+    //CRServo gripperServo = null;
 
-    DcMotor armShoulder = null;
-    DcMotor armElbow = null;
+    //DcMotor armShoulder = null;
+    //DcMotor armElbow = null;
 
 
     // SEt initial angle to the angle the 1st arm segment is at when resting on the robot (degrees) ;
@@ -71,7 +71,7 @@ public class ArmAuto extends AutoOP {
 
     @Override
     public void main(){
-
+        /*
         //map the gripper's servo
         gripperServo = hardwareMap.get(CRServo.class, "gripperServo");
 
@@ -80,7 +80,8 @@ public class ArmAuto extends AutoOP {
 
         armShoulder.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        shoulderReset();
+        armReset();
+        */
 
 
         waitForStart();
@@ -95,9 +96,12 @@ public class ArmAuto extends AutoOP {
     }
 
     // reset the arm function during play to account for slippage.
-    public void shoulderReset(){
+    public void armReset(){
         armShoulder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armShoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        armElbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armElbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // SEt initial angle to the angle the 1st arm segment is at when resting on the robot (degrees) ;
         currentShoulderAngle = START_SHOULDER_ANGLE;
 
@@ -268,14 +272,11 @@ public class ArmAuto extends AutoOP {
 
     }
 
-    public void openGripper(double seconds){
-        gripperServo.setPower(0.5);
-        sleep((long)(seconds*1000));
-        gripperServo.setPower(0);
+    public void grabStone(){
+        openGripper(2.0);
+        encoderTurn(5, 5);
+        closeGripper(1.0);
+        encoderTurn(-5,5);
     }
-    public void closeGripper(double seconds){
-        gripperServo.setPower(-0.5);
-        sleep((long)(1000*seconds));
-        gripperServo.setPower(0);
-    }
+
 }
