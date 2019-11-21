@@ -45,6 +45,16 @@ public class AutoGrabTest extends AutoOP {
         waitForStart();
         //encoderArm(.1, 120, -20, 4);
         encoderShoulder(.1, 120,4);
+        openGripper(3.5);
+        encoderArm(.1, 15, -40, 3);
+        encoderLinear(12, 3);
+        encoderElbow(.1, -10, 2);
+        encoderShoulder(.1, 60, 2);
+        //encoderArm(.1, 50, -10, 3);
+        closeGripper(2);
+        encoderLinear(4, 2);
+        encoderTurn(180, 3);
+        sleep(3000);
 
         /*
         encoderElbow(0.1, -20,2);

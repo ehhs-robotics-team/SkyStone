@@ -982,6 +982,7 @@ public abstract class AutoOP extends LinearOpMode {
         encoderTurn(-5,5);
     }
 
+
     public void openGripper(double seconds){
        if(opModeIsActive()) {
            gripperServo.setPower(0.5);
