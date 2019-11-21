@@ -912,13 +912,10 @@ public abstract class AutoOP extends LinearOpMode {
     }
 
     public void grabStone(){
-        encoderElbow(0.1, -20,2);
-        encoderShoulder(0.2, 63, 4);
-        encoderLinear(10,4,true);
-        openGripper(4);
-        encoderTurn(-5, 5);
-        encoderLinear(2,3);
-        closeGripper(1);
+        openGripper(2.0);
+        encoderTurn(5, 5);
+        closeGripper(1.0);
+        encoderTurn(-5,5);
     }
 
     public void openGripper(double seconds){
