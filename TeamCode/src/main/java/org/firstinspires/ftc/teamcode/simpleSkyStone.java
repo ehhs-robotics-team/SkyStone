@@ -103,16 +103,16 @@ public class simpleSkyStone extends AutoOP {
                     } else {
                         //if the robot is centered with the stone in front of the skystone
                         if (rec.estimateAngleToObject(AngleUnit.DEGREES) < -10){
-                            hitSkyStone(-8);
+                            hitSkyStone2(-8);
                         }
 
                         //if the robot is centered with the stone before the skystone
                         else if (rec.estimateAngleToObject(AngleUnit.DEGREES) > 10){
-                            hitSkyStone(8);
+                            hitSkyStone2(8);
                         }
 
                         else{
-                            hitSkyStone(0);
+                            hitSkyStone2(0);
                         }
                     }
                 }
@@ -128,15 +128,19 @@ public class simpleSkyStone extends AutoOP {
         encoderLinear(9.5 + inches, 5, true);
         encoderTurn(90, 5);
         encoderLinear(-24, 5, true);
+        grabStone();
+    }
 
-        encoderElbow(0.1, -20,2);
-        encoderShoulder(0.2, 65, 4);
-        encoderLinear(6,4,true);
-        openGripper(1);
-        encoderLinear(2, 2, true);
-        closeGripper(1);
+    public void hitSkyStone2(double inches){
+        encoderLinear(9.5 + inches, 5, true);
+        encoderTurn(90, 5);
+        encoderShoulder(0.2, 100, 4);
+        encoderElbow(0.1, -100, 4);
 
     }
+
+
+
 
 
     public boolean SkyStoneVisible(double timeout) {

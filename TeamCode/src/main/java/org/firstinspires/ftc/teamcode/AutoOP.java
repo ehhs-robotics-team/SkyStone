@@ -820,7 +820,7 @@ public abstract class AutoOP extends LinearOpMode {
 
             // Determine new target position, and pass to motor controller
             newTarget = armShoulder.getCurrentPosition() + (int) (degrees * SHOULDER_TICKS_PER_DEGREE / SHOULDER_GEAR_RATIO);
-            newTarget *= 2;
+            //newTarget *= 2;
             armShoulder.setTargetPosition(newTarget);
 
             // Turn On RUN_TO_POSITION
@@ -912,10 +912,13 @@ public abstract class AutoOP extends LinearOpMode {
     }
 
     public void grabStone(){
-        openGripper(2.0);
-        encoderTurn(5, 5);
-        closeGripper(1.0);
-        encoderTurn(-5,5);
+        encoderElbow(0.1, -20,2);
+        encoderShoulder(0.2, 63, 4);
+        encoderLinear(10,4,true);
+        openGripper(4);
+        encoderTurn(-5, 5);
+        encoderLinear(2,3);
+        closeGripper(1);
     }
 
     public void openGripper(double seconds){
