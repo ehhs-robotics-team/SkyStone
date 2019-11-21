@@ -32,9 +32,9 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 
-@TeleOp(name="Drive", group="Linear Opmode")
+@TeleOp(name="Demo Drive", group="Linear Opmode")
 
-public class TeleOPDrive extends TeleOP {
+public class demoDrive extends TeleOP {
 
     @Override
     public void main() {
@@ -64,12 +64,13 @@ public class TeleOPDrive extends TeleOP {
             }
 
 
+
             // Set shoulder power to the right trigger, negative or positive depending on the bumper
             double shoulderAid = calculateShoulderAid();
             double sPower = 0;
 
 
-            if (gamepad1.right_trigger > Math.abs(shoulderAid)) {
+            /*if (gamepad1.right_trigger > Math.abs(shoulderAid)) {
                 if (gamepad1.right_bumper) {
                     sPower = gamepad1.right_trigger/3;
                 } else {
@@ -81,14 +82,18 @@ public class TeleOPDrive extends TeleOP {
 
             armShoulder.setPower(sPower);
             telemetry.addData("shoulder power", sPower);
-
+            */
 
             // Set elbow power to the left trigger, negative or positive depending on the bumper
             double ePower = 0;
             if (gamepad1.left_bumper) {
+                //armElbow.setPower(gamepad1.left_trigger/4);
                 ePower = gamepad1.left_trigger/4;
+                //telemetry.addData("elbow power", gamepad1.left_trigger);
             } else {
+                //armElbow.setPower(-gamepad1.left_trigger/4);
                 ePower = -gamepad1.left_trigger/3;
+                //telemetry.addData("elbow power", -gamepad1.left_trigger);
             }
             armElbow.setPower(ePower + calculateShoulderAid());
             telemetry.addData("elbow power", ePower);
