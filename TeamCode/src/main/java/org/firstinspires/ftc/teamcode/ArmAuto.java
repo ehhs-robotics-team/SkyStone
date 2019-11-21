@@ -268,14 +268,14 @@ public class ArmAuto extends AutoOP {
 
     }
 
-    public void openGripper(long seconds){
+    public void openGripper(double seconds){
         gripperServo.setPower(0.5);
-        sleep(seconds*1000);
+        sleep((long)(seconds*1000));
         gripperServo.setPower(0);
     }
-    public void closeGripper(long seconds){
+    public void closeGripper(double seconds){
         gripperServo.setPower(-0.5);
-        sleep(seconds*1000);
+        sleep((long)(1000*seconds));
         gripperServo.setPower(0);
     }
 }
