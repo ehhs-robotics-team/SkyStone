@@ -95,9 +95,11 @@ public class simpleSkyStone extends AutoOP {
 
         if (opModeIsActive()) {
             while (opModeIsActive()) {
+                telemetry.addData("Shoulder Aid: ", calculateShoulderAid());
+                telemetry.update();
 
                 if (!skystoneFound) {
-                    if (!SkyStoneVisible(0.5)) {
+                    if (!SkyStoneVisible(0.7)) {
                         encoderLinear(8, 5, true);
                         stopRobot();
                     } else {
@@ -134,8 +136,10 @@ public class simpleSkyStone extends AutoOP {
     public void hitSkyStone2(double inches){
         encoderLinear(9.5 + inches, 5, true);
         encoderTurn(90, 5);
-        encoderShoulder(0.2, 100, 4);
-        encoderElbow(0.1, -100, 4);
+        encoderShoulder(0.1,  85, 4);
+        encoderElbow(0.1, -40, 4);
+        openGripper(3);
+        encoderShoulder(0.1, 15, 4);
 
     }
 
@@ -212,7 +216,7 @@ public class simpleSkyStone extends AutoOP {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minimumConfidence = 0.8;
+        tfodParameters.minimumConfidence = 0.4;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }
