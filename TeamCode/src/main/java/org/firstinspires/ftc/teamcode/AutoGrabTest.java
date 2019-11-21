@@ -43,13 +43,19 @@ public class AutoGrabTest extends AutoOP {
     public void main(){
 
         waitForStart();
+        //encoderArm(.1, 120, -20, 4);
+        encoderShoulder(.1, 120,4);
+
+        /*
         encoderElbow(0.1, -20,2);
-        encoderShoulder(0.2, 63, 4);
+        encoderShoulder(0.2, 120, 4);
         encoderLinear(10,4,true);
         openGripper(4);
         encoderTurn(-5, 5);
         encoderLinear(2,3);
         closeGripper(1);
+
+         */
 
 
 
