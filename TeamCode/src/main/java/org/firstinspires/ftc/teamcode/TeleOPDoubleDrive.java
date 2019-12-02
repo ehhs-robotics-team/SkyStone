@@ -33,7 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 
-@TeleOp(name="Drive", group="Linear Opmode")
+@TeleOp(name="Double Drive ", group="Linear Opmode")
 
 public class TeleOPDoubleDrive extends TeleOP {
 
@@ -66,7 +66,7 @@ public class TeleOPDoubleDrive extends TeleOP {
 
             // Set shoulder power to the right trigger, negative or positive depending on the bumper
             double shoulderAid = calculateShoulderAid();
-            double sPower = gamepad1.right_stick_y+shoulderAid;
+            double sPower = gamepad2.right_stick_y+shoulderAid;
             armShoulder.setPower(sPower);
             telemetry.addData("shoulder power", sPower);
 
@@ -76,23 +76,16 @@ public class TeleOPDoubleDrive extends TeleOP {
             armElbow.setPower(ePower);
             telemetry.addData("elbow power", ePower);
 
-            double gripperPower = 0.5;
-            if (gamepad2.dpad_right){
-                gripperServo.setPower(gripperPower);
-            } else if (gamepad2.dpad_left){
-                gripperServo.setPower(-gripperPower);
-            } else {
-                gripperServo.setPower(0);
+
+            // Run gripper according to triggers.
+            gripperServo.setPower(gamepad2.right_trigger-gamepad1.left_trigger);
+
+            // Reset the arm encoders if the arm gets out of sync from gear slippage.
+            if (gamepad2.x){
+                armReset();
             }
 
             telemetry.update();
-
-
-
-
-
-
-
         }
     }
 

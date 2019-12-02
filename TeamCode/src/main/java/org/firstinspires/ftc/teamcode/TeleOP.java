@@ -110,8 +110,8 @@ public abstract class TeleOP extends LinearOpMode {
     final double ELBOW_TICKS_PER_DEGREE = ELBOW_TICKS_PER_ROTATION / 360;
 
     // Aid at the extremities, to keep the arm still at full horizontal extension.
-    double MAX_SHOULDER_AID = 0.00;
-    double MAX_ELBOW_AID = 0.00;
+    double MAX_SHOULDER_AID = 0.002;
+    double MAX_ELBOW_AID = 0.0005;
 
 
 
