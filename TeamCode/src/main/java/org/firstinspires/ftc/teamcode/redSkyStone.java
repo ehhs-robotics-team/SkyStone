@@ -30,7 +30,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -42,9 +41,9 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import java.util.List;
 
 
-@Autonomous(name="Simple SkyStone", group="Linear Opmode")
+@Autonomous(name="Red SkyStone", group="Linear Opmode")
 
-public class simpleSkyStone extends AutoOP {
+public class redSkyStone extends AutoOP {
 
 
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
@@ -92,15 +91,16 @@ public class simpleSkyStone extends AutoOP {
         telemetry.addData(">", "Press Play to start op mode");
         telemetry.update();
         waitForStart();
+        encoderLinear(12, 5);
+        encoderTurn(90, 3);
 
         if (opModeIsActive()) {
             while (opModeIsActive()) {
                 telemetry.addData("Shoulder Aid: ", calculateShoulderAid());
                 telemetry.update();
-
                 if (!skystoneFound) {
                     if (!SkyStoneVisible(0.7)) {
-                        encoderLinear(8, 5, true);
+                        encoderLinear(-8, 5, true);
                         stopRobot();
                     } else {
                         //if the robot is centered with the stone in front of the skystone
@@ -144,20 +144,20 @@ public class simpleSkyStone extends AutoOP {
 
     public void collectSkystone(double inches)
     {
-        encoderLinear(7 + inches, 5, true);
+        encoderLinear(-10.5 - inches, 5, true);
         encoderTurn(90, 5);
         encoderLinear(-16, 5);
-        encoderShoulder(.1, 120,4);
-        openGripper(3.5);
-        encoderArm(.1, 15, -40, 3);
+        encoderShoulder(.2, 120,4);
+        openGripper(2);
+        encoderArm(.2, 15, -40, 3);
         encoderLinear(12, 3);
         encoderElbow(.2, -10, 2);
-        encoderShoulder(.1, 60, 2);
+        encoderShoulder(.2, 60, 2);
         encoderLinear(-4, 3);
-        closeGripper(2);
-        encoderLinear(4, 4);
-        encoderTurn(130, 3);
-        sleep(3000);
+        closeGripper(1);
+        encoderLinear(6, 4);
+        encoderTurn(90, 3);
+        encoderLinear(-60, 5);
     }
 
 

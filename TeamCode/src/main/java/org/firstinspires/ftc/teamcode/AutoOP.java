@@ -174,7 +174,7 @@ public abstract class AutoOP extends LinearOpMode {
     public double currentHeading = 0;
 
     //slow down rate for encoders
-    private double slowDownRate = 0.2;
+    private double slowDownRate = 0.45;
 
 
     //Declare the public translation variable
@@ -974,15 +974,15 @@ public abstract class AutoOP extends LinearOpMode {
 
     public void openGripper(double seconds){
        if(opModeIsActive()) {
-           gripperServo.setPower(0.5);
+           gripperServo.setPower(1);
            sleep((long) (seconds * 1000));
            gripperServo.setPower(0);
        }
     }
 
-    public void closeGripper(double seconds){
-        if(opModeIsActive()) {
-            gripperServo.setPower(-0.5);
+    public void closeGripper(double seconds) {
+        if (opModeIsActive()) {
+            gripperServo.setPower(-1);
             sleep((long) (seconds * 1000));
             gripperServo.setPower(0);
         }
