@@ -87,24 +87,19 @@ public abstract class AutoOP extends LinearOpMode {
     CRServo gripperServo = null;
 
 
-
-
-
     //setup sensitivity variables
     double clawUpPosition = 1.0;
     double clawDownPosition = 0.55;
 
     //Declare encoder variables
-    static final double     COUNTS_PER_MOTOR_TETRIX   = 1440;    // Tetrix Matrix 12V motor with 52.8:1 gearbox
-    static final double     DRIVE_GEAR_REDUCTION    = 1.0;     // This is < 2.0 if geared UP
-    static final double     WHEEL_DIAMETER_INCHES   = 4.0;     // For figuring circumference
-    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_TETRIX * DRIVE_GEAR_REDUCTION) /
+    static final double COUNTS_PER_MOTOR_TETRIX = 1440;    // Tetrix Matrix 12V motor with 52.8:1 gearbox
+    static final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 2.0 if geared UP
+    static final double WHEEL_DIAMETER_INCHES = 4.0;     // For figuring circumference
+    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_TETRIX * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double     DRIVE_SPEED             = 0.6;
-    static final double     TURN_SPEED              = 0.5;
+    static final double DRIVE_SPEED = 0.6;
+    static final double TURN_SPEED = 0.5;
     public double inchesPerDegrees = 0.06166;
-
-
 
 
     // IMPORTANT:  For Phone Camera, set 1) the camera source and 2) the orientation, based on how your phone is mounted:
@@ -149,7 +144,6 @@ public abstract class AutoOP extends LinearOpMode {
     // Constants for perimeter targets
     private static final float halfField = 72 * mmPerInch;
     private static final float quadField = 36 * mmPerInch;
-
 
 
     // Class Members
@@ -198,22 +192,21 @@ public abstract class AutoOP extends LinearOpMode {
     double currentShoulderAngle = START_SHOULDER_ANGLE;
 
     // SEt initial angle to the angle the 2nd arm segment is at when raesting on the robot (degrees) ;
-    double START_ELBOW_ANGLE = 160-START_SHOULDER_ANGLE;
+    double START_ELBOW_ANGLE = 160 - START_SHOULDER_ANGLE;
     double currentElbowAngle = START_ELBOW_ANGLE;
 
     final double SHOULDER_TICKS_PER_ROTATION = 1440;
     final double ELBOW_TICKS_PER_ROTATION = 1120; // Rev motor as per http://www.revrobotics.com/content/docs/Encoder-Guide.pdf
 
-    final double SHOULDER_GEAR_RATIO = 1.0/3.0; // Motor:Shoulder Motor turns 3 times per one arm rotation
-    final double ELBOW_GEAR_RATIO = 3.0/8.0; // Motor:Elbow gear ratio
+    final double SHOULDER_GEAR_RATIO = 1.0 / 3.0; // Motor:Shoulder Motor turns 3 times per one arm rotation
+    final double ELBOW_GEAR_RATIO = 3.0 / 8.0; // Motor:Elbow gear ratio
 
-    final double SHOULDER_TICKS_PER_DEGREE = SHOULDER_TICKS_PER_ROTATION/360;
+    final double SHOULDER_TICKS_PER_DEGREE = SHOULDER_TICKS_PER_ROTATION / 360;
     final double ELBOW_TICKS_PER_DEGREE = ELBOW_TICKS_PER_ROTATION / 360;
 
     // Aid at the extremities, to keep the arm still at full horizontal extension.
     double MAX_SHOULDER_AID = 0.002;
     double MAX_ELBOW_AID = 0.0005;
-
 
 
     /*
@@ -266,8 +259,6 @@ public abstract class AutoOP extends LinearOpMode {
         telemetry.update();
 
 
-
-
         //Run the child autonomous run
         main();
 
@@ -280,9 +271,9 @@ public abstract class AutoOP extends LinearOpMode {
     public abstract void main();
 
 
-
     ElapsedTime navTime = new ElapsedTime();
-    public void navigateToHeading(double targetHeading, double encoderTimeout, double vuforiaTimeout){
+
+    public void navigateToHeading(double targetHeading, double encoderTimeout, double vuforiaTimeout) {
         navTime.reset();
         while (!isStopRequested() && navTime.seconds() < vuforiaTimeout) {
 
@@ -327,8 +318,6 @@ public abstract class AutoOP extends LinearOpMode {
                 break;
 
 
-
-
             } else {
                 telemetry.addData("Visible Target", "none");
             }
@@ -356,27 +345,19 @@ public abstract class AutoOP extends LinearOpMode {
     }
 
 
-
-
-
-
-
-
-
     //Functions for simple movement of the robot
 
     //calculates the angle we need to turn the robot to a heading
     public double angleFromPosition(double targetX, double targetY) {
         double deltaY = targetY - yPos;
         double deltaX = targetX - xPos;
-        double angle360 =  (Math.atan(deltaY / deltaX));
-        if(angle360 <= 180){
+        double angle360 = (Math.atan(deltaY / deltaX));
+        if (angle360 <= 180) {
             return angle360;
-        }else{
+        } else {
             return (angle360 - 360);
         }
     }
-
 
 
     //turns the robot to a heading given a heading (must be a value between -180 and 180).
@@ -396,49 +377,48 @@ public abstract class AutoOP extends LinearOpMode {
 
     }
 
-    public void forward(){
+    public void forward() {
         f_leftDrive.setPower(drivePower);
         b_leftDrive.setPower(drivePower);
         f_rightDrive.setPower(drivePower);
         b_rightDrive.setPower(drivePower);
     }
 
-    public void encoderLinear(double inches, double timeout, boolean slowDown){
+    public void encoderLinear(double inches, double timeout, boolean slowDown) {
         if (!slowDown) {
             encoderDrive(DRIVE_SPEED, inches, inches, timeout);
-        }
-        else if (slowDown){
+        } else if (slowDown) {
             encoderDrive(slowDownRate, inches, inches, timeout);
         }
     }
 
-    public void encoderLinear(double inches, double timeout){
+    public void encoderLinear(double inches, double timeout) {
         encoderLinear(inches, timeout, true);
     }
 
 
-    public void backward(){
+    public void backward() {
         f_leftDrive.setPower(-drivePower);
         b_leftDrive.setPower(-drivePower);
         f_rightDrive.setPower(-drivePower);
         b_rightDrive.setPower(-drivePower);
     }
 
-    public void left(){
+    public void left() {
         f_leftDrive.setPower(drivePower);
         b_leftDrive.setPower(drivePower);
         f_rightDrive.setPower(-drivePower);
         b_rightDrive.setPower(-drivePower);
     }
 
-    public void right(){
+    public void right() {
         f_leftDrive.setPower(-drivePower);
         b_leftDrive.setPower(-drivePower);
         f_rightDrive.setPower(drivePower);
         b_rightDrive.setPower(drivePower);
     }
 
-    public void stopRobot(){
+    public void stopRobot() {
         f_leftDrive.setPower(0);
         b_leftDrive.setPower(0);
         f_rightDrive.setPower(0);
@@ -449,6 +429,11 @@ public abstract class AutoOP extends LinearOpMode {
 
 
     //Control methods for the claw
+    public void clawDown(double position){
+        leftClaw.setPosition(position);
+        rightClaw.setPosition(position);
+    }
+
     public void clawDown(){
         leftClaw.setPosition(clawDownPosition);
         rightClaw.setPosition(clawUpPosition);
@@ -731,6 +716,10 @@ public abstract class AutoOP extends LinearOpMode {
     //a method to turn a certain amount of degrees with encoders
     public void encoderTurn(double degrees, double timeout) {
         encoderDrive(TURN_SPEED, (-degrees * inchesPerDegrees * 2), (degrees * inchesPerDegrees * 2), timeout);
+    }
+
+    public void encoderTurn(double degrees, double speed, double timeout) {
+        encoderDrive(speed, (-degrees * inchesPerDegrees * 2), (degrees * inchesPerDegrees * 2), timeout);
     }
 
 

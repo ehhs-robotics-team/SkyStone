@@ -30,18 +30,25 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 
-@Autonomous(name="Template", group="Linear Opmode")
-@Disabled
-public class Basic_Test_OpMode extends AutoOP {
+@Autonomous(name="Auto Red Foundation", group="Linear Opmode")
+
+public class AutoRedFoundation extends AutoOP {
 
     @Override
     public void main(){
-
         waitForStart();
+        clawUp();
+        encoderLinear(32, 10);
+        clawDown(0.25);
+        sleep(2000);
+        encoderLinear(-40, 5);
+        encoderTurn(90, .5, 5);
+        clawUp();
+        encoderTurn(120, 10); //
+        encoderLinear(-120, 5);
+
 
 
     }
