@@ -30,26 +30,43 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 
-@Autonomous(name="Auto Red Foundation", group="Linear Opmode")
+@Autonomous(name="CollectSkyStone", group="Linear Opmode")
 
-public class AutoRedFoundation extends AutoOP {
+public class collectSkyStoneTest extends AutoOP {
 
     @Override
     public void main(){
-        waitForStart();
-        clawUp();
-        encoderLinear(32, 10);
-        clawDown(0.25);
-        sleep(2000);
-        encoderLinear(-40, 5);
-        encoderTurn(90, 1, 5);
-        clawUp();
-        encoderTurn(135, 10); //
-        encoderLinear(-46, 5);
 
+        waitForStart();
+        collectSkystone(-8);
+
+    }
+
+    public void collectSkystone(double inches)
+    {
+        encoderLinear(-2.5 + inches, 5, true);
+        encoderTurn(90, 5);
+        encoderLinear(-16, 5);
+        encoderShoulder(.2, 120,4);
+        openGripper(3000);
+        encoderArm(.2, 15, -40, 3);
+        encoderLinear(12, 3);
+        encoderElbow(.2, -10, 2);
+        encoderShoulder(.2, 60, 2);
+        encoderLinear(-4, 3);
+        closeGripper(1.5);
+        encoderLinear(6, 4);
+        encoderTurn(90, 3);
+        encoderLinear(-50, 5);
+        openGripper(.4);
+        encoderLinear(10, 4);
+        //armTo(.4, START_SHOULDER_ANGLE, START_ELBOW_ANGLE, 4);
 
 
     }
+
+
 }

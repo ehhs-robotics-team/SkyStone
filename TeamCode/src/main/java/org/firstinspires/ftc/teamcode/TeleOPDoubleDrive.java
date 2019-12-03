@@ -51,12 +51,8 @@ public class TeleOPDoubleDrive extends TeleOP {
             b_rightDrive.setPower(-Math.pow(gamepad1.left_stick_y, 3));
 
             //SETUP the claw to work with the controller
-            if (gamepad1.y) {
-                leftClaw.setPosition(clawUpPosition);
-                rightClaw.setPosition(clawUpPosition);
-            } else if (gamepad1.a) {
-                rightClaw.setPosition(clawDownPosition);
-                leftClaw.setPosition(clawDownPosition);
+            if (gamepad1.y) { clawUp();
+            } else if (gamepad1.a) {clawDown();
             } else {
                 //double restPosition = 0.75;
                 //rightClaw.setPosition(restPosition);
@@ -78,10 +74,21 @@ public class TeleOPDoubleDrive extends TeleOP {
 
 
             // Run gripper according to triggers.
-            gripperServo.setPower(gamepad2.right_trigger-gamepad1.left_trigger);
+            gripperServo.setPower(gamepad2.right_trigger-gamepad2.left_trigger);
 
             // Reset the arm encoders if the arm gets out of sync from gear slippage.
             if (gamepad2.x){
+                armReset();
+            }
+
+            if (gamepad2.a) {
+                armTo(.4, 190, -100, 3);
+            }
+
+            if (gamepad2.y) {
+                armTo(.4, START_SHOULDER_ANGLE, START_ELBOW_ANGLE, 3);
+                armShoulder.setPower(0);
+                armElbow.setPower(0);
                 armReset();
             }
 

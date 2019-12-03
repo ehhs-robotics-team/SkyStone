@@ -94,11 +94,11 @@ public abstract class TeleOP extends LinearOpMode {
 
 
     // SEt initial angle to the angle the 1st arm segment is at when resting on the robot (degrees) ;
-    final double START_SHOULDER_ANGLE = -12;
+    public final double START_SHOULDER_ANGLE = -12;
     double currentShoulderAngle = START_SHOULDER_ANGLE;
 
     // SEt initial angle to the angle the 2nd arm segment is at when raesting on the robot (degrees) ;
-    double START_ELBOW_ANGLE = 160-START_SHOULDER_ANGLE;
+    public double START_ELBOW_ANGLE = 160-START_SHOULDER_ANGLE;
     double currentElbowAngle = START_ELBOW_ANGLE;
 
 
@@ -164,7 +164,7 @@ public abstract class TeleOP extends LinearOpMode {
         //setup the values that are needed
         double driveSensitivity = 1.5;
         double clawUpPosition = 1.0;
-        double clawDownPosition = 0.55;
+        double clawDownPosition = 0.25;
 
 
 
@@ -224,7 +224,7 @@ public abstract class TeleOP extends LinearOpMode {
         return elbowAid;
     }
 
-    /*  Method to perform an absolut move of the elbow section of the arm, based on encoder counts.
+    /*  Method to perform an absolute move of the elbow section of the arm, based on encoder counts.
      *  Encoders are not reset as the move is based on the current position.
      *  Move will stop if any of three conditions occur:
      *  1) Move gets to the desired position
@@ -286,6 +286,16 @@ public abstract class TeleOP extends LinearOpMode {
             //  sleep(250);   // optional pause after each move
         }
 
+    }
+
+    public void clawDown(){
+        leftClaw.setPosition(clawDownPosition);
+        rightClaw.setPosition(clawUpPosition);
+    }
+
+    public void clawUp(){
+        rightClaw.setPosition(clawUpPosition);
+        leftClaw.setPosition(clawUpPosition);
     }
 
 

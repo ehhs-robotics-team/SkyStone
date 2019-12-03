@@ -33,10 +33,12 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.teamcode.TeleOP;
 
 import java.util.List;
 
@@ -104,16 +106,26 @@ public class redSkyStone extends AutoOP {
                         stopRobot();
                     } else {
                         //if the robot is centered with the stone in front of the skystone
-                        if (rec.estimateAngleToObject(AngleUnit.DEGREES) < -10){
+                        if (rec.estimateAngleToObject(AngleUnit.DEGREES) < -20){
+                            telemetry.addData("Angle: ", rec.estimateAngleToObject(AngleUnit.DEGREES));
+                            telemetry.update();
+                            sleep(30000);
                             collectSkystone(-8);
+
                         }
 
                         //if the robot is centered with the stone before the skystone
-                        else if (rec.estimateAngleToObject(AngleUnit.DEGREES) > 10){
+                        else if (rec.estimateAngleToObject(AngleUnit.DEGREES) > 0){
+                            telemetry.addData("Angle: ", rec.estimateAngleToObject(AngleUnit.DEGREES));
+                            telemetry.update();
+                            sleep(30000);
                             collectSkystone(8);
                         }
 
                         else{
+                            telemetry.addData("Angle: ", rec.estimateAngleToObject(AngleUnit.DEGREES));
+                            telemetry.update();
+                            sleep(30000);
                             collectSkystone(0);
                         }
                     }
@@ -144,20 +156,25 @@ public class redSkyStone extends AutoOP {
 
     public void collectSkystone(double inches)
     {
-        encoderLinear(-10.5 - inches, 5, true);
+        encoderLinear(-10.5 + inches, 5, true);
         encoderTurn(90, 5);
         encoderLinear(-16, 5);
         encoderShoulder(.2, 120,4);
-        openGripper(2);
+        openGripper(3000);
         encoderArm(.2, 15, -40, 3);
         encoderLinear(12, 3);
         encoderElbow(.2, -10, 2);
         encoderShoulder(.2, 60, 2);
         encoderLinear(-4, 3);
-        closeGripper(1);
+        closeGripper(1.5);
         encoderLinear(6, 4);
         encoderTurn(90, 3);
-        encoderLinear(-60, 5);
+        encoderLinear(-50, 5);
+        openGripper(.4);
+        encoderLinear(10, 4);
+        //armTo(.4, START_SHOULDER_ANGLE, START_ELBOW_ANGLE, 4);
+
+
     }
 
 

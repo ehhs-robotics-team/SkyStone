@@ -1017,6 +1017,70 @@ public abstract class AutoOP extends LinearOpMode {
 
     }
 
+    /*  Method to perform an absolute move of the elbow section of the arm, based on encoder counts.
+     *  Encoders are not reset as the move is based on the current position.
+     *  Move will stop if any of three conditions occur:
+     *  1) Move gets to the desired position
+     *  2) Move runs out of time
+     *  3) Driver stops the opmode running.
+     */
+    public void armTo(double speed, double shoulderDegrees, double elbowDegrees, double timeoutS){
+        int newShoulderTarget;
+        int newElbowTarget;
+
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            newElbowTarget = (int) (-elbowDegrees * ELBOW_TICKS_PER_DEGREE/ELBOW_GEAR_RATIO);
+            newElbowTarget *= 2;
+            armElbow.setTargetPosition(newElbowTarget);
+
+            // Determine new target position, and pass to motor controller
+            newShoulderTarget = + (int) (shoulderDegrees * SHOULDER_TICKS_PER_DEGREE / SHOULDER_GEAR_RATIO);
+            // newTarget *= 2;
+            armShoulder.setTargetPosition(newShoulderTarget);
+
+            // Turn On RUN_TO_POSITION
+            armElbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            armShoulder.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // reset the timeout time and start motion.
+            encoderTime.reset();
+            armElbow.setPower(Math.abs(speed));
+            armShoulder.setPower(Math.abs(speed));
+
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // always end the motion as soon as possible.
+            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // onto the next step, use (isBusy() || isBusy()) in the loop test.
+            while (opModeIsActive() &&
+                    (encoderTime.seconds() < timeoutS) &&
+                    (armElbow.isBusy() || armShoulder.isBusy())) {
+
+                // Display it for the driver.
+                telemetry.addData("Elbow", "Running at %7d to %7d",
+                        armElbow.getCurrentPosition(), newElbowTarget);
+                telemetry.addData("Shoulder", "Running at %7d to %7d",
+                        armShoulder.getCurrentPosition(), newElbowTarget);
+                telemetry.update();
+            }
+
+            // Stop all motion;
+            armElbow.setPower(calculateElbowAid());
+            armShoulder.setPower(calculateShoulderAid());
+
+            // Turn off RUN_TO_POSITION
+            armElbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            armShoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            //  sleep(250);   // optional pause after each move
+        }
+
+    }
+
 
     public void grabStone(){
         openGripper(2.0);
@@ -1029,10 +1093,19 @@ public abstract class AutoOP extends LinearOpMode {
     public void openGripper(double seconds){
        if(opModeIsActive()) {
            gripperServo.setPower(1);
-           sleep((long) (seconds * 1000));
+           sleep((long)(seconds * 1000));
            gripperServo.setPower(0);
        }
     }
+
+    public void openGripper(long milliseconds){
+        if(opModeIsActive()) {
+            gripperServo.setPower(1);
+            sleep(milliseconds);
+            gripperServo.setPower(0);
+        }
+    }
+
 
     public void closeGripper(double seconds) {
         if (opModeIsActive()) {
