@@ -33,19 +33,17 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.firstinspires.ftc.teamcode.TeleOP;
 
 import java.util.List;
 
 
-@Autonomous(name="Red SkyStone", group="Linear Opmode")
+@Autonomous(name="Blue SkyStone", group="Linear Opmode")
 
-public class redSkyStone extends AutoOP {
+public class blueSkyStone extends AutoOP {
 
 
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
@@ -102,7 +100,7 @@ public class redSkyStone extends AutoOP {
                 telemetry.update();
                 if (!skystoneFound) {
                     if (!SkyStoneVisible(0.7)) {
-                        encoderLinear(-8, 5, true);
+                        encoderLinear(8, 5, true);
                         stopRobot();
                     } else {
                         //if the robot is centered with the stone in front of the skystone
@@ -134,24 +132,6 @@ public class redSkyStone extends AutoOP {
         }
 
 
-    }
-
-
-
-    public void hitSkyStone(double inches){
-        encoderLinear(9.5 + inches, 5, true);
-        encoderTurn(90, 5);
-        encoderLinear(-24, 5, true);
-        grabStone();
-    }
-
-    public void hitSkyStone2(double inches){
-        encoderLinear(9.5 + inches, 5, true);
-        encoderTurn(90, 5);
-        encoderShoulder(0.1,  85, 4);
-        encoderElbow(0.1, -40, 4);
-        openGripper(3);
-        encoderShoulder(0.1, 15, 4);
     }
 
     public void collectSkystone(double inches)

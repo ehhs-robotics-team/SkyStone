@@ -288,14 +288,99 @@ public abstract class TeleOP extends LinearOpMode {
 
     }
 
+    /*  Method to perform an absolute move of the elbow section of the arm, based on encoder counts.
+     *  Encoders are not reset as the move is based on the current position.
+     *  Move will stop if any of three conditions occur:
+     *  1) Move gets to the desired position
+     *  2) Move runs out of time
+     *  3) Driver stops the opmode running.
+     */
+    public void armToContinouos(double speed, double shoulderDegrees, double elbowDegrees, double timeoutS){
+        int newShoulderTarget;
+        int newElbowTarget;
+
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            newElbowTarget = (int) (-elbowDegrees * ELBOW_TICKS_PER_DEGREE/ELBOW_GEAR_RATIO);
+            newElbowTarget *= 2;
+            armElbow.setTargetPosition(newElbowTarget);
+
+            // Determine new target position, and pass to motor controller
+            newShoulderTarget = + (int) (shoulderDegrees * SHOULDER_TICKS_PER_DEGREE / SHOULDER_GEAR_RATIO);
+            // newTarget *= 2;
+            armShoulder.setTargetPosition(newShoulderTarget);
+
+            // Turn On RUN_TO_POSITION
+            armElbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            armShoulder.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // reset the timeout time and start motion.
+            encoderTime.reset();
+            armElbow.setPower(Math.abs(speed));
+            armShoulder.setPower(Math.abs(speed));
+
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // always end the motion as soon as possible.
+            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // onto the next step, use (isBusy() || isBusy()) in the loop test.
+            if (armElbow.isBusy() || armShoulder.isBusy()) {
+
+                // Display it for the driver.
+                telemetry.addData("Elbow", "Running at %7d to %7d",
+                        armElbow.getCurrentPosition(), newElbowTarget);
+                telemetry.addData("Shoulder", "Running at %7d to %7d",
+                        armShoulder.getCurrentPosition(), newElbowTarget);
+                telemetry.update();
+            }
+        }
+
+    }
+
+    public void stopContinuousArm(){
+        // Stop all motion;
+        armElbow.setPower(calculateElbowAid());
+        armShoulder.setPower(calculateShoulderAid());
+
+        // Turn off RUN_TO_POSITION
+        armElbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        armShoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
     public void clawDown(){
         leftClaw.setPosition(clawDownPosition);
         rightClaw.setPosition(clawUpPosition);
+    }
+    public void clawDown(double position){
+        leftClaw.setPosition(position);
+        rightClaw.setPosition(position);
     }
 
     public void clawUp(){
         rightClaw.setPosition(clawUpPosition);
         leftClaw.setPosition(clawUpPosition);
+    }
+
+    public void clawUp(double position){
+        leftClaw.setPosition(position);
+        rightClaw.setPosition(position);
+    }
+
+    // reset the arm function during play to account for slippage.
+    public void armReset(){
+        armShoulder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armShoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        armElbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armElbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        // SEt initial angle to the angle the 1st arm segment is at when resting on the robot (degrees) ;
+        currentShoulderAngle = START_SHOULDER_ANGLE;
+
+        // SEt initial angle to the angle the 2nd arm segment is at when raesting on the robot (degrees) ;
+        currentElbowAngle = START_ELBOW_ANGLE;
     }
 
 

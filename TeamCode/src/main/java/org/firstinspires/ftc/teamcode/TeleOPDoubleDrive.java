@@ -51,8 +51,8 @@ public class TeleOPDoubleDrive extends TeleOP {
             b_rightDrive.setPower(-Math.pow(gamepad1.left_stick_y, 3));
 
             //SETUP the claw to work with the controller
-            if (gamepad1.y) { clawUp();
-            } else if (gamepad1.a) {clawDown();
+            if (gamepad1.y) { clawUp(.25);
+            } else if (gamepad1.a) {clawDown(1);
             } else {
                 //double restPosition = 0.75;
                 //rightClaw.setPosition(restPosition);
@@ -82,7 +82,16 @@ public class TeleOPDoubleDrive extends TeleOP {
             }
 
             if (gamepad2.a) {
-                armTo(.4, 190, -100, 3);
+                //armTo(.4, 190, -100, 3);
+                armToContinouos(.4, 190, -100, 3);
+            }
+            else {
+                stopContinuousArm();
+            }
+
+
+            if (gamepad2.b) {
+                armTo(.4, START_SHOULDER_ANGLE,-100, 3);
             }
 
             if (gamepad2.y) {
@@ -92,16 +101,18 @@ public class TeleOPDoubleDrive extends TeleOP {
                 armReset();
             }
 
+
             telemetry.update();
         }
     }
 
     // reset the arm function during play to account for slippage.
-    // reset the arm function during play to account for slippage.
     public void armReset(){
+        armShoulder.setPower(0);
         armShoulder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armShoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        armElbow.setPower(0);
         armElbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armElbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // SEt initial angle to the angle the 1st arm segment is at when resting on the robot (degrees) ;
