@@ -29,29 +29,43 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 
-@Autonomous(name="Auto Blue Foundation", group="Linear Opmode")
+@TeleOp(name="Test arm presets", group="Linear Opmode")
 
-public class AutoBlueFoundation extends AutoOP {
+public class TeleOPArmToTest extends TeleOP {
 
     @Override
-    public void main(){
+    public void main() {
+
         waitForStart();
-        clawUp();
-        encoderLinear(32, 10);
-        clawDown(0.25);
-        sleep(2000);
-        encoderLinear(-40, 5);
-        encoderTurn(-90, .5, 5);
-        clawUp();
-        encoderTurn(-135, 10); //
-        encoderLinear(-46, 5);
 
+        while(opModeIsActive()) {
+            if (gamepad2.a){
+                armToContinuous(.2, 190, -100);
+            }
 
+            if (gamepad2.y){
+                armToContinuous(.4, START_SHOULDER_ANGLE, START_ELBOW_ANGLE);
+            }
 
+            if (armElbow.getMode()!= DcMotor.RunMode.RUN_TO_POSITION &&
+                    armElbow.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {// Set shoulder power to the right stick, adjusted for position aid compensation
+                double sPower = gamepad2.right_stick_y + calculateShoulderAid();
+                ;
+                armShoulder.setPower(sPower);
+                telemetry.addData("shoulder power", sPower);
 
+                // Set elbow power to the left stick, adjusted for position aid compensation
+                double ePower = gamepad2.left_stick_y / 3 + calculateElbowAid();
+                armElbow.setPower(ePower);
+                telemetry.addData("elbow power", ePower);
+            }
+            if (gamepad2.left_bumper || gamepad2.right_bumper) {
+                stopContinuousArm();
+            }
+        }
     }
 }

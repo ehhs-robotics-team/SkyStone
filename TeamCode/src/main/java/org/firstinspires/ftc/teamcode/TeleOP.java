@@ -112,7 +112,7 @@ public abstract class TeleOP extends LinearOpMode {
     final double ELBOW_TICKS_PER_DEGREE = ELBOW_TICKS_PER_ROTATION / 360;
 
     // Aid at the extremities, to keep the arm still at full horizontal extension.
-    double MAX_SHOULDER_AID = 0.002;
+    double MAX_SHOULDER_AID = 0.001;
     double MAX_ELBOW_AID = 0.0005;
 
 
@@ -295,46 +295,42 @@ public abstract class TeleOP extends LinearOpMode {
      *  2) Move runs out of time
      *  3) Driver stops the opmode running.
      */
-    public void armToContinouos(double speed, double shoulderDegrees, double elbowDegrees, double timeoutS){
+    public void armToContinuous(double speed, double shoulderDegrees, double elbowDegrees){
         int newShoulderTarget;
         int newElbowTarget;
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
+            if (armShoulder.getMode() != DcMotor.RunMode.RUN_TO_POSITION ||
+                    armElbow.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
+                // Determine new target position, and pass to motor controller
+                newElbowTarget = (int) (-elbowDegrees * ELBOW_TICKS_PER_DEGREE / ELBOW_GEAR_RATIO);
+                newElbowTarget *= 2;
+                armElbow.setTargetPosition(newElbowTarget);
 
-            // Determine new target position, and pass to motor controller
-            newElbowTarget = (int) (-elbowDegrees * ELBOW_TICKS_PER_DEGREE/ELBOW_GEAR_RATIO);
-            newElbowTarget *= 2;
-            armElbow.setTargetPosition(newElbowTarget);
+                // Determine new target position, and pass to motor controller
+                newShoulderTarget = +(int) (shoulderDegrees * SHOULDER_TICKS_PER_DEGREE / SHOULDER_GEAR_RATIO);
+                // newTarget *= 2;
+                armShoulder.setTargetPosition(newShoulderTarget);
 
-            // Determine new target position, and pass to motor controller
-            newShoulderTarget = + (int) (shoulderDegrees * SHOULDER_TICKS_PER_DEGREE / SHOULDER_GEAR_RATIO);
-            // newTarget *= 2;
-            armShoulder.setTargetPosition(newShoulderTarget);
+                // Turn On RUN_TO_POSITION
+                armElbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                armShoulder.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            // Turn On RUN_TO_POSITION
-            armElbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            armShoulder.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                // start motion.
 
-            // reset the timeout time and start motion.
-            encoderTime.reset();
-            armElbow.setPower(Math.abs(speed));
-            armShoulder.setPower(Math.abs(speed));
-
-            // keep looping while we are still active, and there is time left, and both motors are running.
-            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
-            // its target position, the motion will stop.  This is "safer" in the event that the robot will
-            // always end the motion as soon as possible.
-            // However, if you require that BOTH motors have finished their moves before the robot continues
-            // onto the next step, use (isBusy() || isBusy()) in the loop test.
-            if (armElbow.isBusy() || armShoulder.isBusy()) {
+                armElbow.setPower(Math.abs(speed));
+                armShoulder.setPower(Math.abs(speed));
+            } else if (armElbow.isBusy() || armShoulder.isBusy()) {
 
                 // Display it for the driver.
-                telemetry.addData("Elbow", "Running at %7d to %7d",
-                        armElbow.getCurrentPosition(), newElbowTarget);
-                telemetry.addData("Shoulder", "Running at %7d to %7d",
-                        armShoulder.getCurrentPosition(), newElbowTarget);
-                telemetry.update();
+                //telemetry.addData("Elbow", "Running at %7d to %7d",
+                        //armElbow.getCurrentPosition(), newElbowTarget);
+                //telemetry.addData("Shoulder", "Running at %7d to %7d",
+                        //armShoulder.getCurrentPosition(), newElbowTarget);
+                //telemetry.update();
+            }else {
+                stopContinuousArm();
             }
         }
 

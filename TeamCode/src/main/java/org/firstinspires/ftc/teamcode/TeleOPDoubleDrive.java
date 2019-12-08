@@ -60,19 +60,6 @@ public class TeleOPDoubleDrive extends TeleOP {
             }
 
 
-            // Set shoulder power to the right trigger, negative or positive depending on the bumper
-            double shoulderAid = calculateShoulderAid();
-            double sPower = gamepad2.right_stick_y+shoulderAid;
-            armShoulder.setPower(sPower);
-            telemetry.addData("shoulder power", sPower);
-
-
-            // Set elbow power to the left trigger, negative or positive depending on the bumper
-            double ePower = gamepad2.left_stick_y/3 + calculateElbowAid();
-            armElbow.setPower(ePower);
-            telemetry.addData("elbow power", ePower);
-
-
             // Run gripper according to triggers.
             gripperServo.setPower(gamepad2.right_trigger-gamepad2.left_trigger);
 
@@ -81,12 +68,8 @@ public class TeleOPDoubleDrive extends TeleOP {
                 armReset();
             }
 
-            if (gamepad2.a) {
-                //armTo(.4, 190, -100, 3);
-                armToContinouos(.4, 190, -100, 3);
-            }
-            else {
-                stopContinuousArm();
+            /*if (gamepad2.a){
+                armTo(.4, 190, -100, 2);
             }
 
 
@@ -95,11 +78,38 @@ public class TeleOPDoubleDrive extends TeleOP {
             }
 
             if (gamepad2.y) {
-                armTo(.4, START_SHOULDER_ANGLE, START_ELBOW_ANGLE, 3);
-                armShoulder.setPower(0);
-                armElbow.setPower(0);
-                armReset();
+                armTo(.4, START_SHOULDER_ANGLE, START_ELBOW_ANGLE, 2);
             }
+            */
+
+            /*
+            if (armElbow.getMode()!= DcMotor.RunMode.RUN_TO_POSITION &&
+                    armElbow.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {// Set shoulder power to the right stick, adjusted for position aid compensation
+                double sPower = gamepad2.right_stick_y + calculateShoulderAid();
+                armShoulder.setPower(sPower);
+                telemetry.addData("shoulder power", sPower);
+
+                // Set elbow power to the left stick, adjusted for position aid compensation
+                double ePower = gamepad2.left_stick_y / 3 + calculateElbowAid();
+                armElbow.setPower(ePower);
+                telemetry.addData("elbow power", ePower);
+            }
+
+             */
+            /*if (gamepad2.left_bumper || gamepad2.right_bumper) {
+                stopContinuousArm();
+            }
+            */
+
+
+            double sPower = gamepad2.right_stick_y + calculateShoulderAid();
+            armShoulder.setPower(sPower);
+            telemetry.addData("shoulder power", sPower);
+
+            // Set elbow power to the left stick, adjusted for position aid compensation
+            double ePower = gamepad2.left_stick_y / 3 + calculateElbowAid();
+            armElbow.setPower(ePower);
+            telemetry.addData("elbow power", ePower);
 
 
             telemetry.update();
