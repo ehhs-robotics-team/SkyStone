@@ -42,12 +42,12 @@ public class AutoBlueFoundation extends AutoOP {
         waitForStart();
         clawUp();
         encoderLinear(32, 10);
-        clawDown(0.25);
+        clawDown(0.35);
         sleep(2000);
         encoderLinear(-40, 5);
-        encoderTurn(-90, .5, 5);
+        encoderTurn(-300, 1, 5);
         clawUp();
-        encoderTurn(-135, 10); //
+        encoderTurn(-90, 10); //
         encoderLinear(-46, 5);
 
 
