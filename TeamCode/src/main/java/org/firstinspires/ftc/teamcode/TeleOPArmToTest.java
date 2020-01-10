@@ -49,16 +49,16 @@ public class TeleOPArmToTest extends TeleOP {
             f_rightDrive.setPower(-Math.pow(gamepad1.left_stick_y, 3));
             b_rightDrive.setPower(-Math.pow(gamepad1.left_stick_y, 3));
 
-            if (gamepad2.a){
+            if (gamepad2.y){
                 armToContinuous(.2, 190, -100);
             }
 
-            if (gamepad2.y){
+            if (gamepad2.a){
                 armToContinuous(.4, START_SHOULDER_ANGLE, START_ELBOW_ANGLE);
             }
 
-            if (armElbow.getMode()!= DcMotor.RunMode.RUN_TO_POSITION &&
-                    armElbow.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
+            if (!armElbow.getMode().equals(DcMotor.RunMode.RUN_TO_POSITION) &&
+                    !armElbow.getMode().equals(DcMotor.RunMode.RUN_TO_POSITION)) {
                 // Set shoulder power to the right stick, adjusted for position aid compensation
                 double sPower = gamepad2.right_stick_y + calculateShoulderAid();
                 armShoulder.setPower(sPower);
@@ -72,6 +72,7 @@ public class TeleOPArmToTest extends TeleOP {
             if (gamepad2.left_bumper || gamepad2.right_bumper) {
                 stopContinuousArm();
             }
+            telemetry.update();
         }
     }
 }
