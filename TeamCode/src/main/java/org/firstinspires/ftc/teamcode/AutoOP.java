@@ -97,8 +97,8 @@ public abstract class AutoOP extends LinearOpMode {
     static final double WHEEL_DIAMETER_INCHES = 4.0;     // For figuring circumference
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_TETRIX * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double DRIVE_SPEED = 0.6;
-    static final double TURN_SPEED = 0.5;
+    static final double DRIVE_SPEED = .8;//0.6;
+    static final double TURN_SPEED = .7;//0.5;
     public double inchesPerDegrees = 0.06166;
 
 
