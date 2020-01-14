@@ -31,16 +31,18 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 
-@TeleOp(name="Double Drive ", group="Linear Opmode")
+@TeleOp(name="Double Drive Touch Sensor", group="Linear Opmode")
 
-public class TeleOPDoubleDrive extends TeleOP {
+public class DoubleDriveTouchSensor extends TeleOP {
 
     @Override
     public void main() {
 
         waitForStart();
+        TouchSensor touchy;
 
         while(opModeIsActive()) {
 
@@ -49,20 +51,31 @@ public class TeleOPDoubleDrive extends TeleOP {
             b_leftDrive.setPower(-Math.pow(gamepad1.right_stick_y, 3));
             f_rightDrive.setPower(-Math.pow(gamepad1.left_stick_y, 3));
             b_rightDrive.setPower(-Math.pow(gamepad1.left_stick_y, 3));
+            touchy = hardwareMap.get(TouchSensor.class, "touch");
 
             //SETUP the claw to work with the controller
-            if (gamepad1.y) { clawUp(.25);
-            } else if (gamepad1.a) {clawDown(1);
-            } else {
-                //double restPosition = 0.75;
-                //rightClaw.setPosition(restPosition);
-                //leftClaw.setPosition(restPosition);
+            if (gamepad1.y)
+            {
+                clawUp(.25);
+            }
+
+            else if (gamepad1.a)
+            {
+                clawDown(1);
             }
 
 
             // Run gripper according to triggers.
-            gripperServo.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
-
+            if (touchy.isPressed()) {
+                if (gamepad2.right_trigger-gamepad2.left_trigger < 0) {
+                    gripperServo.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
+                    telemetry.addData("Status: ", "Touching Block");
+                }
+            }
+            else{
+                gripperServo.setPower(gamepad2.right_trigger-gamepad2.left_trigger);
+                telemetry.addData("Status: ", "NOT Touching Block");
+            }
 
             // Reset the arm encoders if the arm gets out of sync from gear slippage.
             if (gamepad2.x){
