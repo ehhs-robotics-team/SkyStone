@@ -190,17 +190,20 @@ public abstract class TeleOP extends LinearOpMode {
         telemetry.addData("Shoulder Angle: ", adjustedShoulderAngle );
 
         // Uses cosine to determine the appropriate aid to add to the arm to hold it stationary:
-            /*        _- 0 - _
+        /*
+                   _- 0 - _
                     /         \
                  -max         max
                     \         /
-                       - 0 -             */
+                       - 0 -
+                       */
         double shoulderAid = MAX_SHOULDER_AID * Math.cos(Math.toRadians(adjustedShoulderAngle));
         telemetry.addData("Shoulder Aid: ", shoulderAid);
 
-        //return shoulderAid;
-        return 0;
+        return shoulderAid;
     }
+
+
 
     public double calculateElbowAid(){
         //Elbow joint controls
@@ -219,8 +222,7 @@ public abstract class TeleOP extends LinearOpMode {
         telemetry.addData("Elbow Aid: ", elbowAid);
 
 
-        //return elbowAid;
-        return 0;
+        return elbowAid;
     }
 
     /*  Method to perform an absolute move of the elbow section of the arm, based on encoder counts.
@@ -276,7 +278,7 @@ public abstract class TeleOP extends LinearOpMode {
 
             // Stop all motion;
             armElbow.setPower(calculateElbowAid());
-            armShoulder.setPower(calculateShoulderAid());
+            armShoulder.setPower(0);
 
             // Turn off RUN_TO_POSITION
             armElbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -338,7 +340,7 @@ public abstract class TeleOP extends LinearOpMode {
     public void stopContinuousArm(){
         // Stop all motion;
         armElbow.setPower(calculateElbowAid());
-        armShoulder.setPower(calculateShoulderAid());
+        armShoulder.setPower(0);
 
         // Turn off RUN_TO_POSITION
         armElbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
