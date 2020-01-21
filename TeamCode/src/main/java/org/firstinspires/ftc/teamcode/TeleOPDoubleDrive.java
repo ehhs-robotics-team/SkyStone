@@ -50,6 +50,9 @@ public class TeleOPDoubleDrive extends TeleOP {
             f_rightDrive.setPower(-Math.pow(gamepad1.left_stick_y, 3));
             b_rightDrive.setPower(-Math.pow(gamepad1.left_stick_y, 3));
 
+            //set the gripper motor to brake at zero power
+            gripperMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
             //SETUP the claw to work with the controller
             if (gamepad1.y) {
                 clawUp(.25);
@@ -65,7 +68,8 @@ public class TeleOPDoubleDrive extends TeleOP {
 
 
             // Run gripper according to triggers.
-            gripperMotor.setPower((gamepad2.right_trigger - gamepad2.left_trigger) / 2);
+            gripperMotor.setPower((gamepad2.right_trigger - gamepad2.left_trigger));
+
 
 
             // Reset the arm encoders if the arm gets out of sync from gear slippage.

@@ -193,7 +193,7 @@ public abstract class TeleOP extends LinearOpMode {
 
         // Uses cosine to determine the appropriate aid to add to the arm to hold it stationary:
         /*
-                   _- 0 - _
+                     _- 0 - _
                     /         \
                  -max         max
                     \         /
