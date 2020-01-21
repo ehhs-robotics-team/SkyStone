@@ -302,8 +302,20 @@ public abstract class TeleOP extends LinearOpMode {
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            newElbowTarget = (int) (-elbowDegrees * ELBOW_TICKS_PER_DEGREE / ELBOW_GEAR_RATIO);
+            newElbowTarget *= 2;
+            armElbow.setTargetPosition(newElbowTarget);
+
+            // Determine new target position, and pass to motor controller
+            newShoulderTarget = +(int) (shoulderDegrees * SHOULDER_TICKS_PER_DEGREE / SHOULDER_GEAR_RATIO);
+
+            // If arm is not already running autonomously
             if (armShoulder.getMode() != DcMotor.RunMode.RUN_TO_POSITION ||
                     armElbow.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
+
+                /*
                 // Determine new target position, and pass to motor controller
                 newElbowTarget = (int) (-elbowDegrees * ELBOW_TICKS_PER_DEGREE / ELBOW_GEAR_RATIO);
                 newElbowTarget *= 2;
@@ -314,6 +326,11 @@ public abstract class TeleOP extends LinearOpMode {
                 // newTarget *= 2;
                 armShoulder.setTargetPosition(newShoulderTarget);
 
+                 */
+
+                armElbow.setTargetPosition(newElbowTarget);
+                armShoulder.setTargetPosition(newShoulderTarget);
+
                 // Turn On RUN_TO_POSITION
                 armElbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 armShoulder.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -322,7 +339,14 @@ public abstract class TeleOP extends LinearOpMode {
 
                 armElbow.setPower(Math.abs(speed));
                 armShoulder.setPower(Math.abs(speed));
-            } else if (armElbow.isBusy() || armShoulder.isBusy()) {
+            }
+            else if (Math.abs(armElbow.getCurrentPosition() - newElbowTarget) < 40 &&
+                    Math.abs(armShoulder.getCurrentPosition() - newShoulderTarget) < 40 ) {
+                stopContinuousArm();
+                telemetry.addData("Arm Status:", "Auto Mode turned off");
+            } //else if (armElbow.isBusy() || armShoulder.isBusy()) {
+            else {
+                // Do Nothing or ...
 
                 // Display it for the driver.
                 //telemetry.addData("Elbow", "Running at %7d to %7d",
@@ -330,8 +354,6 @@ public abstract class TeleOP extends LinearOpMode {
                 //telemetry.addData("Shoulder", "Running at %7d to %7d",
                         //armShoulder.getCurrentPosition(), newElbowTarget);
                 //telemetry.update();
-            }else {
-                stopContinuousArm();
             }
         }
 
