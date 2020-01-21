@@ -31,27 +31,34 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.TouchSensor;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 
 
-@Autonomous(name="Auto Blue Foundation", group="Linear Opmode")
+@TeleOp(name="Touch Test", group="Linear Opmode")
 
-public class AutoBlueFoundation extends AutoOP {
+public class touchTest extends AutoOP {
 
+    //transfer later to auto op declarations !!!!!
+
+    //declare the touch sensor object
+    TouchSensor touchy;
     @Override
     public void main(){
+        //map the touch sensor
+        touchy = hardwareMap.get(TouchSensor.class, "touch");
         waitForStart();
-        clawUp();
-        encoderLinear(32, 10);
-        clawDown(0.35);
-        sleep(2000);
-        encoderLinear(-40, 5);
-        encoderTurn(-300, 1, 5);
-        clawUp();
-        encoderTurn(-90, 10); //
-        encoderLinear(-46, 5);
 
-
-
-
+        //loop to print out telemetry for the gud touch sensor
+        while (opModeIsActive()){
+            if (touchy.isPressed()){
+                telemetry.addData("Touchy is being touched!", "1");
+            }
+            else{
+                telemetry.addData("Touchy is NOT being touched!", "0");
+            }
+            telemetry.update();
+        }
     }
 }

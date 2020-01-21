@@ -40,16 +40,13 @@ public class AutoRedFoundation extends AutoOP {
     public void main(){
         waitForStart();
         clawUp();
-        encoderLinear(32, 10);
+        encoderLinear(30, 10);
         clawDown(0.25);
         sleep(2000);
         encoderLinear(-40, 5);
-        encoderTurn(90, 1, 5);
+        encoderTurn(160, 1, 5);
         clawUp();
-        encoderTurn(135, 10); //
+        encoderTurn(120, 10); //
         encoderLinear(-46, 5);
-
-
-
     }
 }

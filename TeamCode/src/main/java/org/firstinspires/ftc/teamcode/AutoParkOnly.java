@@ -30,28 +30,17 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 
-@Autonomous(name="Auto Blue Foundation", group="Linear Opmode")
+@Autonomous(name="Auto Park Only Red", group="Linear Opmode")
 
-public class AutoBlueFoundation extends AutoOP {
+public class AutoParkOnly extends AutoOP {
 
     @Override
     public void main(){
         waitForStart();
-        clawUp();
-        encoderLinear(32, 10);
-        clawDown(0.35);
-        sleep(2000);
-        encoderLinear(-40, 5);
-        encoderTurn(-300, 1, 5);
-        clawUp();
-        encoderTurn(-90, 10); //
-        encoderLinear(-46, 5);
-
-
-
-
+        //encoderLinear(5, 5);
+        //encoderTurn(-90, 3);
+        encoderLinear(20, 10);
     }
 }
