@@ -835,7 +835,7 @@ public abstract class AutoOP extends LinearOpMode {
 
 
             // Stop all motion;
-            armShoulder.setPower(calculateShoulderAid());
+            armShoulder.setPower(0);
 
             // Turn off RUN_TO_POSITION
             armShoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -891,7 +891,7 @@ public abstract class AutoOP extends LinearOpMode {
 
 
             // Stop all motion;
-            armShoulder.setPower(calculateShoulderAid());
+            armShoulder.setPower(0);
 
             // Turn off RUN_TO_POSITION
             armShoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -1006,7 +1006,7 @@ public abstract class AutoOP extends LinearOpMode {
 
             // Stop all motion;
             armElbow.setPower(calculateElbowAid());
-            armShoulder.setPower(calculateShoulderAid());
+            armShoulder.setPower(0);
 
             // Turn off RUN_TO_POSITION
             armElbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -1070,7 +1070,7 @@ public abstract class AutoOP extends LinearOpMode {
 
             // Stop all motion;
             armElbow.setPower(calculateElbowAid());
-            armShoulder.setPower(calculateShoulderAid());
+            armShoulder.setPower(0);
 
             // Turn off RUN_TO_POSITION
             armElbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
