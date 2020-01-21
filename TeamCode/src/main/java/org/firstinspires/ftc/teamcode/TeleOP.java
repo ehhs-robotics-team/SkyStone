@@ -84,6 +84,7 @@ public abstract class TeleOP extends LinearOpMode {
 
     //Declare the gripper's servo variable
     CRServo gripperServo = null;
+    DcMotor gripperMotor = null;
 
     double driveSensitivity;
     double clawUpPosition;
@@ -139,6 +140,7 @@ public abstract class TeleOP extends LinearOpMode {
 
         //map the gripper's servo
         gripperServo = hardwareMap.get(CRServo.class, "gripperServo");
+        gripperMotor = hardwareMap.get(DcMotor.class, "gripperMotor");
 
         //reverse the right motors
         f_rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
