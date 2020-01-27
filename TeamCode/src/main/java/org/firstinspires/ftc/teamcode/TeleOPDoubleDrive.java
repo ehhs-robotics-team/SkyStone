@@ -66,10 +66,13 @@ public class TeleOPDoubleDrive extends TeleOP {
                 //leftClaw.setPosition(restPosition);
             }
 
-
+            //programming the gripper
             if (gamepad2.right_trigger - gamepad2.left_trigger > 0){
                 if (!touchy.isPressed()){
                     gripperMotor.setPower((gamepad2.right_trigger - gamepad2.left_trigger));
+                }
+                else{
+                    gripperMotor.setPower(0);
                 }
             }
             else {
