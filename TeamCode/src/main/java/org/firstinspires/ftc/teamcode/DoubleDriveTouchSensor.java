@@ -64,7 +64,7 @@ public class DoubleDriveTouchSensor extends TeleOP {
                 clawDown(1);
             }
 
-
+            /*
             // Run gripper according to triggers.
             if (touchy.isPressed()) {
                 if (gamepad2.right_trigger-gamepad2.left_trigger < 0) {
@@ -76,6 +76,8 @@ public class DoubleDriveTouchSensor extends TeleOP {
                 gripperMotor.setPower(gamepad2.right_trigger-gamepad2.left_trigger);
                 telemetry.addData("Status: ", "NOT Touching Block");
             }
+
+             */
 
             // Reset the arm encoders if the arm gets out of sync from gear slippage.
             if (gamepad2.x){

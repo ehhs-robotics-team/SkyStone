@@ -33,9 +33,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 
-@TeleOp(name="Read Arm Position", group="Linear Opmode")
+@TeleOp(name="Move Arm Test", group="Linear Opmode")
 
-public class ArmPosition extends TeleOP {
+public class ArmMoveTest extends TeleOP {
 
     public int newShoulderTarget;
     public int newElbowTarget;
@@ -53,42 +53,32 @@ public class ArmPosition extends TeleOP {
             telemetry.addData("Shoulder Angle", currentShoulderAngle);
             telemetry.addData("Elbow Position", armElbow.getCurrentPosition());
             telemetry.addData("Elbow Angle", currentElbowAngle);
-            telemetry.update();
 
-            if (gamepad2.x){
-                armReset();
+
+            if (gamepad2.left_bumper){
+                moveArm(1, 0);
             }
 
-            if (gamepad2.a) {
+            if (gamepad2.right_bumper) {
 
-                armTo(.4, 190, -100, 3);
-            }
-
-            if (gamepad2.b) {
-                armTo(.4, 180,340, 3);
-            }
-
-            if (gamepad2.y) {
-                armTo(.4, START_SHOULDER_ANGLE, START_ELBOW_ANGLE, 3);
-                armShoulder.setPower(0);
-                armElbow.setPower(0);
-                armReset();
+                moveArm(-1,0);
             }
         }
     }
 
-    public void moveArm(double shoulderDegrees, double elbowDegrees){
-        // Turn On RUN_TO_POSITION
-        armElbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        armShoulder.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    public void moveArm(double shoulderSpeed, double elbowSpeed){
 
         // Determine new target position, and pass to motor controller
-        newElbowTarget += elbowDegrees* ELBOW_TICKS_PER_DEGREE/ELBOW_GEAR_RATIO;
+        newElbowTarget += elbowSpeed*20; // elbowDegrees* ELBOW_TICKS_PER_DEGREE/ELBOW_GEAR_RATIO;
         armElbow.setTargetPosition(newElbowTarget);
 
         // Determine new target position, and pass to motor controller
-        newShoulderTarget += shoulderDegrees * SHOULDER_TICKS_PER_DEGREE / SHOULDER_GEAR_RATIO;
+        newShoulderTarget += shoulderSpeed*20; // shoulderDegrees * SHOULDER_TICKS_PER_DEGREE / SHOULDER_GEAR_RATIO;
         armShoulder.setTargetPosition(newShoulderTarget);
+
+        double power = 0.6;
+        armElbow.setPower(Math.abs(power*elbowSpeed));
+        armShoulder.setPower(Math.abs(power*shoulderSpeed));
 
         // Display it for the driver.
         telemetry.addData("Elbow", "Running at %7d to %7d",
@@ -96,6 +86,10 @@ public class ArmPosition extends TeleOP {
         telemetry.addData("Shoulder", "Running at %7d to %7d",
                 armShoulder.getCurrentPosition(), newElbowTarget);
         telemetry.update();
+
+        // Turn On RUN_TO_POSITION
+        armElbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armShoulder.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
     }
 
