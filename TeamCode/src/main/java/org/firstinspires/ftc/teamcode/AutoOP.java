@@ -85,7 +85,7 @@ public abstract class AutoOP extends LinearOpMode {
     private Servo rightClaw = null;
 
     //the gripper servo
-    CRServo gripperServo = null;
+    DcMotor gripperMotor = null;
 
 
     //setup sensitivity variables
@@ -247,7 +247,7 @@ public abstract class AutoOP extends LinearOpMode {
 
 
         //map the gripper's servo
-        gripperServo = hardwareMap.get(CRServo.class, "gripperServo");
+        gripperMotor = hardwareMap.get(DcMotor.class, "gripperMotor");
 
         //reverse one of the claw servos
         rightClaw.setDirection(Servo.Direction.REVERSE);
@@ -1102,28 +1102,29 @@ public abstract class AutoOP extends LinearOpMode {
 
     public void openGripper(double seconds){
        if(opModeIsActive()) {
-           gripperServo.setPower(1);
+           gripperMotor.setPower(1);
            sleep((long)(seconds * 1000));
-           gripperServo.setPower(0);
+           gripperMotor.setPower(0);
        }
     }
 
     public void openGripper(long milliseconds){
         if(opModeIsActive()) {
-            gripperServo.setPower(1);
+            gripperMotor.setPower(1);
             sleep(milliseconds);
-            gripperServo.setPower(0);
+            gripperMotor.setPower(0);
         }
     }
 
 
     public void closeGripper(double seconds) {
         if (opModeIsActive()) {
-            gripperServo.setPower(-1);
+            gripperMotor.setPower(-1);
             sleep((long) (seconds * 1000));
-            gripperServo.setPower(0);
+            gripperMotor.setPower(0);
         }
     }
+     
 }
 
 

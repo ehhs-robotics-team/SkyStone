@@ -369,7 +369,7 @@ public abstract class TeleOP extends LinearOpMode {
 
     }
 
-    /*  Method to perform an absolute move of the gripper based on encoder counts.
+    /*  Method to perform an absolute move of the gripper section of the arm, based on encoder counts.
      *  Encoders are not reset as the move is based on the current position.
      *  Move will stop if any of three conditions occur:
      *  1) Move gets to the desired position
@@ -378,15 +378,16 @@ public abstract class TeleOP extends LinearOpMode {
      */
     public void gripperTo(double speed, double inches, boolean test, double timeoutS){
         int newGripperTarget;
+        gripperMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
             if(test){
-                newGripperTarget = (int) GRIPPER_TICKS_PER_ROTATION;
+                newGripperTarget = (int)GRIPPER_TICKS_PER_ROTATION;
             }else {
-                newGripperTarget = gripperMotor.getCurrentPosition() + (int) (inches * GRIPPER_TICKS_PER_ROTATION);
+                newGripperTarget = (int)(inches * GRIPPER_TICKS_PER_INCH);
             }
             gripperMotor.setTargetPosition(newGripperTarget);
 
@@ -413,8 +414,6 @@ public abstract class TeleOP extends LinearOpMode {
 
             // Turn off RUN_TO_POSITION
             gripperMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-            //  sleep(250);   // optional pause after each move
         }
 
     }

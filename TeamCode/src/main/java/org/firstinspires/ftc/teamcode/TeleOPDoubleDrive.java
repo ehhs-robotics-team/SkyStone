@@ -71,7 +71,7 @@ public class TeleOPDoubleDrive extends TeleOP {
             gripperMotor.setPower((gamepad2.right_trigger - gamepad2.left_trigger));
             //test gripper encoders
             if(gamepad2.a){
-                gripperTo(0.7, 0, true, 5);
+                gripperTo(0.5, 0, true, 3);
             }
 
 
