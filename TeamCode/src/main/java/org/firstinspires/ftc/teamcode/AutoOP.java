@@ -36,6 +36,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -186,6 +187,11 @@ public abstract class AutoOP extends LinearOpMode {
     public DcMotor armShoulder = null;
     public DcMotor armElbow = null;
 
+    //the touch sensor on the gripper
+    public TouchSensor touchy;
+
+
+
 
     // SEt initial angle to the angle the 1st arm segment is at when resting on the robot (degrees) ;
     final double START_SHOULDER_ANGLE = -12;
@@ -250,6 +256,9 @@ public abstract class AutoOP extends LinearOpMode {
 
         armElbow = hardwareMap.get(DcMotor.class, "arm_elbow");
         armShoulder = hardwareMap.get(DcMotor.class, "arm_shoulder");
+
+        //setup the touch sensor
+        touchy = hardwareMap.get(TouchSensor.class, "touch");
 
         armShoulder.setDirection(DcMotorSimple.Direction.REVERSE);
 

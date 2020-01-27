@@ -37,6 +37,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
@@ -74,6 +75,8 @@ public abstract class TeleOP extends LinearOpMode {
     DcMotor f_rightDrive = null;
     DcMotor b_leftDrive = null;
     DcMotor b_rightDrive = null;
+
+    public TouchSensor touchy;
 
     DcMotor armShoulder = null;
     DcMotor armElbow = null;
@@ -155,6 +158,9 @@ public abstract class TeleOP extends LinearOpMode {
 
         //reverse one of the claw servos
         rightClaw.setDirection(Servo.Direction.REVERSE);
+
+        //setup the touch sensor
+        touchy = hardwareMap.get(TouchSensor.class, "touch");
 
 
 
