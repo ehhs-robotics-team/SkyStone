@@ -95,11 +95,11 @@ public class TeleOPDrive extends TeleOP {
 
             double gripperPower = 0.5;
             if (gamepad1.dpad_right){
-                gripperServo.setPower(gripperPower);
+                gripperMotor.setPower(gripperPower);
             } else if (gamepad1.dpad_left){
-                gripperServo.setPower(-gripperPower);
+                gripperMotor.setPower(-gripperPower);
             } else {
-                gripperServo.setPower(0);
+                gripperMotor.setPower(0);
             }
 
             telemetry.update();
