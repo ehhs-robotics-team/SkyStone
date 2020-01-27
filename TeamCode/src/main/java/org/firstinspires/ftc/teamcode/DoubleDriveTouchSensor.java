@@ -68,12 +68,12 @@ public class DoubleDriveTouchSensor extends TeleOP {
             // Run gripper according to triggers.
             if (touchy.isPressed()) {
                 if (gamepad2.right_trigger-gamepad2.left_trigger < 0) {
-                    gripperServo.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
+                    gripperMotor.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
                     telemetry.addData("Status: ", "Touching Block");
                 }
             }
             else{
-                gripperServo.setPower(gamepad2.right_trigger-gamepad2.left_trigger);
+                gripperMotor.setPower(gamepad2.right_trigger-gamepad2.left_trigger);
                 telemetry.addData("Status: ", "NOT Touching Block");
             }
 
