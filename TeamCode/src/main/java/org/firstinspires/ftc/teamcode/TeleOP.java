@@ -102,13 +102,14 @@ public abstract class TeleOP extends LinearOpMode {
     public double START_ELBOW_ANGLE = 160-START_SHOULDER_ANGLE;
     double currentElbowAngle = START_ELBOW_ANGLE;
 
-
+    final double GRIPPER_TICKS_PER_ROTATION = 1440;
     final double SHOULDER_TICKS_PER_ROTATION = 1440;
     final double ELBOW_TICKS_PER_ROTATION = 1120; // Rev motor as per http://www.revrobotics.com/content/docs/Encoder-Guide.pdf
 
     final double SHOULDER_GEAR_RATIO = 1.0/10.0; // Motor:Shoulder Motor turns 3 times per one arm rotation
     final double ELBOW_GEAR_RATIO = 3.0/8.0; // Motor:Elbow gear ratio
 
+    final double GRIPPER_TICKS_PER_INCH = 0;
     final double SHOULDER_TICKS_PER_DEGREE = SHOULDER_TICKS_PER_ROTATION/360;
     final double ELBOW_TICKS_PER_DEGREE = ELBOW_TICKS_PER_ROTATION / 360;
 
@@ -150,7 +151,10 @@ public abstract class TeleOP extends LinearOpMode {
         armShoulder.setDirection(DcMotorSimple.Direction.REVERSE);
         armElbow.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        // Reset arm encoder counts for accurate tracking;
+        // Reset arm and gripper encoder counts for accurate tracking;
+        gripperMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        gripperMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         armShoulder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armShoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -295,7 +299,6 @@ public abstract class TeleOP extends LinearOpMode {
     }
 
 
-
     /*  Method to perform an absolute move of the arm, based on encoder counts.
      *  Encoders are not reset as the move is based on the current position.
      *  Move will stop if any of three conditions occur:
@@ -362,6 +365,56 @@ public abstract class TeleOP extends LinearOpMode {
                         //armShoulder.getCurrentPosition(), newElbowTarget);
                 //telemetry.update();
             }
+        }
+
+    }
+
+    /*  Method to perform an absolute move of the gripper based on encoder counts.
+     *  Encoders are not reset as the move is based on the current position.
+     *  Move will stop if any of three conditions occur:
+     *  1) Move gets to the desired position
+     *  2) Move runs out of time
+     *  3) Driver stops the opmode running.
+     */
+    public void gripperTo(double speed, double inches, boolean test, double timeoutS){
+        int newGripperTarget;
+
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            if(test){
+                newGripperTarget = (int) GRIPPER_TICKS_PER_ROTATION;
+            }else {
+                newGripperTarget = gripperMotor.getCurrentPosition() + (int) (inches * GRIPPER_TICKS_PER_ROTATION);
+            }
+            gripperMotor.setTargetPosition(newGripperTarget);
+
+            // Turn On RUN_TO_POSITION
+            gripperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // reset the timeout time and start motion.
+            encoderTime.reset();
+            gripperMotor.setPower(Math.abs(speed));
+
+            // keep looping while we are still active, and there is time left, and the motors is running.
+            while (opModeIsActive() &&
+                    (encoderTime.seconds() < timeoutS) &&
+                    (gripperMotor.isBusy() )) {
+
+                // Display it for the driver.
+                telemetry.addData("Gripper", "Running at %7d to %7d",
+                        gripperMotor.getCurrentPosition(), newGripperTarget);
+                telemetry.update();
+            }
+
+            // Stop all motion;
+            gripperMotor.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            gripperMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            //  sleep(250);   // optional pause after each move
         }
 
     }

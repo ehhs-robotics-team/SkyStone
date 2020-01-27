@@ -69,7 +69,10 @@ public class TeleOPDoubleDrive extends TeleOP {
 
             // Run gripper according to triggers.
             gripperMotor.setPower((gamepad2.right_trigger - gamepad2.left_trigger));
-
+            //test gripper encoders
+            if(gamepad2.a){
+                gripperTo(0.7, 0, true, 5);
+            }
 
 
             // Reset the arm encoders if the arm gets out of sync from gear slippage.
