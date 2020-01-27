@@ -106,7 +106,7 @@ public abstract class TeleOP extends LinearOpMode {
     final double SHOULDER_TICKS_PER_ROTATION = 1440;
     final double ELBOW_TICKS_PER_ROTATION = 1120; // Rev motor as per http://www.revrobotics.com/content/docs/Encoder-Guide.pdf
 
-    final double SHOULDER_GEAR_RATIO = 1.0/3.0; // Motor:Shoulder Motor turns 3 times per one arm rotation
+    final double SHOULDER_GEAR_RATIO = 1.0/10.0; // Motor:Shoulder Motor turns 3 times per one arm rotation
     final double ELBOW_GEAR_RATIO = 3.0/8.0; // Motor:Elbow gear ratio
 
     final double SHOULDER_TICKS_PER_DEGREE = SHOULDER_TICKS_PER_ROTATION/360;
@@ -148,6 +148,7 @@ public abstract class TeleOP extends LinearOpMode {
         b_rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
         armShoulder.setDirection(DcMotorSimple.Direction.REVERSE);
+        armElbow.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // Reset arm encoder counts for accurate tracking;
         armShoulder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -293,7 +294,9 @@ public abstract class TeleOP extends LinearOpMode {
 
     }
 
-    /*  Method to perform an absolute move of the elbow section of the arm, based on encoder counts.
+
+
+    /*  Method to perform an absolute move of the arm, based on encoder counts.
      *  Encoders are not reset as the move is based on the current position.
      *  Move will stop if any of three conditions occur:
      *  1) Move gets to the desired position

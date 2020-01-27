@@ -55,6 +55,7 @@ public class ArmPosition extends TeleOP {
             }
 
             if (gamepad2.a) {
+
                 armTo(.4, 190, -100, 3);
             }
 

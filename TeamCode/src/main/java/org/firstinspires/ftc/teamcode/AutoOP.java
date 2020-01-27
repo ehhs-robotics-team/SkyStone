@@ -261,6 +261,7 @@ public abstract class AutoOP extends LinearOpMode {
         touchy = hardwareMap.get(TouchSensor.class, "touch");
 
         armShoulder.setDirection(DcMotorSimple.Direction.REVERSE);
+        armElbow.setDirection(DcMotorSimple.Direction.REVERSE);
 
         armReset();
 
