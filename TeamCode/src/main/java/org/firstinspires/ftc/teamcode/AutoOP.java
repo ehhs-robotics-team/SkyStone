@@ -252,6 +252,7 @@ public abstract class AutoOP extends LinearOpMode {
         armShoulder = hardwareMap.get(DcMotor.class, "arm_shoulder");
 
         armShoulder.setDirection(DcMotorSimple.Direction.REVERSE);
+        armElbow.setDirection(DcMotorSimple.Direction.REVERSE);
 
         armReset();
 
