@@ -29,6 +29,9 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import android.content.Context;
+
+import com.qualcomm.ftccommon.SoundPlayer;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -92,6 +95,9 @@ public abstract class TeleOP extends LinearOpMode {
     double clawUpPosition;
     double clawDownPosition;
 
+    //flag variables
+    public static boolean started = false;
+
 
 
     // SEt initial angle to the angle the 1st arm segment is at when resting on the robot (degrees) ;
@@ -109,14 +115,13 @@ public abstract class TeleOP extends LinearOpMode {
     final double SHOULDER_GEAR_RATIO = 1.0/10.0; // Motor:Shoulder Motor turns 3 times per one arm rotation
     final double ELBOW_GEAR_RATIO = 3.0/8.0; // Motor:Elbow gear ratio
 
-    final double GRIPPER_TICKS_PER_INCH = 0;
+    final double GRIPPER_TICKS_PER_INCH = (GRIPPER_TICKS_PER_ROTATION/3.5);
     final double SHOULDER_TICKS_PER_DEGREE = SHOULDER_TICKS_PER_ROTATION/360;
     final double ELBOW_TICKS_PER_DEGREE = ELBOW_TICKS_PER_ROTATION / 360;
 
     // Aid at the extremities, to keep the arm still at full horizontal extension.
     double MAX_SHOULDER_AID = 0.001;
     double MAX_ELBOW_AID = 0.0005;
-
 
 
 
@@ -166,8 +171,6 @@ public abstract class TeleOP extends LinearOpMode {
 
         //setup the touch sensor
         touchy = hardwareMap.get(TouchSensor.class, "touch");
-
-
 
 
         //setup the values that are needed
@@ -364,7 +367,6 @@ public abstract class TeleOP extends LinearOpMode {
                 //telemetry.update();
             }
         }
-
     }
 
     /*  Method to perform an absolute move of the gripper section of the arm, based on encoder counts.
@@ -375,43 +377,46 @@ public abstract class TeleOP extends LinearOpMode {
      *  3) Driver stops the opmode running.
      */
     public void gripperTo(double speed, double inches, boolean test, double timeoutS){
-        int newGripperTarget;
-        gripperMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
         // Ensure that the opmode is still active
-        if (opModeIsActive()) {
+        if (!started) {
+            if (opModeIsActive()) {
+                started = true;
+                int newGripperTarget;
+                gripperMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-            // Determine new target position, and pass to motor controller
-            if(test){
-                newGripperTarget = (int)GRIPPER_TICKS_PER_ROTATION;
-            }else {
-                newGripperTarget = (int)(inches * GRIPPER_TICKS_PER_INCH);
+                // Determine new target position, and pass to motor controller
+                if (test) {
+                    newGripperTarget = (int) GRIPPER_TICKS_PER_ROTATION;
+                } else {
+                    newGripperTarget = (int) (inches * GRIPPER_TICKS_PER_INCH);
+                }
+                gripperMotor.setTargetPosition(newGripperTarget);
+
+                // Turn On RUN_TO_POSITION
+                gripperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                // reset the timeout time and start motion.
+                encoderTime.reset();
+                gripperMotor.setPower(Math.abs(speed));
+
+                // keep looping while we are still active, and there is time left, and the motors is running.
+                while (opModeIsActive() &&
+                        (encoderTime.seconds() < timeoutS) &&
+                        (gripperMotor.isBusy())) {
+
+                    // Display it for the driver.
+                    telemetry.addData("Gripper", "Running at %7d to %7d",
+                            gripperMotor.getCurrentPosition(), newGripperTarget);
+                    telemetry.update();
+                }
+
+                // Stop all motion;
+                gripperMotor.setPower(0);
+
+                // Turn off RUN_TO_POSITION
+                gripperMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                started = false;
             }
-            gripperMotor.setTargetPosition(newGripperTarget);
-
-            // Turn On RUN_TO_POSITION
-            gripperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            // reset the timeout time and start motion.
-            encoderTime.reset();
-            gripperMotor.setPower(Math.abs(speed));
-
-            // keep looping while we are still active, and there is time left, and the motors is running.
-            while (opModeIsActive() &&
-                    (encoderTime.seconds() < timeoutS) &&
-                    (gripperMotor.isBusy() )) {
-
-                // Display it for the driver.
-                telemetry.addData("Gripper", "Running at %7d to %7d",
-                        gripperMotor.getCurrentPosition(), newGripperTarget);
-                telemetry.update();
-            }
-
-            // Stop all motion;
-            gripperMotor.setPower(0);
-
-            // Turn off RUN_TO_POSITION
-            gripperMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
 
     }

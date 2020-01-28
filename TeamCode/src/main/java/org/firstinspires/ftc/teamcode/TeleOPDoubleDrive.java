@@ -37,6 +37,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class TeleOPDoubleDrive extends TeleOP {
 
+    private boolean started = false;
     @Override
     public void main() {
 
@@ -64,6 +65,10 @@ public class TeleOPDoubleDrive extends TeleOP {
                 //double restPosition = 0.75;
                 //rightClaw.setPosition(restPosition);
                 //leftClaw.setPosition(restPosition);
+            }
+
+            if(gamepad2.a){
+                gripperTo(.7, 1, false, 4);
             }
 
             //programming the gripper
@@ -119,7 +124,7 @@ public class TeleOPDoubleDrive extends TeleOP {
             */
 
 
-            double sPower = Math.pow(gamepad2.right_stick_y, 2);
+            double sPower = gamepad2.right_stick_y;
             armShoulder.setPower(sPower);
             telemetry.addData("shoulder power", sPower);
 
