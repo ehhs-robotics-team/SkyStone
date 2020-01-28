@@ -39,7 +39,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 @Autonomous(name="Auto Encoder Arm Test", group="Linear Opmode")
-//@Disabled
+@Disabled
 public class ArmAuto extends AutoOP {
 
     //CRServo gripperServo = null;
@@ -210,7 +210,7 @@ public class ArmAuto extends AutoOP {
 
 
             // Stop all motion;
-            armShoulder.setPower(calculateShoulderAid());
+            armShoulder.setPower(0);
 
             // Turn off RUN_TO_POSITION
             armShoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

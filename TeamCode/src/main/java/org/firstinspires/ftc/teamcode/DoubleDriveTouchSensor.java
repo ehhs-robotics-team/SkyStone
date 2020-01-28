@@ -29,13 +29,14 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 
 @TeleOp(name="Double Drive Touch Sensor", group="Linear Opmode")
-
+@Disabled
 public class DoubleDriveTouchSensor extends TeleOP {
 
     @Override

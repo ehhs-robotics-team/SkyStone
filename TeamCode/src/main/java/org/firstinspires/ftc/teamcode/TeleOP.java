@@ -209,8 +209,7 @@ public abstract class TeleOP extends LinearOpMode {
         double shoulderAid = MAX_SHOULDER_AID * Math.cos(Math.toRadians(adjustedShoulderAngle));
         telemetry.addData("Shoulder Aid: ", shoulderAid);
 
-        //return shoulderAid;
-        return 0;
+        return shoulderAid;
     }
 
     public double calculateElbowAid(){
@@ -230,8 +229,7 @@ public abstract class TeleOP extends LinearOpMode {
         telemetry.addData("Elbow Aid: ", elbowAid);
 
 
-        //return elbowAid;
-        return 0;
+        return elbowAid;
     }
 
     /*  Method to perform an absolute move of the elbow section of the arm, based on encoder counts.
