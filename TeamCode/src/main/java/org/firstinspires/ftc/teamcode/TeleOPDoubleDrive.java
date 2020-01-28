@@ -37,6 +37,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class TeleOPDoubleDrive extends TeleOP {
 
+    private boolean started = false;
     @Override
     public void main() {
 

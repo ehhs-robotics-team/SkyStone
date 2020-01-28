@@ -96,7 +96,7 @@ public abstract class TeleOP extends LinearOpMode {
     double clawDownPosition;
 
     //flag variables
-    private boolean started = false;
+    public static boolean started = false;
 
 
 
@@ -378,43 +378,45 @@ public abstract class TeleOP extends LinearOpMode {
      */
     public void gripperTo(double speed, double inches, boolean test, double timeoutS){
         // Ensure that the opmode is still active
-        if (opModeIsActive() && !started) {
-            started = true;
-            int newGripperTarget;
-            gripperMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        if (!started) {
+            if (opModeIsActive()) {
+                started = true;
+                int newGripperTarget;
+                gripperMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-            // Determine new target position, and pass to motor controller
-            if(test){
-                newGripperTarget = (int)GRIPPER_TICKS_PER_ROTATION;
-            }else {
-                newGripperTarget = (int)(inches * GRIPPER_TICKS_PER_INCH);
+                // Determine new target position, and pass to motor controller
+                if (test) {
+                    newGripperTarget = (int) GRIPPER_TICKS_PER_ROTATION;
+                } else {
+                    newGripperTarget = (int) (inches * GRIPPER_TICKS_PER_INCH);
+                }
+                gripperMotor.setTargetPosition(newGripperTarget);
+
+                // Turn On RUN_TO_POSITION
+                gripperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                // reset the timeout time and start motion.
+                encoderTime.reset();
+                gripperMotor.setPower(Math.abs(speed));
+
+                // keep looping while we are still active, and there is time left, and the motors is running.
+                while (opModeIsActive() &&
+                        (encoderTime.seconds() < timeoutS) &&
+                        (gripperMotor.isBusy())) {
+
+                    // Display it for the driver.
+                    telemetry.addData("Gripper", "Running at %7d to %7d",
+                            gripperMotor.getCurrentPosition(), newGripperTarget);
+                    telemetry.update();
+                }
+
+                // Stop all motion;
+                gripperMotor.setPower(0);
+
+                // Turn off RUN_TO_POSITION
+                gripperMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                started = false;
             }
-            gripperMotor.setTargetPosition(newGripperTarget);
-
-            // Turn On RUN_TO_POSITION
-            gripperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            // reset the timeout time and start motion.
-            encoderTime.reset();
-            gripperMotor.setPower(Math.abs(speed));
-
-            // keep looping while we are still active, and there is time left, and the motors is running.
-            while (opModeIsActive() &&
-                    (encoderTime.seconds() < timeoutS) &&
-                    (gripperMotor.isBusy() )) {
-
-                // Display it for the driver.
-                telemetry.addData("Gripper", "Running at %7d to %7d",
-                        gripperMotor.getCurrentPosition(), newGripperTarget);
-                telemetry.update();
-            }
-
-            // Stop all motion;
-            gripperMotor.setPower(0);
-
-            // Turn off RUN_TO_POSITION
-            gripperMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            started = false;
         }
 
     }
