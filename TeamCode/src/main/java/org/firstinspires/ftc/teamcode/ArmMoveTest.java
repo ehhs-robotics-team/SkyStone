@@ -80,6 +80,7 @@ public class ArmMoveTest extends TeleOP {
         armElbow.setPower(Math.abs(power*elbowSpeed));
         armShoulder.setPower(Math.abs(power*shoulderSpeed));
 
+
         // Display it for the driver.
         telemetry.addData("Elbow", "Running at %7d to %7d",
                 armElbow.getCurrentPosition(), newElbowTarget);
