@@ -119,7 +119,7 @@ public class TeleOPDoubleDrive extends TeleOP {
             */
 
 
-            double sPower = gamepad2.right_stick_y + calculateShoulderAid();
+            double sPower = gamepad2.right_stick_y;
             armShoulder.setPower(sPower);
             telemetry.addData("shoulder power", sPower);
 
