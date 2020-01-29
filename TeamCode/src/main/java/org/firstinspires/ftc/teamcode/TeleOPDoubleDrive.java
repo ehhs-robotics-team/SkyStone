@@ -45,6 +45,8 @@ public class TeleOPDoubleDrive extends TeleOP {
 
         while(opModeIsActive()) {
 
+            telemetry.addData("Grippper Position", gripperMotor.getCurrentPosition());
+
             // Set wheel power to cube of stick value to give more control near the center:
             f_leftDrive.setPower(-Math.pow(gamepad1.right_stick_y, 3));
             b_leftDrive.setPower(-Math.pow(gamepad1.right_stick_y, 3));
