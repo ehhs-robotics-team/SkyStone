@@ -43,6 +43,8 @@ public class TeleOPDoubleDrive extends TeleOP {
 
         waitForStart();
 
+
+
         while(opModeIsActive()) {
 
             telemetry.addData("Grippper Position", gripperMotor.getCurrentPosition());
@@ -69,21 +71,38 @@ public class TeleOPDoubleDrive extends TeleOP {
                 //leftClaw.setPosition(restPosition);
             }
 
-            if(gamepad2.a){
-                gripperTo(.7, 1, false, 4);
-            }
-
             //programming the gripper
             if (gamepad2.right_trigger - gamepad2.left_trigger > 0){
-                if (!touchy.isPressed()){
+                if (!touchy.isPressed() && !boundariesExceeded()){
                     gripperMotor.setPower((gamepad2.right_trigger - gamepad2.left_trigger));
                 }
                 else{
                     gripperMotor.setPower(0);
                 }
             }
-            else {
+            else if (!boundariesExceeded()) {
                 gripperMotor.setPower((gamepad2.right_trigger - gamepad2.left_trigger));
+            }
+            else if (boundariesExceeded()){
+                if (gripperMotor.getCurrentPosition() <= GRIPPER_OPEN_POS){
+                    if (gamepad2.right_trigger - gamepad2.left_trigger > 0) {
+                        gripperMotor.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
+                    }
+                    else{
+                        gripperMotor.setPower(0);
+                    }
+                }
+                else if (gripperMotor.getCurrentPosition() >= GRIPPER_CLOSED_POS){
+                    if (gamepad2.right_trigger - gamepad2.left_trigger < 0){
+                        gripperMotor.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
+                    }
+                    else{
+                        gripperMotor.setPower(0);
+                    }
+                }
+                else{
+                    gripperMotor.setPower(0);
+                }
             }
 
 

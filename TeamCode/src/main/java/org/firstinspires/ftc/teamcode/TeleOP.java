@@ -119,6 +119,10 @@ public abstract class TeleOP extends LinearOpMode {
     final double SHOULDER_TICKS_PER_DEGREE = SHOULDER_TICKS_PER_ROTATION/360;
     final double ELBOW_TICKS_PER_DEGREE = ELBOW_TICKS_PER_ROTATION / 360;
 
+    //gripper final min and max
+    public final double GRIPPER_CLOSED_POS = 1100;
+    public final double GRIPPER_OPEN_POS = -2900;
+
     // Aid at the extremities, to keep the arm still at full horizontal extension.
     double MAX_SHOULDER_AID = 0.001;
     double MAX_ELBOW_AID = 0.0005;
@@ -451,6 +455,14 @@ public abstract class TeleOP extends LinearOpMode {
 
         // SEt initial angle to the angle the 2nd arm segment is at when raesting on the robot (degrees) ;
         currentElbowAngle = START_ELBOW_ANGLE;
+    }
+
+    //method to check if the gripper motor has exceeded its boundaries
+    public boolean boundariesExceeded(){
+        if (gripperMotor.getCurrentPosition() > GRIPPER_OPEN_POS && gripperMotor.getCurrentPosition() < GRIPPER_CLOSED_POS){
+            return false;
+        }
+        return true;
     }
 
 
