@@ -201,7 +201,7 @@ public abstract class TeleOP extends LinearOpMode {
         // Gets the absolute positioning of the 1st arm segment, assuming it always starts from
         // the "down" position beside the phone mount at START_SHOULDER_ANGLE.
         double adjustedShoulderAngle = currentShoulderAngle + START_SHOULDER_ANGLE;
-        telemetry.addData("Shoulder Angle: ", adjustedShoulderAngle );
+       // telemetry.addData("Shoulder Angle: ", adjustedShoulderAngle );
 
         // Uses cosine to determine the appropriate aid to add to the arm to hold it stationary:
             /*        _- 0 - _
@@ -210,7 +210,7 @@ public abstract class TeleOP extends LinearOpMode {
                     \         /
                        - 0 -             */
         double shoulderAid = MAX_SHOULDER_AID * Math.cos(Math.toRadians(adjustedShoulderAngle));
-        telemetry.addData("Shoulder Aid: ", shoulderAid);
+       // telemetry.addData("Shoulder Aid: ", shoulderAid);
 
         return shoulderAid;
     }
@@ -279,11 +279,11 @@ public abstract class TeleOP extends LinearOpMode {
                     (armElbow.isBusy() || armShoulder.isBusy())) {
 
                 // Display it for the driver.
-                telemetry.addData("Elbow", "Running at %7d to %7d",
+               /* telemetry.addData("Elbow", "Running at %7d to %7d",
                         armElbow.getCurrentPosition(), newElbowTarget);
                 telemetry.addData("Shoulder", "Running at %7d to %7d",
                         armShoulder.getCurrentPosition(), newElbowTarget);
-                telemetry.update();
+                telemetry.update();*/
             }
 
             // Stop all motion;
@@ -326,18 +326,7 @@ public abstract class TeleOP extends LinearOpMode {
             if (armShoulder.getMode() != DcMotor.RunMode.RUN_TO_POSITION ||
                     armElbow.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
 
-                /*
-                // Determine new target position, and pass to motor controller
-                newElbowTarget = (int) (-elbowDegrees * ELBOW_TICKS_PER_DEGREE / ELBOW_GEAR_RATIO);
-                newElbowTarget *= 2;
-                armElbow.setTargetPosition(newElbowTarget);
 
-                // Determine new target position, and pass to motor controller
-                newShoulderTarget = +(int) (shoulderDegrees * SHOULDER_TICKS_PER_DEGREE / SHOULDER_GEAR_RATIO);
-                // newTarget *= 2;
-                armShoulder.setTargetPosition(newShoulderTarget);
-
-                 */
 
                 armElbow.setTargetPosition(newElbowTarget);
                 armShoulder.setTargetPosition(newShoulderTarget);
