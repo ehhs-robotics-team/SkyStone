@@ -88,7 +88,7 @@ public abstract class TeleOP extends LinearOpMode {
     Servo leftClaw = null;
     Servo rightClaw = null;
 
-    //Declare the gripper's servo variable
+    //Declare the gripper motor variable
     public DcMotor gripperMotor;
 
     double driveSensitivity;
@@ -150,7 +150,7 @@ public abstract class TeleOP extends LinearOpMode {
         leftClaw = hardwareMap.get(Servo.class, "leftClaw");
         rightClaw = hardwareMap.get(Servo.class, "rightClaw");
 
-        //map the gripper's servo
+        //map the gripper's motor
         gripperMotor = hardwareMap.get(DcMotor.class, "gripperMotor");
 
         //reverse the right motors
