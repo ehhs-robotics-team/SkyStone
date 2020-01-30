@@ -31,37 +31,147 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-
-@TeleOp(name="Motor", group="Linear Opmode")
-
-public abstract class Motor{
+/**
+ * Motor class that enables both driving by encoder or by power
+ */
+public class Motor{
 
     private double START_ANGLE = 0;
     private double TICKS_PER_ROTATION = 1440;
     private double TICKS_PER_DEGREE = TICKS_PER_ROTATION/360;
     private double GEAR_RATIO = 1/1;
-    private double MAX_AID = 1;
+    private double MAX_AID = 0;
     private int target;
     private double currentAngle;
 
+    // Motor can be controlled by either power or encoder, this keeps track of which mode is current
+    private boolean isPowerMode = true;
+
     DcMotor motor = null;
 
-    public Motor (DcMotor m) {
-        motor = m;
-        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+    /**
+     * Does nothing
+     * Use other constructors
+     */
+    public Motor() {
+        ;
     }
 
-    public void setSpecs(double start_angle, double encoder_ticks_per_rotation,
-                         double gear_ratio, double max_aid){
+    /**
+     * Motor class that enables both driving by encoder or by power
+     * @param hardwareMap Robot's Hardware Map
+     * @param deviceName
+     * @param start_angle
+     * @param encoder_ticks_per_rotation
+     * @param gear_ratio
+     * @param max_aid
+     * @param direction
+     */
+    public Motor(HardwareMap hardwareMap, String deviceName, double start_angle,
+                 double encoder_ticks_per_rotation, double gear_ratio, double max_aid,
+                 DcMotorSimple.Direction direction){
+        this(hardwareMap, deviceName);
+
+        setStartAngle(start_angle);
+        setTicksPerRotation(encoder_ticks_per_rotation);
+        setGearRatio(gear_ratio);
+        setMaxAid(max_aid);
+        setDirection(direction);
+
+
+    }
+
+    /**
+     * Motor class that enables both driving by encoder or by power
+     * @param hardwareMap
+     * @param deviceName
+     */
+    public Motor(HardwareMap hardwareMap, String deviceName) {
+        //map the motors
+        motor = hardwareMap.get(DcMotor.class, deviceName);
+        reset();
+    }
+
+    /**
+     * Motor class that enables both driving by encoder or by power
+     * @param dcMotor DcMotor
+     */
+    public Motor (DcMotor dcMotor) {
+        motor = dcMotor;
+        reset();
+    }
+
+    /**
+     * Motor class that enables both driving by encoder or by power
+     * @param dcMotor
+     * @param start_angle
+     * @param encoder_ticks_per_rotation
+     * @param gear_ratio
+     * @param max_aid
+     * @param direction
+     */
+    public Motor(DcMotor dcMotor, double start_angle,
+                 double encoder_ticks_per_rotation, double gear_ratio, double max_aid,
+                 DcMotorSimple.Direction direction){
+        this(dcMotor);
+
+        setStartAngle(start_angle);
+        setTicksPerRotation(encoder_ticks_per_rotation);
+        setGearRatio(gear_ratio);
+        setMaxAid(max_aid);
+        setDirection(direction);
+    }
+
+
+    /*
+     * Methods to set the default settings of the motor
+     */
+
+    /**
+     * @param start_angle
+     */
+    public void setStartAngle(double start_angle){
         START_ANGLE = start_angle;
+    }
+
+    public void setTicksPerRotation(double encoder_ticks_per_rotation){
         TICKS_PER_ROTATION = encoder_ticks_per_rotation;
         TICKS_PER_DEGREE = TICKS_PER_ROTATION/360;
+    }
+
+    public void setGearRatio(double gear_ratio){
         GEAR_RATIO = gear_ratio;
+    }
+
+    public void setMaxAid(double max_aid){
         MAX_AID = max_aid;
+    }
+
+    public void setDirection(DcMotorSimple.Direction direction){
+        motor.setDirection(direction);
+    }
+
+    public void setPower(double p){
+        motor.setPower(p);
+    }
+
+    public void powerMode(){
+      if (!isPowerMode) {
+          motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+          isPowerMode = true;
+      }
+    }
+    public void encoderMode(){
+      if (isPowerMode){
+        motor.setPower(0);
+        isPowerMode = false;
+      }
     }
 
     public double calculateAid(double dependentAngle, Telemetry telemetry){
@@ -102,5 +212,14 @@ public abstract class Motor{
     }
     public void to(int degrees){
         to(degrees, 0.4);
+    }
+
+    // reset the arm function during play to account for slippage.
+    public void reset(){
+        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        // Set initial angle to the resting position the robot (degrees) ;
+        currentAngle = START_ANGLE;
     }
 }
