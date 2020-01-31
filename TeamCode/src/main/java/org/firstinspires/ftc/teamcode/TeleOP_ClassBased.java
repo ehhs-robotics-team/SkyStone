@@ -57,7 +57,10 @@ public abstract class TeleOP_ClassBased extends LinearOpMode {
     DcMotor b_leftDrive = null;
     DcMotor b_rightDrive = null;
 
-    public TouchSensor touchy;
+    public Motor armShoulder;
+    public Motor armElbow;
+    public Gripper gripper;
+
 
     //flag variables
     public static boolean started = false;
@@ -82,19 +85,17 @@ public abstract class TeleOP_ClassBased extends LinearOpMode {
         f_rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         b_rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        //setup the touch sensor
-        touchy = hardwareMap.get(TouchSensor.class, "touch");
 
         //map the motors
-        Motor armShoulder = new Motor(hardwareMap, "arm_shoulder",
+        armShoulder = new Motor(hardwareMap, "arm_shoulder",
                 -12, 1440, 1.0/10.0, 0,
                 DcMotorSimple.Direction.REVERSE);
 
-        Motor armElbow = new Motor(hardwareMap, "arm_elbow",
+        armElbow = new Motor(hardwareMap, "arm_elbow",
                 160, 1120, 3.0/8.0, 0.0005,
                 DcMotor.Direction.REVERSE);
 
-        Gripper gripper = new Gripper(hardwareMap, "gripperMotor",
+        gripper = new Gripper(hardwareMap, "gripperMotor",
                 0, 1440, 3.5, 0,
                 DcMotor.Direction.FORWARD);
 
@@ -112,5 +113,7 @@ public abstract class TeleOP_ClassBased extends LinearOpMode {
      * method for children autonomous opmodes to override and insert case specific moves.
      */
     public abstract void main();
+
+
 
 }

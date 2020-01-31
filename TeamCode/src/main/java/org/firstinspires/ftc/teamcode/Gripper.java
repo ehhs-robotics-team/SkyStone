@@ -1,13 +1,18 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 public class Gripper extends Motor{
 
-    //gripper final min and max
-    private int GRIPPER_CLOSED_POS = 1100;
-    private int GRIPPER_OPEN_POS = -2900;
+    //motor final min and max
+    private int motor_CLOSED_POS = 1100;
+    private int motor_OPEN_POS = -2900;
+
+    //the touch sensor on the gripper
+    private TouchSensor touchy;
 
     public Gripper() {
         // Does nothing
@@ -34,33 +39,69 @@ public class Gripper extends Motor{
         setGearRatio(gear_ratio);
         setMaxAid(max_aid);
         setDirection(direction);
-
-
+        touchy = hardwareMap.get(TouchSensor.class, "touch");
     }
 
     public void setClosedPosition(int pos){
-        GRIPPER_CLOSED_POS = pos;
+        motor_CLOSED_POS = pos;
     }
 
     public void setOpenPosition(int pos){
-        GRIPPER_OPEN_POS = pos;
+        motor_OPEN_POS = pos;
     }
 
     public void setEndpoints(int openPosition, int closedPosition){
-        GRIPPER_CLOSED_POS = closedPosition;
-        GRIPPER_OPEN_POS = openPosition;
+        motor_CLOSED_POS = closedPosition;
+        motor_OPEN_POS = openPosition;
     }
 
-    //method to check if the gripper motor has exceeded its boundaries
+    //method to check if the motor motor has exceeded its boundaries
     public boolean boundariesExceeded(){
-        if (motor.getCurrentPosition() > GRIPPER_OPEN_POS && motor.getCurrentPosition() < GRIPPER_CLOSED_POS){
+        if (motor.getCurrentPosition() > motor_OPEN_POS && motor.getCurrentPosition() < motor_CLOSED_POS){
             return false;
         }
         return true;
     }
 
-    // Add other gripper specific methods i.e.
+    // Add other motor specific methods i.e.
     public void grabStone(){
         ;
+    }
+
+    //method that is ran for the motor during TeleOp
+    public void teleopRun(Gamepad gamepad2){
+        //programming the motor
+        if (gamepad2.right_trigger - gamepad2.left_trigger > 0){
+            if (!touchy.isPressed() && !boundariesExceeded()){
+                motor.setPower((gamepad2.right_trigger - gamepad2.left_trigger));
+            }
+            else{
+                motor.setPower(0);
+            }
+        }
+        else if (!boundariesExceeded()) {
+            motor.setPower((gamepad2.right_trigger - gamepad2.left_trigger));
+        }
+        else if (boundariesExceeded()){
+            if (motor.getCurrentPosition() <= motor_OPEN_POS){
+                if (gamepad2.right_trigger - gamepad2.left_trigger > 0) {
+                    motor.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
+                }
+                else{
+                    motor.setPower(0);
+                }
+            }
+            else if (motor.getCurrentPosition() >= motor_CLOSED_POS){
+                if (gamepad2.right_trigger - gamepad2.left_trigger < 0){
+                    motor.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
+                }
+                else{
+                    motor.setPower(0);
+                }
+            }
+            else{
+                motor.setPower(0);
+            }
+        }
     }
 }
