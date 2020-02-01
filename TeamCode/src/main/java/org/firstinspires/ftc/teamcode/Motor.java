@@ -175,19 +175,18 @@ public class Motor{
     }
 
     public double calculateAid(double dependentAngle, Telemetry telemetry){
-        //Elbow joint controls
-        //telemetry.addData("Elbow Posisiton: ", armElbow.getCurrentPosition());
+        //telemetry.addData("Elbow Posisiton: ", motor.getCurrentPosition());
 
         // Three things determine the angle of the second arm segment.
         // 1. position of the encoder
         // 2. known starting position of the arm
         // 3. The angle of the origin (angle of the 1st arm segment)
         currentAngle = (motor.getCurrentPosition()/TICKS_PER_DEGREE)*GEAR_RATIO;
-        double adjustedElbowAngle = -currentAngle + START_ANGLE +dependentAngle;
-        telemetry.addData("Elbow Angle: ", adjustedElbowAngle);
+        double adjustedAngle = -currentAngle + START_ANGLE +dependentAngle;
+        telemetry.addData("Elbow Angle: ", adjustedAngle);
 
         // Uses cosine to determine aid using same logic as first segment
-        double aid = MAX_AID * Math.cos(Math.toRadians(adjustedElbowAngle));
+        double aid = MAX_AID * Math.cos(Math.toRadians(adjustedAngle));
         telemetry.addData("Elbow Aid: ", aid);
 
 
@@ -221,5 +220,10 @@ public class Motor{
 
         // Set initial angle to the resting position the robot (degrees) ;
         currentAngle = START_ANGLE;
+    }
+
+    public double getCurrentAngle(){
+        currentAngle = (motor.getCurrentPosition()/TICKS_PER_DEGREE)*GEAR_RATIO;
+        return currentAngle;
     }
 }

@@ -60,6 +60,7 @@ public abstract class TeleOP_ClassBased extends LinearOpMode {
     public Motor armShoulder;
     public Motor armElbow;
     public Gripper gripper;
+    public Claw claw;
 
 
     //flag variables
@@ -99,6 +100,8 @@ public abstract class TeleOP_ClassBased extends LinearOpMode {
                 0, 1440, 3.5, 0,
                 DcMotor.Direction.FORWARD);
 
+        claw = new Claw(hardwareMap, "leftClaw","rightClaw");
+
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -113,6 +116,12 @@ public abstract class TeleOP_ClassBased extends LinearOpMode {
      * method for children autonomous opmodes to override and insert case specific moves.
      */
     public abstract void main();
+
+    // reset the arm function during play to account for slippage.
+    public void armReset() {
+        armElbow.reset();
+        armShoulder.reset();
+    }
 
 
 

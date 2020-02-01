@@ -5,11 +5,14 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
+/**
+ * Rack and Pinion gripper for controlling stones.
+ */
 public class Gripper extends Motor{
 
     //motor final min and max
-    private int motor_CLOSED_POS = 1100;
-    private int motor_OPEN_POS = -2900;
+    private int CLOSED_POS = 1100;
+    private int OPEN_POS = -2900;
 
     //the touch sensor on the gripper
     private TouchSensor touchy;
@@ -43,21 +46,21 @@ public class Gripper extends Motor{
     }
 
     public void setClosedPosition(int pos){
-        motor_CLOSED_POS = pos;
+        CLOSED_POS = pos;
     }
 
     public void setOpenPosition(int pos){
-        motor_OPEN_POS = pos;
+        OPEN_POS = pos;
     }
 
     public void setEndpoints(int openPosition, int closedPosition){
-        motor_CLOSED_POS = closedPosition;
-        motor_OPEN_POS = openPosition;
+        CLOSED_POS = closedPosition;
+        OPEN_POS = openPosition;
     }
 
     //method to check if the motor motor has exceeded its boundaries
     public boolean boundariesExceeded(){
-        if (motor.getCurrentPosition() > motor_OPEN_POS && motor.getCurrentPosition() < motor_CLOSED_POS){
+        if (motor.getCurrentPosition() > OPEN_POS && motor.getCurrentPosition() < CLOSED_POS){
             return false;
         }
         return true;
@@ -83,7 +86,7 @@ public class Gripper extends Motor{
             motor.setPower((gamepad2.right_trigger - gamepad2.left_trigger));
         }
         else if (boundariesExceeded()){
-            if (motor.getCurrentPosition() <= motor_OPEN_POS){
+            if (motor.getCurrentPosition() <= OPEN_POS){
                 if (gamepad2.right_trigger - gamepad2.left_trigger > 0) {
                     motor.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
                 }
@@ -91,7 +94,7 @@ public class Gripper extends Motor{
                     motor.setPower(0);
                 }
             }
-            else if (motor.getCurrentPosition() >= motor_CLOSED_POS){
+            else if (motor.getCurrentPosition() >= CLOSED_POS){
                 if (gamepad2.right_trigger - gamepad2.left_trigger < 0){
                     motor.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
                 }
@@ -103,5 +106,9 @@ public class Gripper extends Motor{
                 motor.setPower(0);
             }
         }
+    }
+
+    public boolean isPressed() {
+        return touchy.isPressed();
     }
 }
