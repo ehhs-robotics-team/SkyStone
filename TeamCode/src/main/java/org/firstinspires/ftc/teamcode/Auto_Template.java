@@ -36,7 +36,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @Autonomous(name="Template", group="Linear Opmode")
 @Disabled
-public class Basic_Test_OpMode extends AutoOP {
+public class Auto_Template extends AutoOP {
 
     @Override
     public void main(){
