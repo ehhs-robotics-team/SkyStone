@@ -50,6 +50,10 @@ public class Gripper extends Motor{
         motor_OPEN_POS = pos;
     }
 
+    public double getOpenPosition() { return motor_OPEN_POS; }
+
+    public double getClosedPosition() { return motor_CLOSED_POS; }
+
     public void setEndpoints(int openPosition, int closedPosition){
         motor_CLOSED_POS = closedPosition;
         motor_OPEN_POS = openPosition;
@@ -61,6 +65,14 @@ public class Gripper extends Motor{
             return false;
         }
         return true;
+    }
+
+    //method to return true or false depending on whether the touch sensor is pressed
+    public boolean isTouching(){
+        if (touchy.isPressed()){
+            return true;
+        }
+        return false;
     }
 
     // Add other motor specific methods i.e.

@@ -60,6 +60,10 @@ public abstract class TeleOP_ClassBased extends LinearOpMode {
     public Motor armShoulder;
     public Motor armElbow;
     public Gripper gripper;
+    public Claw claw;
+
+    public Servo leftClaw;
+    public Servo rightClaw;
 
 
     //flag variables
@@ -80,10 +84,15 @@ public abstract class TeleOP_ClassBased extends LinearOpMode {
         b_leftDrive = hardwareMap.get(DcMotor.class, "b_leftDrive");
         b_rightDrive = hardwareMap.get(DcMotor.class, "b_rightDrive");
 
+        //map the claw servos
+        leftClaw = hardwareMap.get(Servo.class, "leftClaw");
+        rightClaw = hardwareMap.get(Servo.class, "rightClaw");
 
         //reverse the right motors
         f_rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         b_rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+
+
 
 
         //map the motors
@@ -98,6 +107,8 @@ public abstract class TeleOP_ClassBased extends LinearOpMode {
         gripper = new Gripper(hardwareMap, "gripperMotor",
                 0, 1440, 3.5, 0,
                 DcMotor.Direction.FORWARD);
+
+        claw = new Claw(leftClaw, rightClaw);
 
 
         telemetry.addData("Status", "Initialized");

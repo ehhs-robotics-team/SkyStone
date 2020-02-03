@@ -46,7 +46,7 @@ public class TeleOPDoubleDrive_ClassBased extends TeleOP_ClassBased {
 
         while(opModeIsActive()) {
 
-            telemetry.addData("Grippper Position", gripper.motor.getCurrentPosition());
+            telemetry.addData("Gripper Position", gripper.motor.getCurrentPosition());
 
             // Set wheel power to cube of stick value to give more control near the center:
             f_leftDrive.setPower(-Math.pow(gamepad1.right_stick_y, 3));
@@ -59,10 +59,10 @@ public class TeleOPDoubleDrive_ClassBased extends TeleOP_ClassBased {
 
             //SETUP the claw to work with the controller
             if (gamepad1.y) {
-                claw.up(.25);
+                claw.up();
             }
             else if (gamepad1.a) {
-                clawDown(1);
+                claw.down();
             }
             else {
                 //double restPosition = 0.75;
@@ -72,35 +72,35 @@ public class TeleOPDoubleDrive_ClassBased extends TeleOP_ClassBased {
 
             //programming the gripper
             if (gamepad2.right_trigger - gamepad2.left_trigger > 0){
-                if (!touchy.isPressed() && !boundariesExceeded()){
-                    gripperMotor.setPower((gamepad2.right_trigger - gamepad2.left_trigger));
+                if (!gripper.isTouching() && !gripper.boundariesExceeded()){
+                    gripper.motor.setPower((gamepad2.right_trigger - gamepad2.left_trigger));
                 }
                 else{
-                    gripperMotor.setPower(0);
+                    gripper.motor.setPower(0);
                 }
             }
-            else if (!boundariesExceeded()) {
-                gripperMotor.setPower((gamepad2.right_trigger - gamepad2.left_trigger));
+            else if (!gripper.boundariesExceeded()) {
+                gripper.motor.setPower((gamepad2.right_trigger - gamepad2.left_trigger));
             }
-            else if (boundariesExceeded()){
-                if (gripperMotor.getCurrentPosition() <= GRIPPER_OPEN_POS){
+            else if (gripper.boundariesExceeded()){
+                if (gripper.motor.getCurrentPosition() <= gripper.getOpenPosition()){
                     if (gamepad2.right_trigger - gamepad2.left_trigger > 0) {
-                        gripperMotor.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
+                        gripper.motor.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
                     }
                     else{
-                        gripperMotor.setPower(0);
+                        gripper.motor.setPower(0);
                     }
                 }
-                else if (gripperMotor.getCurrentPosition() >= GRIPPER_CLOSED_POS){
+                else if (gripper.motor.getCurrentPosition() >= gripper.getClosedPosition()){
                     if (gamepad2.right_trigger - gamepad2.left_trigger < 0){
-                        gripperMotor.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
+                        gripper.motor.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
                     }
                     else{
-                        gripperMotor.setPower(0);
+                        gripper.motor.setPower(0);
                     }
                 }
                 else{
-                    gripperMotor.setPower(0);
+                    gripper.motor.setPower(0);
                 }
             }
 
@@ -149,7 +149,7 @@ public class TeleOPDoubleDrive_ClassBased extends TeleOP_ClassBased {
             telemetry.addData("shoulder power", sPower);
 
             // Set elbow power to the left stick, adjusted for position aid compensation
-            double ePower = gamepad2.left_stick_y / 3 + calculateElbowAid();
+            double ePower = gamepad2.left_stick_y / 3 + armElbow.calculateAid(armShoulder.getCurrentAngle(), telemetry);
             armElbow.setPower(ePower);
             telemetry.addData("elbow power", ePower);
 
@@ -161,17 +161,10 @@ public class TeleOPDoubleDrive_ClassBased extends TeleOP_ClassBased {
     // reset the arm function during play to account for slippage.
     public void armReset(){
         armShoulder.setPower(0);
-        armShoulder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        armShoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        armShoulder.reset();
 
         armElbow.setPower(0);
-        armElbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        armElbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        // SEt initial angle to the angle the 1st arm segment is at when resting on the robot (degrees) ;
-        currentShoulderAngle = START_SHOULDER_ANGLE;
-
-        // SEt initial angle to the angle the 2nd arm segment is at when raesting on the robot (degrees) ;
-        currentElbowAngle = START_ELBOW_ANGLE;
+        armElbow.reset();
     }
 
 }

@@ -16,10 +16,10 @@ public class Claw {
         // Use other Constructor
     }
 
-    public Claw(HardwareMap hardwareMap, String leftServoDeviceName, String righttServoDeviceName){
+    public Claw(HardwareMap hardwareMap, String leftServoDeviceName, String rightServoDeviceName){
         //map the claw servos
         leftClaw = hardwareMap.get(Servo.class, leftServoDeviceName);
-        rightClaw = hardwareMap.get(Servo.class, righttServoDeviceName);
+        rightClaw = hardwareMap.get(Servo.class, rightServoDeviceName);
 
         //reverse one of the claw servos
         rightClaw.setDirection(Servo.Direction.REVERSE);

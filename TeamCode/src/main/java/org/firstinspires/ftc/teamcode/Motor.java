@@ -222,4 +222,10 @@ public class Motor{
         // Set initial angle to the resting position the robot (degrees) ;
         currentAngle = START_ANGLE;
     }
+
+    //method to get current angle
+    public double getCurrentAngle(){
+        currentAngle = (motor.getCurrentPosition()/TICKS_PER_DEGREE)*GEAR_RATIO;
+        return currentAngle + START_ANGLE;
+    }
 }
