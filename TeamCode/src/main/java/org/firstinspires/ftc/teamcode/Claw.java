@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class Claw {
     //Declare the variables for the claw servos
     Servo leftClaw = null;
@@ -10,6 +12,7 @@ public class Claw {
 
     private final double clawUpPosition = 1.0;
     private final double clawDownPosition = 0.25;
+
 
     public Claw() {
         // Do nothing
@@ -31,11 +34,12 @@ public class Claw {
 
         //reverse one of the claw servos
         rightClaw.setDirection(Servo.Direction.REVERSE);
+
     }
 
     public void down(){
         leftClaw.setPosition(clawDownPosition);
-        rightClaw.setPosition(clawUpPosition);
+        rightClaw.setPosition(clawDownPosition);
     }
     public void down(double position){
         leftClaw.setPosition(position);
