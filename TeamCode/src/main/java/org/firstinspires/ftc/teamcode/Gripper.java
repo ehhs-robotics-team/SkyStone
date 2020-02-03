@@ -1,15 +1,21 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class Gripper extends Motor{
 
     //motor final min and max
-    private int motor_CLOSED_POS = 1100;
-    private int motor_OPEN_POS = -2900;
+    //private int motor_CLOSED_POS = 1100;
+    //private int motor_OPEN_POS = -2900;
+
+    private int motor_CLOSED_POS = 1200;
+    private int motor_OPEN_POS = -1700;
 
     //the touch sensor on the gripper
     private TouchSensor touchy;
@@ -40,6 +46,8 @@ public class Gripper extends Motor{
         setMaxAid(max_aid);
         setDirection(direction);
         touchy = hardwareMap.get(TouchSensor.class, "touch");
+        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     public void setClosedPosition(int pos){
@@ -68,10 +76,10 @@ public class Gripper extends Motor{
     }
 
     //method to check if the max boundary is exceeded
-    public boolean maxBoundaryExceeded() { return motor.getCurrentPosition() >= motor_OPEN_POS; }
+    public boolean maxBoundaryExceeded() { return motor.getCurrentPosition() <= motor_OPEN_POS; }
 
     //method to check if the min boundary is exceeded
-    public boolean minBoundaryExceeded() { return motor.getCurrentPosition() <= motor_CLOSED_POS; }
+    public boolean minBoundaryExceeded() { return motor.getCurrentPosition() >= motor_CLOSED_POS; }
 
     //method to return true or false depending on whether the touch sensor is pressed
     public boolean isTouching() { return touchy.isPressed(); }
@@ -121,13 +129,13 @@ public class Gripper extends Motor{
         }
     }
 
-    public void run(Gamepad gp){
+    public void run(Gamepad gp, Telemetry telemetry){
         //programming the motor
         double power = gp.right_trigger - gp.left_trigger;
-        if (maxBoundaryExceeded() && power > 0){
+        if (maxBoundaryExceeded() && power < 0){
             power = 0;
         }
-        else if (minBoundaryExceeded() && power < 0) {
+        if (minBoundaryExceeded() && power > 0 || isTouching() && power > 0) {
             power = 0;
         }
         motor.setPower(power);

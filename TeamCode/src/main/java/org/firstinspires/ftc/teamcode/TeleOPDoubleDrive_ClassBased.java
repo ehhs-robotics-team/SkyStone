@@ -62,7 +62,7 @@ public class TeleOPDoubleDrive_ClassBased extends TeleOP_ClassBased {
             }
 
             //programming the gripper
-            gripper.teleopRun(gamepad2);
+            gripper.run(gamepad2, telemetry);
 
 
             // Reset the arm encoders if the arm gets out of sync from gear slippage.
