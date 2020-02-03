@@ -39,11 +39,7 @@ public class TeleOPDoubleDrive_ClassBased extends TeleOP_ClassBased {
 
     @Override
     public void main() {
-
         waitForStart();
-
-
-
         while(opModeIsActive()) {
 
             telemetry.addData("Gripper Position", gripper.motor.getCurrentPosition());
@@ -64,45 +60,9 @@ public class TeleOPDoubleDrive_ClassBased extends TeleOP_ClassBased {
             else if (gamepad1.a) {
                 claw.down();
             }
-            else {
-                //double restPosition = 0.75;
-                //rightClaw.setPosition(restPosition);
-                //leftClaw.setPosition(restPosition);
-            }
 
             //programming the gripper
-            if (gamepad2.right_trigger - gamepad2.left_trigger > 0){
-                if (!gripper.isTouching() && !gripper.boundariesExceeded()){
-                    gripper.motor.setPower((gamepad2.right_trigger - gamepad2.left_trigger));
-                }
-                else{
-                    gripper.motor.setPower(0);
-                }
-            }
-            else if (!gripper.boundariesExceeded()) {
-                gripper.motor.setPower((gamepad2.right_trigger - gamepad2.left_trigger));
-            }
-            else if (gripper.boundariesExceeded()){
-                if (gripper.motor.getCurrentPosition() <= gripper.getOpenPosition()){
-                    if (gamepad2.right_trigger - gamepad2.left_trigger > 0) {
-                        gripper.motor.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
-                    }
-                    else{
-                        gripper.motor.setPower(0);
-                    }
-                }
-                else if (gripper.motor.getCurrentPosition() >= gripper.getClosedPosition()){
-                    if (gamepad2.right_trigger - gamepad2.left_trigger < 0){
-                        gripper.motor.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
-                    }
-                    else{
-                        gripper.motor.setPower(0);
-                    }
-                }
-                else{
-                    gripper.motor.setPower(0);
-                }
-            }
+            gripper.teleopRun(gamepad2);
 
 
             // Reset the arm encoders if the arm gets out of sync from gear slippage.
@@ -110,49 +70,19 @@ public class TeleOPDoubleDrive_ClassBased extends TeleOP_ClassBased {
                 armReset();
             }
 
-            /*if (gamepad2.a){
-                armTo(.4, 190, -100, 2);
+            if(gamepad2.a){
+                armShoulder.encoderMode();
+                armShoulder.to(90);
+            } else {
+                armShoulder.powerMode();
+                // Set power to the input cubed to give more control at the center of the control range
+                armShoulder.setPower(Math.pow(gamepad2.right_stick_y, 3));
             }
-
-
-            if (gamepad2.b) {
-                armTo(.4, START_SHOULDER_ANGLE,-100, 3);
-            }
-
-            if (gamepad2.y) {
-                armTo(.4, START_SHOULDER_ANGLE, START_ELBOW_ANGLE, 2);
-            }
-            */
-
-            /*
-            if (armElbow.getMode()!= DcMotor.RunMode.RUN_TO_POSITION &&
-                    armElbow.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {// Set shoulder power to the right stick, adjusted for position aid compensation
-                double sPower = gamepad2.right_stick_y + calculateShoulderAid();
-                armShoulder.setPower(sPower);
-                telemetry.addData("shoulder power", sPower);
-
-                // Set elbow power to the left stick, adjusted for position aid compensation
-                double ePower = gamepad2.left_stick_y / 3 + calculateElbowAid();
-                armElbow.setPower(ePower);
-                telemetry.addData("elbow power", ePower);
-            }
-
-             */
-            /*if (gamepad2.left_bumper || gamepad2.right_bumper) {
-                stopContinuousArm();
-            }
-            */
-
-
-            double sPower = gamepad2.right_stick_y;
-            armShoulder.setPower(sPower);
-            telemetry.addData("shoulder power", sPower);
 
             // Set elbow power to the left stick, adjusted for position aid compensation
-            double ePower = gamepad2.left_stick_y / 3 + armElbow.calculateAid(armShoulder.getCurrentAngle(), telemetry);
-            armElbow.setPower(ePower);
-            telemetry.addData("elbow power", ePower);
-
+            armElbow.powerMode();
+            // Set power to the input cubed to give more control at the center of the control range
+            armElbow.setPower(Math.pow(gamepad2.left_stick_y, 3));
 
             telemetry.update();
         }
@@ -166,5 +96,4 @@ public class TeleOPDoubleDrive_ClassBased extends TeleOP_ClassBased {
         armElbow.setPower(0);
         armElbow.reset();
     }
-
 }

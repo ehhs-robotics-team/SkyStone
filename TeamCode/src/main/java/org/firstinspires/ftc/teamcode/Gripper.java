@@ -67,18 +67,22 @@ public class Gripper extends Motor{
         return true;
     }
 
+    //method to check if the max boundary is exceeded
+    public boolean maxBoundaryExceeded() { return motor.getCurrentPosition() >= motor_OPEN_POS; }
+
+    //method to check if the min boundary is exceeded
+    public boolean minBoundaryExceeded() { return motor.getCurrentPosition() <= motor_CLOSED_POS; }
+
     //method to return true or false depending on whether the touch sensor is pressed
-    public boolean isTouching(){
-        if (touchy.isPressed()){
-            return true;
-        }
-        return false;
-    }
+    public boolean isTouching() { return touchy.isPressed(); }
+
+    //method
 
     // Add other motor specific methods i.e.
     public void grabStone(){
         ;
     }
+
 
     //method that is ran for the motor during TeleOp
     public void teleopRun(Gamepad gamepad2){
@@ -115,5 +119,17 @@ public class Gripper extends Motor{
                 motor.setPower(0);
             }
         }
+    }
+
+    public void run(Gamepad gp){
+        //programming the motor
+        double power = gp.right_trigger - gp.left_trigger;
+        if (maxBoundaryExceeded() && power > 0){
+            power = 0;
+        }
+        else if (minBoundaryExceeded() && power < 0) {
+            power = 0;
+        }
+        motor.setPower(power);
     }
 }
