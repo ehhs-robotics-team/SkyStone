@@ -81,11 +81,11 @@ public class MotorRunner extends LinearOpMode {
                 -12, 1440, 1.0/10.0, 0,
                 DcMotorSimple.Direction.REVERSE);
 
-        /*
-        Motor armElbow = new Motor(hardwareMap, "arm_elbow",
-                160, 1120, 3.0/8.0, 0.0005,
-                DcMotor.Direction.REVERSE);
 
+        Motor armElbow = new Motor(hardwareMap, "arm_elbow",
+                0, 1120, 3.0/8.0, 0.0005,
+                DcMotorSimple.Direction.REVERSE);
+        /* 164
         Motor gripper = new Gripper(hardwareMap, "gripperMotor",
                 0, 1440, 3.5, 0,
                 DcMotor.Direction.FORWARD);
@@ -96,15 +96,40 @@ public class MotorRunner extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
+
+        int targetPosition = 90;
         while(opModeIsActive()){
             if(gamepad2.a){
                 armShoulder.encoderMode();
-                armShoulder.to(90);
+                armShoulder.to(targetPosition);
             } else {
                 armShoulder.powerMode();
                 // Set power to the input cubed to give more control at the center of the control range
                 armShoulder.setPower(Math.pow(gamepad2.right_stick_y, 3));
             }
+
+            if(gamepad2.b){
+                armElbow.encoderMode();
+                armElbow.to(targetPosition+(int)armShoulder.getCurrentAngle());
+            }else {
+                armElbow.powerMode();
+                // Set power to the input cubed to give more control at the center of the control range
+                double aid = armElbow.calculateAid(armShoulder.getCurrentAngle(), telemetry);
+                armElbow.setPower(Math.pow(gamepad2.left_stick_y, 3)/3 + aid);
+            }
+
+            if(gamepad2.dpad_down){
+                targetPosition -= 2;
+            }
+            else if(gamepad2.dpad_up){
+                targetPosition+=2;
+            }
+            telemetry.addData("Target Angle", targetPosition);
+            telemetry.update();
+
+
+
+
         }
 
 

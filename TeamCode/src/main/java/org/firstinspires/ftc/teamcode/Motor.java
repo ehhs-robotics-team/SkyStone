@@ -182,12 +182,12 @@ public class Motor{
         // 1. position of the encoder
         // 2. known starting position of the arm
         // 3. The angle of the origin (angle of the 1st arm segment)
-        currentAngle = (motor.getCurrentPosition()/TICKS_PER_DEGREE)*GEAR_RATIO;
-        double adjustedElbowAngle = -currentAngle + START_ANGLE +dependentAngle;
-        telemetry.addData("Elbow Angle: ", adjustedElbowAngle);
+        double rawAngle = (motor.getCurrentPosition()/TICKS_PER_DEGREE)*GEAR_RATIO;
+        currentAngle = -rawAngle + START_ANGLE +dependentAngle;
+        telemetry.addData("Elbow Angle: ", currentAngle);
 
         // Uses cosine to determine aid using same logic as first segment
-        double aid = MAX_AID * Math.cos(Math.toRadians(adjustedElbowAngle));
+        double aid = MAX_AID * Math.cos(Math.toRadians(currentAngle));
         telemetry.addData("Elbow Aid: ", aid);
 
 
@@ -201,7 +201,7 @@ public class Motor{
 
     public void to(int degrees, double power){
         // Determine new target position, and pass to motor controller
-        target = (int) ((degrees + START_ANGLE) * TICKS_PER_DEGREE / GEAR_RATIO);
+        target = (int) ((degrees - START_ANGLE) * TICKS_PER_DEGREE / GEAR_RATIO);
         motor.setTargetPosition(target);
 
         // Set drive power
