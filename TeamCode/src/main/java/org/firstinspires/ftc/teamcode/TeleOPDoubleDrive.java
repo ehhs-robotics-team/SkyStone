@@ -168,10 +168,10 @@ public class TeleOPDoubleDrive extends TeleOP {
         armElbow.setPower(0);
         armElbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armElbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        // SEt initial angle to the angle the 1st arm segment is at when resting on the robot (degrees) ;
+        // Set initial angle to the angle the 1st arm segment is at when resting on the robot (degrees) ;
         currentShoulderAngle = START_SHOULDER_ANGLE;
 
-        // SEt initial angle to the angle the 2nd arm segment is at when raesting on the robot (degrees) ;
+        // Set initial angle to the angle the 2nd arm segment is at when raesting on the robot (degrees) ;
         currentElbowAngle = START_ELBOW_ANGLE;
     }
 
