@@ -140,4 +140,25 @@ public class Gripper extends Motor{
         }
         motor.setPower(power);
     }
+
+    //method to run to a position
+    public void toPosition(int target){
+        motor.setTargetPosition(target);
+
+        // Set drive power
+        motor.setPower(Math.abs(getPower()));
+
+        // Turn On RUN_TO_POSITION
+        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+    //method to close until the touch sensor is pressed
+    //temp closing to boundary position
+    public void closeUntilTouching(){
+        toPosition(motor_CLOSED_POS);
+    }
+
+    //method to open the gripper (goes to max boundary)
+    public void openMax(){
+        toPosition(motor_OPEN_POS);
+    }
 }
