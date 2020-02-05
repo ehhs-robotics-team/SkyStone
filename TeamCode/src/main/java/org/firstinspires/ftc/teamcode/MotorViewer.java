@@ -65,9 +65,9 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  */
 
 
-@TeleOp(name="Motor Runner Test", group ="Linear Opmode")
+@TeleOp(name="Motor Viewer", group ="Linear Opmode")
 //@Disabled
-public class MotorRunner extends LinearOpMode {
+public class MotorViewer extends LinearOpMode {
 
     //DRIVE TRAIN MOTOR VARIABLES
     // Declare the motor variables
@@ -99,28 +99,14 @@ public class MotorRunner extends LinearOpMode {
 
         int targetPosition = 90;
         while(opModeIsActive()){
-            if(gamepad2.a){
-                armShoulder.to(targetPosition, telemetry);
-            } else {
-                // Set power to the input cubed to give more control at the center of the control range
-                armShoulder.setPower(Math.pow(gamepad2.right_stick_y, 3));
-            }
+            armShoulder.setPower(Math.pow(gamepad2.right_stick_y, 3));
+            armElbow.setPower(Math.pow(gamepad2.left_stick_y, 3)/3);
 
-            if(gamepad2.b){
-                armElbow.to(targetPosition-(int)armShoulder.getCurrentAngle());
-            }else {
-                // Set power to the input cubed to give more control at the center of the control range
-                double aid = armElbow.calculateAid(armShoulder.getCurrentAngle(), telemetry);
-                armElbow.setPower(Math.pow(gamepad2.left_stick_y, 3)/3 + aid);
-            }
+            telemetry.addData("Shoulder Position", armShoulder.motor.getCurrentPosition());
+            telemetry.addData("Shoulder Angle", armShoulder.getCurrentAngle());
+            telemetry.addData("Elbow Position", armElbow.motor.getCurrentPosition());
+            telemetry.addData("Elbow Angle", armElbow.getCurrentAngle());
 
-            if(gamepad2.dpad_down){
-                targetPosition -= 2;
-            }
-            else if(gamepad2.dpad_up){
-                targetPosition+=2;
-            }
-            telemetry.addData("Target Angle", targetPosition);
             telemetry.update();
 
 
