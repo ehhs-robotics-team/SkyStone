@@ -83,7 +83,7 @@ public class MotorRunner extends LinearOpMode {
 
 
         Motor armElbow = new Motor(hardwareMap, "arm_elbow",
-                0, 1120, 3.0/8.0, 0.0005,
+                180, 1120, 3.0/8.0, 0.0005,
                 DcMotorSimple.Direction.REVERSE);
         /* 164
         Motor gripper = new Gripper(hardwareMap, "gripperMotor",
@@ -100,19 +100,15 @@ public class MotorRunner extends LinearOpMode {
         int targetPosition = 90;
         while(opModeIsActive()){
             if(gamepad2.a){
-                armShoulder.encoderMode();
-                armShoulder.to(targetPosition);
+                armShoulder.to(targetPosition, telemetry);
             } else {
-                armShoulder.powerMode();
                 // Set power to the input cubed to give more control at the center of the control range
                 armShoulder.setPower(Math.pow(gamepad2.right_stick_y, 3));
             }
 
             if(gamepad2.b){
-                armElbow.encoderMode();
-                armElbow.to(targetPosition+(int)armShoulder.getCurrentAngle());
+                armElbow.to(targetPosition-(int)armShoulder.getCurrentAngle());
             }else {
-                armElbow.powerMode();
                 // Set power to the input cubed to give more control at the center of the control range
                 double aid = armElbow.calculateAid(armShoulder.getCurrentAngle(), telemetry);
                 armElbow.setPower(Math.pow(gamepad2.left_stick_y, 3)/3 + aid);

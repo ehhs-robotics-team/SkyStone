@@ -82,7 +82,8 @@ public class TeleOPDoubleDrive_ClassBased extends TeleOP_ClassBased {
             // Set elbow power to the left stick, adjusted for position aid compensation
             armElbow.powerMode();
             // Set power to the input cubed to give more control at the center of the control range
-            armElbow.setPower(Math.pow(gamepad2.left_stick_y, 3));
+            double aid = armElbow.calculateAid(armShoulder.getCurrentAngle(), telemetry);
+            armElbow.setPower(Math.pow(gamepad2.left_stick_y, 3)/3 + aid);
 
             telemetry.update();
         }

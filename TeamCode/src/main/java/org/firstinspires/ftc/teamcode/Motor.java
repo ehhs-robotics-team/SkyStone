@@ -48,6 +48,7 @@ public class Motor{
     private double MAX_AID = 0;
     private int target;
     private double currentAngle;
+    private double defaultPower = 0.5;
 
     // Motor can be controlled by either power or encoder, this keeps track of which mode is current
     private boolean isPowerMode = true;
@@ -158,7 +159,13 @@ public class Motor{
     }
 
     public void setPower(double p){
-        motor.setPower(p);
+        powerMode();
+        defaultPower = p;
+        motor.setPower(defaultPower);
+    }
+
+    public double getPower(){
+        return defaultPower;
     }
 
     public void powerMode(){
@@ -200,6 +207,7 @@ public class Motor{
 
 
     public void to(int degrees, double power){
+        encoderMode();
         // Determine new target position, and pass to motor controller
         target = (int) ((degrees - START_ANGLE) * TICKS_PER_DEGREE / GEAR_RATIO);
         motor.setTargetPosition(target);
@@ -210,8 +218,20 @@ public class Motor{
         // Turn On RUN_TO_POSITION
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
+
+    public void to(int degrees, Telemetry telemetry){
+        to(degrees);
+        telemetry.addData("Position1", motor.getCurrentPosition());
+        telemetry.addData("Angle1", getCurrentAngle());
+
+    }
+
     public void to(int degrees){
         to(degrees, 0.4);
+    }
+
+    public void to(int degrees, int dependentAngle) {
+        to(degrees+dependentAngle);
     }
 
     // reset the arm function during play to account for slippage.
