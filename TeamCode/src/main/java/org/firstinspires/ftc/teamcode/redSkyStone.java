@@ -157,7 +157,7 @@ public class redSkyStone extends AutoOP {
     public void collectSkystone(double inches)
     {
         encoderLinear(-2.5 + inches, 5, true);
-        encoderTurn(93, 5); // 93 to acount for slippage
+        encoderTurn(93, 5); // 93 to account for slippage
         encoderLinear(-16, 5);
         encoderShoulder(.2, 120,4);
         openGripper(3000);

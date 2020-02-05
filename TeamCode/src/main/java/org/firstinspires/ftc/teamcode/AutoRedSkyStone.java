@@ -88,6 +88,49 @@ public class AutoRedSkyStone extends AutoOP_ClassBased {
         if (tfod != null) {
             tfod.activate();
         }
+
+        //actual auto
+        telemetry.addData(">", "Press Play to start op mode");
+        telemetry.update();
+        waitForStart();
+        driveTrain.encoderDrive(12, false);
+        encoderTurn(90, 3);
+
+        if (opModeIsActive()) {
+            while (opModeIsActive()) {
+                telemetry.update();
+                if (!skystoneFound) {
+                    if (!SkyStoneVisible(0.7)) {
+                        driveTrain.encoderDrive(-8, false);
+                        stopRobot();
+                    } else {
+                        //if the robot is centered with the stone in front of the skystone
+                        if (rec.estimateAngleToObject(AngleUnit.DEGREES) < -20){
+                            telemetry.addData("Angle: ", rec.estimateAngleToObject(AngleUnit.DEGREES));
+                            telemetry.update();
+                            //sleep(30000);
+                            collectSkyStone(-8);
+
+                        }
+
+                        //if the robot is centered with the stone before the skystone
+                        else if (rec.estimateAngleToObject(AngleUnit.DEGREES) > 0){
+                            telemetry.addData("Angle: ", rec.estimateAngleToObject(AngleUnit.DEGREES));
+                            telemetry.update();
+                            //sleep(30000);
+                            collectSkyStone(8);
+                        }
+
+                        else{
+                            telemetry.addData("Angle: ", rec.estimateAngleToObject(AngleUnit.DEGREES));
+                            telemetry.update();
+                            //sleep(30000);
+                            collectSkyStone(0);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public boolean SkyStoneVisible(double timeout) {
@@ -133,6 +176,49 @@ public class AutoRedSkyStone extends AutoOP_ClassBased {
 
     }
 
+    public void hitSkyStone(double inches){
+        driveTrain.encoderDrive(9.5 + inches, false);
+        driveTrain.encoderTurn(90, inchesPerDegrees, false);
+        driveTrain.encoderDrive(-24, false);
+        gripper.grabStone(driveTrain);
+    }
+
+    public void hitSkyStone2(double inches){
+        driveTrain.encoderDrive(9.5 + inches, false);
+        driveTrain.encoderTurn(90, inchesPerDegrees, false);
+        armShoulder.to(85);
+        armElbow.to(-40);
+        gripper.openMax();
+        armShoulder.to(15);
+    }
+
+    public void collectSkyStone(double inches){
+        driveTrain.encoderDrive(-2.5 + inches, false);
+        driveTrain.encoderTurn(93, inchesPerDegrees, false);
+        driveTrain.encoderDrive(-16, false);
+        armShoulder.to(120);
+        gripper.openMax();
+
+        //need to add in a method that moves shoulder and elbow at the same time, the two lines are what need to be replaced with one
+        armShoulder.to(15);
+        armElbow.to(-40);
+
+        driveTrain.encoderDrive(12, false);
+        armElbow.to(-10);
+        armShoulder.to(60);
+        driveTrain.encoderDrive(-4, false);
+        gripper.closeUntilTouching();
+
+        //need a method that moves elbow and shoulder at same time, next two lines are what need replaced with one line
+        armShoulder.to(180);
+        armElbow.to(-100);
+
+        driveTrain.encoderDrive(6, false);
+        driveTrain.encoderTurn(90, inchesPerDegrees,false);
+        driveTrain.encoderDrive(-50, false);
+        gripper.openMax();
+        driveTrain.encoderDrive(10, false);
+    }
 
 
     /**

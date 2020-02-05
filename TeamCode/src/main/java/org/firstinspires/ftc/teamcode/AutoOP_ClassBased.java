@@ -76,6 +76,7 @@ public abstract class AutoOP_ClassBased extends LinearOpMode {
     public Motor armElbow;
     public Gripper gripper;
     public Claw claw;
+    public DriveTrain driveTrain;
 
     //Declare drive encoder variables
     static final double COUNTS_PER_MOTOR_TETRIX = 1440;    // Tetrix Matrix 12V motor with 52.8:1 gearbox
@@ -192,6 +193,7 @@ public abstract class AutoOP_ClassBased extends LinearOpMode {
 
         claw = new Claw(hardwareMap, "rightClaw", "leftClaw");
 
+        driveTrain = new DriveTrain(f_leftDrive, f_rightDrive, b_leftDrive, b_rightDrive);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();

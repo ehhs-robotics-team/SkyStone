@@ -161,4 +161,12 @@ public class Gripper extends Motor{
     public void openMax(){
         toPosition(motor_OPEN_POS);
     }
+
+    //method to grab the stone
+    public void grabStone(DriveTrain driveTrain){
+        openMax();
+        driveTrain.encoderDrive(5, false);
+        closeUntilTouching();
+        driveTrain.encoderDrive(-5, false);
+    }
 }

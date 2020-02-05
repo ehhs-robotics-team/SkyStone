@@ -120,6 +120,12 @@ public class DriveTrain {
         backRight.setPower(0);
     }
 
+    //accessor methods for power
+    public double getDrivePower(){ return drivePower; }
+
+    public double getSlowPower(){ return slowPower; }
+
+
     public void powerMode(){
         if (!isPowerMode) {
             frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -169,6 +175,47 @@ public class DriveTrain {
         frontLeft.setPower(Math.abs(power));
         frontRight.setPower(Math.abs(power));
     }
+
+    public void encoderDrive(double inches, boolean slowMode){
+        // Determine new target position, and pass to motor controller
+        frontRightTarget = frontRightStart + (int) (inches * COUNTS_PER_INCH);
+        frontLeftTarget = frontLeftStart + (int) (inches * COUNTS_PER_INCH);
+        backRightTarget = backRightStart + (int) (inches * COUNTS_PER_INCH);
+        backLeftTarget = backLeftStart + (int) (inches * COUNTS_PER_INCH);
+
+        backLeft.setTargetPosition(backLeftTarget);
+        backRight.setTargetPosition(backRightTarget);
+        frontLeft.setTargetPosition(frontLeftTarget);
+        frontRight.setTargetPosition(frontRightTarget);
+
+        // Turn On RUN_TO_POSITION
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        double power = 0;
+        // start motion.
+        if (slowMode){
+            power = drivePower;
+        }
+        else{
+            power = slowPower;
+        }
+        backLeft.setPower(Math.abs(power));
+        backRight.setPower(Math.abs(power));
+        frontLeft.setPower(Math.abs(power));
+        frontRight.setPower(Math.abs(power));
+    }
+
+    public void encoderTurn(double degrees, double inchesPerDegrees, boolean slowMode) {
+        double power = getDrivePower();
+        if (slowMode){
+            power = getSlowPower();
+        }
+        encoderDrive(-degrees * inchesPerDegrees * 2, degrees * inchesPerDegrees * 2, power);
+    }
+
 
     public boolean isBusy(){
         return (backLeft.isBusy() && backRight.isBusy() && frontLeft.isBusy() && frontLeft.isBusy());
