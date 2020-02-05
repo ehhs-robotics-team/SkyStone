@@ -29,12 +29,13 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 
 @TeleOp(name="Gripper Control", group="Linear Opmode")
-
+@Disabled
 public class GripperControl extends TeleOP {
 
     public int newGripperTarget;
