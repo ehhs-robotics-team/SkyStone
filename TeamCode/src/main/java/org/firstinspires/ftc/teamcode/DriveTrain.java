@@ -203,6 +203,7 @@ public class DriveTrain {
         else{
             power = slowPower;
         }
+
         backLeft.setPower(Math.abs(power));
         backRight.setPower(Math.abs(power));
         frontLeft.setPower(Math.abs(power));

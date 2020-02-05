@@ -78,6 +78,7 @@ public class MotorViewer extends LinearOpMode {
 
             if (gamepad2.a){
                 armShoulder.to(90);
+                armElbow.to(90, armShoulder.getCurrentAngle());
             }
             else {
                 // Set power to the input cubed to give more control at the center of the control range
