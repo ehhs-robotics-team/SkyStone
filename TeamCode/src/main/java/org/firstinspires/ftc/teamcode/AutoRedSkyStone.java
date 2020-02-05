@@ -93,7 +93,7 @@ public class AutoRedSkyStone extends AutoOP_ClassBased {
         telemetry.addData(">", "Press Play to start op mode");
         telemetry.update();
         waitForStart();
-        driveTrain.encoderDrive(12, false);
+        encoderMovement(12, 4,false);
         encoderTurn(90, 3);
 
         if (opModeIsActive()) {
@@ -101,7 +101,7 @@ public class AutoRedSkyStone extends AutoOP_ClassBased {
                 telemetry.update();
                 if (!skystoneFound) {
                     if (!SkyStoneVisible(0.7)) {
-                        driveTrain.encoderDrive(-8, false);
+                        encoderMovement(-8, 3, false);
                         stopRobot();
                     } else {
                         //if the robot is centered with the stone in front of the skystone
@@ -177,14 +177,14 @@ public class AutoRedSkyStone extends AutoOP_ClassBased {
     }
 
     public void hitSkyStone(double inches){
-        driveTrain.encoderDrive(9.5 + inches, false);
+        encoderMovement(9.5 + inches, 3,false);
         driveTrain.encoderTurn(90, inchesPerDegrees, false);
-        driveTrain.encoderDrive(-24, false);
+        encoderMovement(-24, 5, false);
         gripper.grabStone(driveTrain);
     }
 
     public void hitSkyStone2(double inches){
-        driveTrain.encoderDrive(9.5 + inches, false);
+        encoderMovement(9.5 + inches, 3, false);
         driveTrain.encoderTurn(90, inchesPerDegrees, false);
         armShoulder.to(85);
         armElbow.to(-40);
@@ -193,9 +193,9 @@ public class AutoRedSkyStone extends AutoOP_ClassBased {
     }
 
     public void collectSkyStone(double inches){
-        driveTrain.encoderDrive(-2.5 + inches, false);
+        encoderMovement(-2.5 + inches, 2, false);
         driveTrain.encoderTurn(93, inchesPerDegrees, false);
-        driveTrain.encoderDrive(-16, false);
+        encoderMovement(-16, 5, false);
         armShoulder.to(120);
         gripper.openMax();
 
@@ -203,21 +203,21 @@ public class AutoRedSkyStone extends AutoOP_ClassBased {
         armShoulder.to(15);
         armElbow.to(-40);
 
-        driveTrain.encoderDrive(12, false);
+        encoderMovement(12, 4,false);
         armElbow.to(-10);
         armShoulder.to(60);
-        driveTrain.encoderDrive(-4, false);
+        encoderMovement(-4, 2, false);
         gripper.closeUntilTouching();
 
         //need a method that moves elbow and shoulder at same time, next two lines are what need replaced with one line
         armShoulder.to(180);
         armElbow.to(-100);
 
-        driveTrain.encoderDrive(6, false);
+        encoderMovement(6, 3,false);
         driveTrain.encoderTurn(90, inchesPerDegrees,false);
-        driveTrain.encoderDrive(-50, false);
+        encoderMovement(-50, 6, false);
         gripper.openMax();
-        driveTrain.encoderDrive(10, false);
+        encoderMovement(10, 4,  false);
     }
 
 

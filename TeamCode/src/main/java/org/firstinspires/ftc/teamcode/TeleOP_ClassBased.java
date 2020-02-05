@@ -94,7 +94,6 @@ public abstract class TeleOP_ClassBased extends LinearOpMode {
 
 
 
-
         //map the motors
         armShoulder = new Motor(hardwareMap, "arm_shoulder",
                 -12, 1440, 1.0/10.0, 0,

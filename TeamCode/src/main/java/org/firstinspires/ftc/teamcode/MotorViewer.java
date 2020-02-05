@@ -29,36 +29,10 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import android.content.Context;
-
-import com.qualcomm.ftccommon.SoundPlayer;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.hardware.TouchSensor;
-
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
-import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
 /**
  * Parent TeleOP class to hold driver controls.
@@ -84,7 +58,7 @@ public class MotorViewer extends LinearOpMode {
 
         Motor armElbow = new Motor(hardwareMap, "arm_elbow",
                 180, 1120, 3.0/8.0, 0.0005,
-                DcMotorSimple.Direction.REVERSE);
+                DcMotorSimple.Direction.FORWARD);
         /* 164
         Motor gripper = new Gripper(hardwareMap, "gripperMotor",
                 0, 1440, 3.5, 0,
@@ -99,8 +73,18 @@ public class MotorViewer extends LinearOpMode {
 
         int targetPosition = 90;
         while(opModeIsActive()){
-            armShoulder.setPower(Math.pow(gamepad2.right_stick_y, 3));
-            armElbow.setPower(Math.pow(gamepad2.left_stick_y, 3)/3);
+
+
+
+            if (gamepad2.a){
+                armShoulder.to(90);
+                armElbow.to(90, armShoulder.getCurrentAngle());
+            }
+            else {
+                // Set power to the input cubed to give more control at the center of the control range
+                armShoulder.setPower(Math.pow(gamepad2.right_stick_y, 3));
+                armElbow.setPower(Math.pow(gamepad2.left_stick_y, 3)/3);
+            }
 
             telemetry.addData("Shoulder Position", armShoulder.motor.getCurrentPosition());
             telemetry.addData("Shoulder Angle", armShoulder.getCurrentAngle());

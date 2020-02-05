@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -202,10 +203,12 @@ public class DriveTrain {
         else{
             power = slowPower;
         }
+
         backLeft.setPower(Math.abs(power));
         backRight.setPower(Math.abs(power));
         frontLeft.setPower(Math.abs(power));
         frontRight.setPower(Math.abs(power));
+
     }
 
     public void encoderTurn(double degrees, double inchesPerDegrees, boolean slowMode) {

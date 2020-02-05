@@ -29,11 +29,12 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 
 @TeleOp(name="Demo Drive", group="Linear Opmode")
-
+@Disabled
 public class demoDrive extends TeleOP {
 
     @Override

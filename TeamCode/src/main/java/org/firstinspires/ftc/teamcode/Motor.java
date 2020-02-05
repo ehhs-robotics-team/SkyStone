@@ -209,7 +209,7 @@ public class Motor{
     public void to(int degrees, double power){
         encoderMode();
         // Determine new target position, and pass to motor controller
-        target = (int) ((degrees - START_ANGLE) * TICKS_PER_DEGREE / GEAR_RATIO);
+        target = (int) ((degrees-START_ANGLE) * TICKS_PER_DEGREE / GEAR_RATIO);
         motor.setTargetPosition(target);
 
         // Set drive power

@@ -436,4 +436,11 @@ public abstract class AutoOP_ClassBased extends LinearOpMode {
         // Aid the elbow section to keep it from falling;
         armElbow.setPower(armElbow.calculateAid(armShoulder.motor.getCurrentPosition(), telemetry));
     }
+
+    public void encoderMovement(double inches, double timeout, boolean slowMode){
+        encoderTime.reset();
+        while (opModeIsActive() && timeout < encoderTime.seconds()){
+            driveTrain.encoderDrive(inches, slowMode);
+        }
+    }
 }
