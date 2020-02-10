@@ -73,12 +73,17 @@ public class MotorViewer extends LinearOpMode {
 
         int targetPosition = 90;
         while(opModeIsActive()){
+            /*
+            telemetry.addData("Elbow", "");
+            int target = armElbow.calculateTarget(45, armShoulder.getCurrentAngle(), telemetry);
+            telemetry.addData("Shoulder", "");
+            int starget = armShoulder.calculateTarget(45, 0, telemetry);
 
-
-
+             */
             if (gamepad2.a){
-                armShoulder.to(90);
-                armElbow.to(90, armShoulder.getCurrentAngle());
+                armShoulder.to(45);
+            } else if(gamepad2.b){
+                armElbow.to(45, 0.5, armShoulder.getCurrentAngle());
             }
             else {
                 // Set power to the input cubed to give more control at the center of the control range
@@ -86,10 +91,14 @@ public class MotorViewer extends LinearOpMode {
                 armElbow.setPower(Math.pow(gamepad2.left_stick_y, 3)/3);
             }
 
-            telemetry.addData("Shoulder Position", armShoulder.motor.getCurrentPosition());
+
+
+            /*telemetry.addData("Shoulder Position", armShoulder.motor.getCurrentPosition());
             telemetry.addData("Shoulder Angle", armShoulder.getCurrentAngle());
             telemetry.addData("Elbow Position", armElbow.motor.getCurrentPosition());
             telemetry.addData("Elbow Angle", armElbow.getCurrentAngle());
+
+             */
 
             telemetry.update();
 

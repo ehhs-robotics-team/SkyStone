@@ -93,15 +93,15 @@ public abstract class TeleOP_ClassBased extends LinearOpMode {
         b_rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
-
-        //map the motors
+        //map the motors and set default running values
         armShoulder = new Motor(hardwareMap, "arm_shoulder",
                 -12, 1440, 1.0/10.0, 0,
                 DcMotorSimple.Direction.REVERSE);
 
+
         armElbow = new Motor(hardwareMap, "arm_elbow",
-                160, 1120, 3.0/8.0, 0.0005,
-                DcMotor.Direction.REVERSE);
+                180, 1120, 3.0/8.0, 0.0005,
+                DcMotorSimple.Direction.FORWARD);
 
         gripper = new Gripper(hardwareMap, "gripperMotor",
                 0, 1440, 3.5, 0,
