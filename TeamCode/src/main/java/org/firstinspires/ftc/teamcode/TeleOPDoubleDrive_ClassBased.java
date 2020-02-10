@@ -71,20 +71,20 @@ public class TeleOPDoubleDrive_ClassBased extends TeleOP_ClassBased {
             }
 
             if(gamepad2.a){
-                armShoulder.encoderMode();
-                armShoulder.to(90);
-            } else {
-                armShoulder.powerMode();
+                armShoulder.to(0);
+                armElbow.to(170, 0.4, armShoulder.getCurrentAngle());
+            } else if (gamepad2.b) {
+                armShoulder.to(0);
+                armElbow.to(-10, 0.4, armShoulder.getCurrentAngle());
+
+            } else{
                 // Set power to the input cubed to give more control at the center of the control range
                 armShoulder.setPower(Math.pow(gamepad2.right_stick_y, 3));
+                // Set elbow power to the left stick, adjusted for position aid compensation
+                // Set power to the input cubed to give more control at the center of the control range
+                double aid = armElbow.calculateAid(armShoulder.getCurrentAngle(), telemetry);
+                armElbow.setPower(Math.pow(gamepad2.left_stick_y, 3)/3 + aid);
             }
-
-            // Set elbow power to the left stick, adjusted for position aid compensation
-            armElbow.powerMode();
-            // Set power to the input cubed to give more control at the center of the control range
-            double aid = armElbow.calculateAid(armShoulder.getCurrentAngle(), telemetry);
-            armElbow.setPower(Math.pow(gamepad2.left_stick_y, 3)/3 + aid);
-
             telemetry.update();
         }
     }

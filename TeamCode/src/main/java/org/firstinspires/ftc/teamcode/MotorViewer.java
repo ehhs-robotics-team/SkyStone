@@ -39,9 +39,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 
-@TeleOp(name="Motor Runner Backward", group ="Linear Opmode")
+@TeleOp(name="Motor Viewer", group ="Linear Opmode")
 //@Disabled
-public class MotorRunnerHeadlessBackward extends LinearOpMode {
+public class MotorViewer extends LinearOpMode {
 
     //DRIVE TRAIN MOTOR VARIABLES
     // Declare the motor variables
@@ -57,8 +57,8 @@ public class MotorRunnerHeadlessBackward extends LinearOpMode {
 
 
         Motor armElbow = new Motor(hardwareMap, "arm_elbow",
-                0, 1120, 3.0/8.0, 0.0005,
-                DcMotorSimple.Direction.REVERSE);
+                180, 1120, 3.0/8.0, 0.0005,
+                DcMotorSimple.Direction.FORWARD);
         /* 164
         Motor gripper = new Gripper(hardwareMap, "gripperMotor",
                 0, 1440, 3.5, 0,
@@ -73,15 +73,40 @@ public class MotorRunnerHeadlessBackward extends LinearOpMode {
 
         int targetPosition = 90;
         while(opModeIsActive()){
-            armShoulder.encoderMode();
-            armShoulder.to(targetPosition);
+            /*
+            telemetry.addData("Elbow", "");
+            int target = armElbow.calculateTarget(45, armShoulder.getCurrentAngle(), telemetry);
+            telemetry.addData("Shoulder", "");
+            int starget = armShoulder.calculateTarget(45, 0, telemetry);
 
-            armElbow.encoderMode();
-            armElbow.to(targetPosition+(int)armShoulder.getCurrentAngle());
+             */
+            if (gamepad2.a){
+                armShoulder.to(45);
+            } else if(gamepad2.b){
+                armElbow.to(45, 0.5, armShoulder.getCurrentAngle());
+            }
+            else {
+                // Set power to the input cubed to give more control at the center of the control range
+                armShoulder.setPower(Math.pow(gamepad2.right_stick_y, 3));
+                armElbow.setPower(Math.pow(gamepad2.left_stick_y, 3)/3);
+            }
 
-            telemetry.addData("Target Angle", targetPosition);
+
+
+            /*telemetry.addData("Shoulder Position", armShoulder.motor.getCurrentPosition());
+            telemetry.addData("Shoulder Angle", armShoulder.getCurrentAngle());
+            telemetry.addData("Elbow Position", armElbow.motor.getCurrentPosition());
+            telemetry.addData("Elbow Angle", armElbow.getCurrentAngle());
+
+             */
+
             telemetry.update();
 
+
+
+
         }
+
+
     }
 }

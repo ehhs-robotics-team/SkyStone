@@ -120,6 +120,8 @@ public class MotorRunner extends LinearOpMode {
             else if(gamepad2.dpad_up){
                 targetPosition+=2;
             }
+
+
             telemetry.addData("Target Angle", targetPosition);
             telemetry.update();
 
