@@ -275,7 +275,7 @@ public class ArmAuto extends AutoOP {
     public void grabStone(){
         openGripper(2.0);
         encoderTurn(5, 5);
-        closeGripper(1.0);
+        closeGripper();
         encoderTurn(-5,5);
     }
 

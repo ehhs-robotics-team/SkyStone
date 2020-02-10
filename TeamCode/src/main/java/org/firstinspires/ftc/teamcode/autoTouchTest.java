@@ -33,20 +33,17 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.firstinspires.ftc.teamcode.TeleOP;
 
 import java.util.List;
 
 
-@Autonomous(name="Red SkyStone", group="Linear Opmode")
+@Autonomous(name="Auto Touch Test", group="Linear Opmode")
 
-public class redSkyStone extends AutoOP {
-
+public class autoTouchTest extends AutoOP {
 
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
@@ -93,46 +90,12 @@ public class redSkyStone extends AutoOP {
         telemetry.addData(">", "Press Play to start op mode");
         telemetry.update();
         waitForStart();
-        encoderLinear(12, 5);
-        encoderTurn(90, 3);
 
         if (opModeIsActive()) {
-            while (opModeIsActive()) {
-                telemetry.addData("Shoulder Aid: ", calculateShoulderAid());
-                telemetry.update();
-                if (!skystoneFound) {
-                    if (!SkyStoneVisible(0.7)) {
-                        encoderLinear(-8, 5, true);
-                        stopRobot();
-                    } else {
-                        //if the robot is centered with the stone in front of the skystone
-                        if (rec.estimateAngleToObject(AngleUnit.DEGREES) < -20){
-                            telemetry.addData("Angle: ", rec.estimateAngleToObject(AngleUnit.DEGREES));
-                            telemetry.update();
-                            //sleep(30000);
-                            collectSkystone(-8);
-
-                        }
-
-                        //if the robot is centered with the stone before the skystone
-                        else if (rec.estimateAngleToObject(AngleUnit.DEGREES) > 0){
-                            telemetry.addData("Angle: ", rec.estimateAngleToObject(AngleUnit.DEGREES));
-                            telemetry.update();
-                            //sleep(30000);
-                            collectSkystone(8);
-                        }
-
-                        else{
-                            telemetry.addData("Angle: ", rec.estimateAngleToObject(AngleUnit.DEGREES));
-                            telemetry.update();
-                            //sleep(30000);
-                            collectSkystone(0);
-                        }
-                    }
-                }
-            }
+            openGripper(5);
+            sleep(2000);
+            closeGripper();
         }
-
 
     }
 

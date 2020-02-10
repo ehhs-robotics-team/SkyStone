@@ -52,7 +52,7 @@ public class AutoGrabTest extends AutoOP {
         encoderShoulder(.1, 60, 2);
         //encoderArm(.1, 50, -10, 3);
         encoderLinear(-4, 3);
-        closeGripper(2);
+        closeGripper();
         encoderLinear(4, 4);
         encoderTurn(130, 3);
         sleep(3000);

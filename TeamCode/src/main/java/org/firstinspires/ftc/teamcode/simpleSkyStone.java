@@ -148,13 +148,13 @@ public class simpleSkyStone extends AutoOP {
         encoderTurn(90, 5);
         encoderLinear(-16, 5);
         encoderShoulder(.1, 120,4);
-        openGripper(3.5);
+        openGripper(2.5);
         encoderArm(.1, 15, -40, 3);
         encoderLinear(12, 3);
         encoderElbow(.2, -10, 2);
         encoderShoulder(.1, 60, 2);
         encoderLinear(-4, 3);
-        closeGripper(2);
+        closeGripper();
         encoderLinear(4, 4);
         encoderTurn(130, 3);
         sleep(3000);
