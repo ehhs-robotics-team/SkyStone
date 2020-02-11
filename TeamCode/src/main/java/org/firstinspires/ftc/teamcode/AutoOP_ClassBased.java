@@ -194,9 +194,9 @@ public abstract class AutoOP_ClassBased extends LinearOpMode {
                 0, 1440, 3.5, 0,
                 DcMotor.Direction.FORWARD);
 
-        claw = new Claw(hardwareMap, "rightClaw", "leftClaw");
+        claw = new Claw(hardwareMap, "rightClaw", "leftClaw", this);
 
-        driveTrain = new DriveTrain(f_leftDrive, f_rightDrive, b_leftDrive, b_rightDrive);
+        driveTrain = new DriveTrain(f_leftDrive, f_rightDrive, b_leftDrive, b_rightDrive, this);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -212,10 +212,6 @@ public abstract class AutoOP_ClassBased extends LinearOpMode {
      * method for children autonomous opmodes to override and insert case specific moves.
      */
     public abstract void main();
-
-    public boolean isActive(){
-        return opModeIsActive();
-    }
 
 
     public void navigateToHeading(double targetHeading, double encoderTimeout, double vuforiaTimeout) {

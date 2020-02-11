@@ -38,13 +38,19 @@ public class Gripper extends Motor{
                  double encoder_ticks_per_rotation, double gear_ratio, double max_aid,
                  DcMotorSimple.Direction direction){
         // Super refers to the parent class, in this case, Motor.
-        super(hardwareMap, deviceName);
+        super(hardwareMap, deviceName, 0, encoder_ticks_per_rotation, gear_ratio, max_aid, direction);
 
-        setStartAngle(start_angle);
-        setTicksPerRotation(encoder_ticks_per_rotation);
-        setGearRatio(gear_ratio);
-        setMaxAid(max_aid);
-        setDirection(direction);
+        touchy = hardwareMap.get(TouchSensor.class, "touch");
+        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public Gripper(HardwareMap hardwareMap, String deviceName, double start_angle,
+                   double encoder_ticks_per_rotation, double gear_ratio, double max_aid,
+                   DcMotorSimple.Direction direction, AutoOP_ClassBased op){
+        // Super refers to the parent class, in this case, Motor.
+        super(hardwareMap, deviceName, 0, encoder_ticks_per_rotation, gear_ratio, max_aid, direction, op);
+
         touchy = hardwareMap.get(TouchSensor.class, "touch");
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
