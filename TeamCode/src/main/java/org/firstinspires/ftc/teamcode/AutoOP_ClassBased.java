@@ -181,23 +181,22 @@ public abstract class AutoOP_ClassBased extends LinearOpMode {
         //map the motors
         armShoulder = new Motor(hardwareMap, "arm_shoulder",
                 -12, 1440, 1.0 / 10.0, 0,
-                DcMotorSimple.Direction.REVERSE);
+                DcMotorSimple.Direction.REVERSE, this);
 
         armElbow = new Motor(hardwareMap, "arm_elbow",
                 160, 1120, 3.0 / 8.0, 0.0005,
-                DcMotor.Direction.REVERSE);
+                DcMotor.Direction.REVERSE, this);
 
         gripper = new Gripper(hardwareMap, "gripperMotor",
                 0, 1440, 3.5, 0,
                 DcMotor.Direction.FORWARD);
 
-        claw = new Claw(hardwareMap, "rightClaw", "leftClaw");
+        claw = new Claw(hardwareMap, "rightClaw", "leftClaw", this);
 
-        driveTrain = new DriveTrain(f_leftDrive, f_rightDrive, b_leftDrive, b_rightDrive);
+        driveTrain = new DriveTrain(f_leftDrive, f_rightDrive, b_leftDrive, b_rightDrive, this);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-
 
         //Run the child teleop run
         main();

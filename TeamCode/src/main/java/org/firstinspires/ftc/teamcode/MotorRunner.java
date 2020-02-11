@@ -66,7 +66,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 
 
 @TeleOp(name="Motor Runner Test", group ="Linear Opmode")
-//@Disabled
+@Disabled
 public class MotorRunner extends LinearOpMode {
 
     //DRIVE TRAIN MOTOR VARIABLES
