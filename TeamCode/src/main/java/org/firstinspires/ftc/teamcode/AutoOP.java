@@ -208,7 +208,7 @@ public abstract class AutoOP extends LinearOpMode {
     final double SHOULDER_TICKS_PER_ROTATION = 1440;
     final double ELBOW_TICKS_PER_ROTATION = 1120; // Rev motor as per http://www.revrobotics.com/content/docs/Encoder-Guide.pdf
 
-    final double SHOULDER_GEAR_RATIO = 1.0 / 3.0; // Motor:Shoulder Motor turns 3 times per one arm rotation
+    final double SHOULDER_GEAR_RATIO = 1.0 / 10.0; // Motor:Shoulder Motor turns 10 times per one arm rotation
     final double ELBOW_GEAR_RATIO = 3.0 / 8.0; // Motor:Elbow gear ratio
 
     final double SHOULDER_TICKS_PER_DEGREE = SHOULDER_TICKS_PER_ROTATION / 360;
