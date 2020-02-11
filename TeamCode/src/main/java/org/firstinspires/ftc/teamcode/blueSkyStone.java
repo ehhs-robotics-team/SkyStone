@@ -146,7 +146,7 @@ public class blueSkyStone extends AutoOP {
         encoderElbow(.3, -10, 2);
         encoderShoulder(.3, 60, 2);
         encoderLinear(-9, 3);
-        closeGripper();
+        closeGripper(2);
         encoderLinear(15, 4);
         encoderTurn(-95, 3);
         encoderLinear(-50, 5);

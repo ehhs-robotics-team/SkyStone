@@ -92,7 +92,7 @@ public class autoTouchTest extends AutoOP {
         waitForStart();
 
         if (opModeIsActive()) {
-            openGripper(5);
+            openGripper();
             sleep(2000);
             closeGripper();
         }
@@ -129,7 +129,7 @@ public class autoTouchTest extends AutoOP {
         encoderElbow(.2, -10, 2);
         encoderShoulder(.2, 60, 2);
         encoderLinear(-4, 3);
-        closeGripper();
+        closeGripper(1.2);
         armTo(.4, 180, -100, 3);
         encoderLinear(6, 4);
         encoderTurn(90, 3);

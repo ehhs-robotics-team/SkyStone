@@ -93,7 +93,7 @@ public abstract class AutoOP extends LinearOpMode {
     double clawDownPosition = 0.55;
 
     //motor variables
-    private final int GRIPPER_CLOSED_POS = 1200;
+    private final int GRIPPER_CLOSED_POS = 900;//1200;
     private final int GRIPPER_OPEN_POS = -1700;
 
     //Declare encoder variables
@@ -1102,7 +1102,7 @@ public abstract class AutoOP extends LinearOpMode {
     public void grabStone(){
         openGripper(2.0);
         encoderTurn(5, 5);
-        closeGripper();
+        closeGripper(1.2);
         encoderTurn(-5,5);
     }
 
@@ -1118,10 +1118,12 @@ public abstract class AutoOP extends LinearOpMode {
     public void closeGripper(double timeout){
         runtime.reset();
         if (opModeIsActive()){
-            gripperMotor.setTargetPosition(GRIPPER_OPEN_POS);
-            gripperMotor.setPower(.3);
+            gripperMotor.setTargetPosition(GRIPPER_CLOSED_POS);
+            gripperMotor.setPower(1);
             gripperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            while (opModeIsActive() && runtime.seconds() < timeout && gripperMotor.isBusy() && gripperMotor.getCurrentPosition() <= GRIPPER_CLOSED_POS){
+            while (opModeIsActive() && runtime.seconds() < timeout
+                    && gripperMotor.isBusy() && !touchy.isPressed()
+                    && gripperMotor.getCurrentPosition() <= GRIPPER_CLOSED_POS){
                 ;
             }
 
@@ -1132,15 +1134,21 @@ public abstract class AutoOP extends LinearOpMode {
 
     }
 
+    //overloaded version of close gripper with default timeout value that we acquired from TESTING
+    public void closeGripper() {
+        closeGripper(1.2);
+    }
+
 
     //method to open the gripper
     public void openGripper(double timeout){
         runtime.reset();
         if (opModeIsActive()){
             gripperMotor.setTargetPosition(GRIPPER_OPEN_POS);
-            gripperMotor.setPower(.3);
+            gripperMotor.setPower(1);
             gripperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            while (opModeIsActive() && runtime.seconds() < timeout && gripperMotor.isBusy() && gripperMotor.getCurrentPosition() <= GRIPPER_CLOSED_POS){
+            while (opModeIsActive() && runtime.seconds() < timeout  && gripperMotor.isBusy()
+                    && gripperMotor.getCurrentPosition() >= GRIPPER_OPEN_POS){
                 ;
             }
 
@@ -1148,6 +1156,11 @@ public abstract class AutoOP extends LinearOpMode {
             gripperMotor.setPower(0);
             gripperMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
+    }
+
+    //overloaded version of open gripper with default timeout value that we acquired from TESTING
+    public void openGripper(){
+        openGripper(1.2);
     }
 
 
