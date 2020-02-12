@@ -92,6 +92,10 @@ public abstract class AutoOP extends LinearOpMode {
     double clawUpPosition = 1.0;
     double clawDownPosition = 0.55;
 
+    //motor variables
+    private final int GRIPPER_CLOSED_POS = 900;//1200;
+    private final int GRIPPER_OPEN_POS = -1700;
+
     //Declare encoder variables
     static final double COUNTS_PER_MOTOR_TETRIX = 1440;    // Tetrix Matrix 12V motor with 52.8:1 gearbox
     static final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 2.0 if geared UP
@@ -204,7 +208,7 @@ public abstract class AutoOP extends LinearOpMode {
     final double SHOULDER_TICKS_PER_ROTATION = 1440;
     final double ELBOW_TICKS_PER_ROTATION = 1120; // Rev motor as per http://www.revrobotics.com/content/docs/Encoder-Guide.pdf
 
-    final double SHOULDER_GEAR_RATIO = 1.0 / 3.0; // Motor:Shoulder Motor turns 3 times per one arm rotation
+    final double SHOULDER_GEAR_RATIO = 1.0 / 10.0; // Motor:Shoulder Motor turns 10 times per one arm rotation
     final double ELBOW_GEAR_RATIO = 3.0 / 8.0; // Motor:Elbow gear ratio
 
     final double SHOULDER_TICKS_PER_DEGREE = SHOULDER_TICKS_PER_ROTATION / 360;
@@ -248,6 +252,9 @@ public abstract class AutoOP extends LinearOpMode {
 
         //map the gripper's servo
         gripperMotor = hardwareMap.get(DcMotor.class, "gripperMotor");
+        gripperMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        gripperMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        gripperMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //reverse one of the claw servos
         rightClaw.setDirection(Servo.Direction.REVERSE);
@@ -1095,12 +1102,12 @@ public abstract class AutoOP extends LinearOpMode {
     public void grabStone(){
         openGripper(2.0);
         encoderTurn(5, 5);
-        closeGripper(1.0);
+        closeGripper(1.2);
         encoderTurn(-5,5);
     }
 
 
-    public void openGripper(double seconds){
+    public void OldOpenGripper(double seconds){
        if(opModeIsActive()) {
            gripperMotor.setPower(1);
            sleep((long)(seconds * 1000));
@@ -1108,16 +1115,56 @@ public abstract class AutoOP extends LinearOpMode {
        }
     }
 
-    public void openGripper(long milliseconds){
-        if(opModeIsActive()) {
+    public void closeGripper(double timeout){
+        runtime.reset();
+        if (opModeIsActive()){
+            gripperMotor.setTargetPosition(GRIPPER_CLOSED_POS);
             gripperMotor.setPower(1);
-            sleep(milliseconds);
+            gripperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            while (opModeIsActive() && runtime.seconds() < timeout
+                    && gripperMotor.isBusy() && !touchy.isPressed()
+                    && gripperMotor.getCurrentPosition() <= GRIPPER_CLOSED_POS){
+                ;
+            }
+
+            //stop all motion (yeah)
             gripperMotor.setPower(0);
+            gripperMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
+
+    }
+
+    //overloaded version of close gripper with default timeout value that we acquired from TESTING
+    public void closeGripper() {
+        closeGripper(1.2);
     }
 
 
-    public void closeGripper(double seconds) {
+    //method to open the gripper
+    public void openGripper(double timeout){
+        runtime.reset();
+        if (opModeIsActive()){
+            gripperMotor.setTargetPosition(GRIPPER_OPEN_POS);
+            gripperMotor.setPower(1);
+            gripperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            while (opModeIsActive() && runtime.seconds() < timeout  && gripperMotor.isBusy()
+                    && gripperMotor.getCurrentPosition() >= GRIPPER_OPEN_POS){
+                ;
+            }
+
+            //stop all motion (yeah)
+            gripperMotor.setPower(0);
+            gripperMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+    }
+
+    //overloaded version of open gripper with default timeout value that we acquired from TESTING
+    public void openGripper(){
+        openGripper(1.2);
+    }
+
+
+    public void OldCloseGripper(double seconds) {
         if (opModeIsActive()) {
             gripperMotor.setPower(-1);
             sleep((long) (seconds * 1000));

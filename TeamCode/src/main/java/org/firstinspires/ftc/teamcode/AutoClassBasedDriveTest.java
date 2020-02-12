@@ -30,8 +30,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -43,10 +41,9 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import java.util.List;
 
 
-@Autonomous(name="Simple SkyStone", group="Linear Opmode")
-@Disabled
+@Autonomous(name="Auto Class Based Drive Test", group="Linear Opmode")
 
-public class simpleSkyStone extends AutoOP {
+public class AutoClassBasedDriveTest extends AutoOP_ClassBased {
 
 
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
@@ -90,82 +87,10 @@ public class simpleSkyStone extends AutoOP {
             tfod.activate();
         }
 
-        /** Wait for the game to begin */
-        telemetry.addData(">", "Press Play to start op mode");
-        telemetry.update();
-        waitForStart();
-
         if (opModeIsActive()) {
-            while (opModeIsActive()) {
-                telemetry.addData("Shoulder Aid: ", calculateShoulderAid());
-                telemetry.update();
-
-                if (!skystoneFound) {
-                    if (!SkyStoneVisible(0.7)) {
-                        encoderLinear(8, 5, true);
-                        stopRobot();
-                    } else {
-                        //if the robot is centered with the stone in front of the skystone
-                        if (rec.estimateAngleToObject(AngleUnit.DEGREES) < -10){
-                            collectSkystone(-8);
-                        }
-
-                        //if the robot is centered with the stone before the skystone
-                        else if (rec.estimateAngleToObject(AngleUnit.DEGREES) > 10){
-                            collectSkystone(8);
-                        }
-
-                        else{
-                            collectSkystone(0);
-                        }
-                    }
-                }
-            }
+            driveTrain.encoderDrive(15, false);
         }
-
-
     }
-
-
-
-    public void hitSkyStone(double inches){
-        encoderLinear(9.5 + inches, 5, true);
-        encoderTurn(90, 5);
-        encoderLinear(-24, 5, true);
-        grabStone();
-    }
-
-    public void hitSkyStone2(double inches){
-        encoderLinear(9.5 + inches, 5, true);
-        encoderTurn(90, 5);
-        encoderShoulder(0.1,  85, 4);
-        encoderElbow(0.1, -40, 4);
-        openGripper(3);
-        encoderShoulder(0.1, 15, 4);
-    }
-
-    public void collectSkystone(double inches)
-    {
-        encoderLinear(7 + inches, 5, true);
-        encoderTurn(90, 5);
-        encoderLinear(-16, 5);
-        encoderShoulder(.1, 120,4);
-        openGripper(1.2);
-        encoderArm(.1, 15, -40, 3);
-        encoderLinear(12, 3);
-        encoderElbow(.2, -10, 2);
-        encoderShoulder(.1, 60, 2);
-        encoderLinear(-4, 3);
-        closeGripper(2);
-        encoderLinear(4, 4);
-        encoderTurn(130, 3);
-        sleep(3000);
-    }
-
-
-
-
-
 
     public boolean SkyStoneVisible(double timeout) {
         ElapsedTime timey = new ElapsedTime();
@@ -208,6 +133,50 @@ public class simpleSkyStone extends AutoOP {
 
         return false;
 
+    }
+
+    public void hitSkyStone(double inches){
+        encoderMovement(9.5 + inches, 3,false);
+        driveTrain.encoderTurn(90, inchesPerDegrees, false);
+        encoderMovement(-24, 5, false);
+        gripper.grabStone(driveTrain);
+    }
+
+    public void hitSkyStone2(double inches){
+        encoderMovement(9.5 + inches, 3, false);
+        driveTrain.encoderTurn(90, inchesPerDegrees, false);
+        armShoulder.to(85);
+        armElbow.to(-40);
+        gripper.openMax();
+        armShoulder.to(15);
+    }
+
+    public void collectSkyStone(double inches){
+        encoderMovement(-2.5 + inches, 2, false);
+        driveTrain.encoderTurn(93, inchesPerDegrees, false);
+        encoderMovement(-16, 5, false);
+        armShoulder.to(120);
+        gripper.openMax();
+
+        //need to add in a method that moves shoulder and elbow at the same time, the two lines are what need to be replaced with one
+        armShoulder.to(15);
+        armElbow.to(-40);
+
+        encoderMovement(12, 4,false);
+        armElbow.to(-10);
+        armShoulder.to(60);
+        encoderMovement(-4, 2, false);
+        gripper.closeUntilTouching();
+
+        //need a method that moves elbow and shoulder at same time, next two lines are what need replaced with one line
+        armShoulder.to(180);
+        armElbow.to(-100);
+
+        encoderMovement(6, 3,false);
+        driveTrain.encoderTurn(90, inchesPerDegrees,false);
+        encoderMovement(-50, 6, false);
+        gripper.openMax();
+        encoderMovement(10, 4,  false);
     }
 
 

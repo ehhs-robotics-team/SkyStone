@@ -34,6 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Hardware;
 
@@ -179,21 +180,23 @@ public abstract class AutoOP_ClassBased extends LinearOpMode {
 
 
         //map the motors
+        //map the motors and set default running values
         armShoulder = new Motor(hardwareMap, "arm_shoulder",
-                -12, 1440, 1.0 / 10.0, 0,
+                -12, 1440, 1.0/10.0, 0,
                 DcMotorSimple.Direction.REVERSE);
 
+
         armElbow = new Motor(hardwareMap, "arm_elbow",
-                160, 1120, 3.0 / 8.0, 0.0005,
-                DcMotor.Direction.REVERSE);
+                180, 1120, 3.0/8.0, 0.0005,
+                DcMotorSimple.Direction.FORWARD);
 
         gripper = new Gripper(hardwareMap, "gripperMotor",
                 0, 1440, 3.5, 0,
                 DcMotor.Direction.FORWARD);
 
-        claw = new Claw(hardwareMap, "rightClaw", "leftClaw");
+        claw = new Claw(hardwareMap, "rightClaw", "leftClaw", this);
 
-        driveTrain = new DriveTrain(f_leftDrive, f_rightDrive, b_leftDrive, b_rightDrive);
+        driveTrain = new DriveTrain(f_leftDrive, f_rightDrive, b_leftDrive, b_rightDrive, this);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -442,5 +445,46 @@ public abstract class AutoOP_ClassBased extends LinearOpMode {
         while (opModeIsActive() && timeout < encoderTime.seconds()){
             driveTrain.encoderDrive(inches, slowMode);
         }
+    }
+
+
+
+    public void closeGripper(double timeout){
+        runtime.reset();
+        if (opModeIsActive()){
+            gripper.closeUntilTouching();
+            while (opModeIsActive() && runtime.seconds() < timeout && !gripper.isTouching()){
+                ;
+            }
+
+            //stop all motion (yeah)
+            gripper.setPower(0);
+        }
+
+    }
+
+    //overloaded version of close gripper with default timeout value that we acquired from TESTING
+    public void closeGripper() {
+        closeGripper(1.2);
+    }
+
+
+    //method to open the gripper
+    public void openGripper(double timeout){
+        runtime.reset();
+        if (opModeIsActive()){
+            gripper.openMax();
+            while (opModeIsActive() && runtime.seconds() < timeout){
+                ;
+            }
+
+            //stop all motion (yeah)
+            gripper.setPower(0);
+        }
+    }
+
+    //overloaded version of open gripper with default timeout value that we acquired from TESTING
+    public void openGripper(){
+        openGripper(1.2);
     }
 }

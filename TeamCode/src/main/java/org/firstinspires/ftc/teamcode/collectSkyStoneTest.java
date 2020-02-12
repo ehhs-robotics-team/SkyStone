@@ -57,7 +57,7 @@ public class collectSkyStoneTest extends AutoOP {
         encoderElbow(.2, -10, 2);
         encoderShoulder(.2, 60, 2);
         encoderLinear(-4, 3);
-        closeGripper(1.5);
+        closeGripper(1.2);
         encoderLinear(6, 4);
         encoderTurn(90, 3);
         encoderLinear(-50, 5);

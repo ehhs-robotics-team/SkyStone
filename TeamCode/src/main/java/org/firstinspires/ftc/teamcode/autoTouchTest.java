@@ -30,8 +30,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -43,11 +41,9 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import java.util.List;
 
 
-@Autonomous(name="Simple SkyStone", group="Linear Opmode")
-@Disabled
+@Autonomous(name="Auto Touch Test", group="Linear Opmode")
 
-public class simpleSkyStone extends AutoOP {
-
+public class autoTouchTest extends AutoOP {
 
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
@@ -96,33 +92,10 @@ public class simpleSkyStone extends AutoOP {
         waitForStart();
 
         if (opModeIsActive()) {
-            while (opModeIsActive()) {
-                telemetry.addData("Shoulder Aid: ", calculateShoulderAid());
-                telemetry.update();
-
-                if (!skystoneFound) {
-                    if (!SkyStoneVisible(0.7)) {
-                        encoderLinear(8, 5, true);
-                        stopRobot();
-                    } else {
-                        //if the robot is centered with the stone in front of the skystone
-                        if (rec.estimateAngleToObject(AngleUnit.DEGREES) < -10){
-                            collectSkystone(-8);
-                        }
-
-                        //if the robot is centered with the stone before the skystone
-                        else if (rec.estimateAngleToObject(AngleUnit.DEGREES) > 10){
-                            collectSkystone(8);
-                        }
-
-                        else{
-                            collectSkystone(0);
-                        }
-                    }
-                }
-            }
+            openGripper();
+            sleep(2000);
+            closeGripper();
         }
-
 
     }
 
@@ -146,20 +119,26 @@ public class simpleSkyStone extends AutoOP {
 
     public void collectSkystone(double inches)
     {
-        encoderLinear(7 + inches, 5, true);
-        encoderTurn(90, 5);
+        encoderLinear(-2.5 + inches, 5, true);
+        encoderTurn(93, 5); // 93 to account for slippage
         encoderLinear(-16, 5);
-        encoderShoulder(.1, 120,4);
-        openGripper(1.2);
-        encoderArm(.1, 15, -40, 3);
+        encoderShoulder(.2, 120,4);
+        openGripper(3000);
+        encoderArm(.2, 15, -40, 3);
         encoderLinear(12, 3);
         encoderElbow(.2, -10, 2);
-        encoderShoulder(.1, 60, 2);
+        encoderShoulder(.2, 60, 2);
         encoderLinear(-4, 3);
-        closeGripper(2);
-        encoderLinear(4, 4);
-        encoderTurn(130, 3);
-        sleep(3000);
+        closeGripper(1.2);
+        armTo(.4, 180, -100, 3);
+        encoderLinear(6, 4);
+        encoderTurn(90, 3);
+        encoderLinear(-50, 5);
+        openGripper(.4);
+        encoderLinear(10, 4);
+        //armTo(.4, START_SHOULDER_ANGLE, START_ELBOW_ANGLE, 4);
+
+
     }
 
 

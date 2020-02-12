@@ -29,12 +29,17 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.EventLoop;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMetaAndInstance;
+import org.firstinspires.ftc.robotcore.internal.opmode.OpModeServices;
 
 /**
  * Motor class that enables both driving by encoder or by power
@@ -55,6 +60,7 @@ public class Motor{
 
     DcMotor motor = null;
 
+    AutoOP_ClassBased opmode = null;
 
     /**
      * Does nothing
@@ -76,6 +82,19 @@ public class Motor{
      */
     public Motor(HardwareMap hardwareMap, String deviceName, double start_angle,
                  double encoder_ticks_per_rotation, double gear_ratio, double max_aid,
+                 DcMotorSimple.Direction direction, AutoOP_ClassBased op){
+        this(hardwareMap, deviceName);
+
+        setStartAngle(start_angle);
+        setTicksPerRotation(encoder_ticks_per_rotation);
+        setGearRatio(gear_ratio);
+        setMaxAid(max_aid);
+        setDirection(direction);
+        opmode = op;
+    }
+
+    public Motor(HardwareMap hardwareMap, String deviceName, double start_angle,
+                 double encoder_ticks_per_rotation, double gear_ratio, double max_aid,
                  DcMotorSimple.Direction direction){
         this(hardwareMap, deviceName);
 
@@ -84,8 +103,6 @@ public class Motor{
         setGearRatio(gear_ratio);
         setMaxAid(max_aid);
         setDirection(direction);
-
-
     }
 
     /**
@@ -205,11 +222,26 @@ public class Motor{
         return calculateAid(0, telemetry);
     }
 
+    public int calculateTarget(double degrees, double dependentAngle, Telemetry telemetry) {
+        // Determine new target position, and display to telemetry
+        telemetry.addData("CurrentAngle", getCurrentAngle());
+        telemetry.addData("CurrentPos", motor.getCurrentPosition());
+        target = calculateTarget(degrees, dependentAngle);
+        telemetry.addData("GoalAngle", degrees);
+        telemetry.addData("GoalPos", target);
+        return target;
+    }
 
-    public void to(int degrees, double power){
+    public int calculateTarget(double degrees, double dependentAngle){
+        // Determine new target position
+        target = (int) (((degrees-START_ANGLE)-dependentAngle) * TICKS_PER_DEGREE / GEAR_RATIO);
+        return target;
+    }
+
+    public void toTarget(int newTarget, double power){
+        target = newTarget;
         encoderMode();
         // Determine new target position, and pass to motor controller
-        target = (int) ((degrees-START_ANGLE) * TICKS_PER_DEGREE / GEAR_RATIO);
         motor.setTargetPosition(target);
 
         // Set drive power
@@ -226,12 +258,16 @@ public class Motor{
 
     }
 
-    public void to(int degrees){
-        to(degrees, 0.4);
+    public void to(int degrees, double power, double dependentAngle){
+        target = calculateTarget(degrees,dependentAngle);
+        toTarget(target, 0.4);
+    }
+    public void to(int degrees, double power){
+        to(degrees, power, 0);
     }
 
-    public void to(int degrees, int dependentAngle) {
-        to(degrees+dependentAngle);
+    public void to (int degrees){
+        to(degrees, defaultPower);
     }
 
     // reset the arm function during play to account for slippage.

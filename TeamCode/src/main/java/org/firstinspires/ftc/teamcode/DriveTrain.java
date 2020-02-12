@@ -39,12 +39,16 @@ public class DriveTrain {
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_TETRIX * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
 
+    //the opmode variable so we can access opModeisActive()
+    AutoOP_ClassBased opmode = null;
+
 
     public DriveTrain() {
 
     }
 
-    public DriveTrain(DcMotor frontLeft, DcMotor frontRight, DcMotor backLeft, DcMotor backRight){
+    public DriveTrain(DcMotor frontLeft, DcMotor frontRight, DcMotor backLeft, DcMotor backRight,
+                      AutoOP_ClassBased op){
         this.frontLeft = frontLeft;
         this.frontRight = frontRight;
         this.backLeft = backLeft;
@@ -52,9 +56,11 @@ public class DriveTrain {
 
         reverseRight();
         setBrakeMode();
+        opmode = op;
     }
 
-    public DriveTrain(HardwareMap hardwareMap, String frontLeft, String frontRight, String backLeft, String backRight){
+    public DriveTrain(HardwareMap hardwareMap, String frontLeft, String frontRight, String backLeft,
+                      String backRight, AutoOP_ClassBased op){
         this.frontLeft = hardwareMap.get(DcMotor.class, frontLeft);
         this.frontRight = hardwareMap.get(DcMotor.class, frontRight);
         this.backLeft = hardwareMap.get(DcMotor.class, backLeft);
@@ -62,6 +68,7 @@ public class DriveTrain {
 
         reverseRight();
         setBrakeMode();
+        opmode = op;
     }
 
     public void reverseRight() {
@@ -175,6 +182,13 @@ public class DriveTrain {
         backRight.setPower(Math.abs(power));
         frontLeft.setPower(Math.abs(power));
         frontRight.setPower(Math.abs(power));
+
+        while (opmode.opModeIsActive() && backLeft.isBusy() && backRight.isBusy() && frontLeft.isBusy()
+                && frontRight.isBusy()){
+            ;
+        }
+
+        stopRobot();
     }
 
     public void encoderDrive(double inches, boolean slowMode){
@@ -204,11 +218,19 @@ public class DriveTrain {
             power = slowPower;
         }
 
+        //start motion
         backLeft.setPower(Math.abs(power));
         backRight.setPower(Math.abs(power));
         frontLeft.setPower(Math.abs(power));
         frontRight.setPower(Math.abs(power));
 
+        while (opmode.opModeIsActive() && backLeft.isBusy() && backRight.isBusy() && frontLeft.isBusy()
+                && frontRight.isBusy()){
+            ;
+        }
+
+        //stop all motion
+        stopRobot();
     }
 
     public void encoderTurn(double degrees, double inchesPerDegrees, boolean slowMode) {
