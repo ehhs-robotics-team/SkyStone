@@ -93,15 +93,32 @@ public class AutoRedSkystoneMethod2 extends AutoOP_ClassBased {
         waitForStart();
 
         if (opModeIsActive()){
-
             int position = getSkystonePosition();
+
+            // For debugging, to tell what position and at what angle the skystone is detected
+            // Bella, make sure getSkystonePosition is returning the correct position.
             telemetry.addData("Skystone Position: ", position);
             telemetry.update();
-            sleep(2000);
+            sleep(5000);
+
+            // Change "0" to whatever value works best
+            double inches = 8*position - 0;
+            encoderDrive(0.4, -inches, -inches, 5);
             encoderTurn(-90, 5);
             elbowTo(0, 10);
             openGripper(3);
-            encoderDrive(.4, 12,12,5);
+            encoderDrive(.4, 16,16,5);
+
+            /*
+            Untested, you might want to implement it line by line
+            */
+            //gripper.closeUntilTouching();
+            //elbowTo(10, 2);
+            //encoderTurn(90, 4);
+            //encoderDrive(0.5, 48+inches, 48+inches, 5);
+            //openGripper();
+            //encoderDrive(0.5, -24, -24, 4);
+
 
 
         }
@@ -113,13 +130,16 @@ public class AutoRedSkystoneMethod2 extends AutoOP_ClassBased {
 
     /**
      * Returns the position (0-2) of the skystone based on the angle from the phone view.
+     * Position 0 is at the end, followed by position 1 and 2
      * This method assumes the robot is positioned on the wall with the front wheel aligned to the
-     * joint in the field wall.
+     * joint in the field wall and the camera facing the skystones.
+     * Currently it only works on the RED side.
      */
     public int getSkystonePosition(){
         int position = 0;
         SkyStoneVisible(5);
         double angle = rec.estimateAngleToObject(AngleUnit.DEGREES);
+        telemetry.addData("Angle: ", angle);
         if (angle < -22){
             position = 2;
         } else if (angle >= -22 && angle < -12) {
@@ -135,6 +155,7 @@ public class AutoRedSkystoneMethod2 extends AutoOP_ClassBased {
         while (opModeIsActive() && encoderTime.seconds() < timeout && armElbow.motor.isBusy()){
             ;
         }
+        armElbow.setPower(armElbow.calculateAid(armShoulder.getCurrentAngle(),telemetry));
     }
 
 
