@@ -102,10 +102,10 @@ public class AutoRedSkystoneMethod2 extends AutoOP_ClassBased {
             sleep(5000);
 
             // Change "0" to whatever value works best
-            double inches = 8*position - 0;
+            double inches = (8 * position) - 0;
             encoderDrive(0.4, -inches, -inches, 5);
             encoderTurn(-90, 5);
-            elbowTo(0, 10);
+            armElbow.timedTo(0, 10, armShoulder.getCurrentAngle());
             openGripper(3);
             encoderDrive(.4, 16,16,5);
 

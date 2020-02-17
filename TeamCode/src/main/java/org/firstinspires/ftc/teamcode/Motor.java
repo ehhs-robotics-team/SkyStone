@@ -36,6 +36,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMetaAndInstance;
@@ -268,6 +269,20 @@ public class Motor{
 
     public void to (int degrees){
         to(degrees, defaultPower);
+    }
+
+    public void timedTo(double degrees, double timeout, double dependentAngle){
+        ElapsedTime time = new ElapsedTime();
+        time.reset();
+        to((int)degrees);
+        while (opmode.opModeIsActive() && time.seconds() < timeout && motor.isBusy()){
+            ;
+        }
+        setPower(calculateAid(dependentAngle,opmode.telemetry));
+    }
+
+    public void timedTo(double degrees, double timeout){
+        timedTo(degrees, timeout, 90);
     }
 
     // reset the arm function during play to account for slippage.

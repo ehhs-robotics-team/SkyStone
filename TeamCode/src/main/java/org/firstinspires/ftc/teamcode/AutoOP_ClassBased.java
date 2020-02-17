@@ -183,16 +183,16 @@ public abstract class AutoOP_ClassBased extends LinearOpMode {
         //map the motors and set default running values
         armShoulder = new Motor(hardwareMap, "arm_shoulder",
                 -12, 1440, 1.0/10.0, 0,
-                DcMotorSimple.Direction.REVERSE);
+                DcMotorSimple.Direction.REVERSE, this);
 
 
         armElbow = new Motor(hardwareMap, "arm_elbow",
                 180, 1120, 3.0/8.0, 0.0005,
-                DcMotorSimple.Direction.FORWARD);
+                DcMotorSimple.Direction.FORWARD, this);
 
         gripper = new Gripper(hardwareMap, "gripperMotor",
                 0, 1440, 3.5, 0,
-                DcMotor.Direction.FORWARD);
+                DcMotor.Direction.FORWARD, this);
 
         claw = new Claw(hardwareMap, "rightClaw", "leftClaw", this);
 
