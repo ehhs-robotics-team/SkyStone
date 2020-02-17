@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -157,6 +158,7 @@ public class Gripper extends Motor{
         // Turn On RUN_TO_POSITION
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
+
     //method to close until the touch sensor is pressed
     //temp closing to boundary position
     public void closeUntilTouching(){
@@ -168,9 +170,49 @@ public class Gripper extends Motor{
 
     }
 
+    public void closeGripper(double timeout){
+        ElapsedTime time = new ElapsedTime();
+        time.reset();
+        toPosition(motor_CLOSED_POS);
+        if (opmode.opModeIsActive()){
+            while (opmode.opModeIsActive() && time.seconds() < timeout && !isTouching()){
+                ;
+            }
+
+            //stop all motion (yeah)
+            setPower(0);
+        }
+
+    }
+
+    //overloaded version of close gripper with default timeout value that we acquired from TESTING
+    public void closeGripper() {
+        closeGripper(1.2);
+    }
+
     //method to open the gripper (goes to max boundary)
     public void openMax(){
         toPosition(motor_OPEN_POS);
+    }
+
+    //method to open the gripper
+    public void openGripper(double timeout){
+        ElapsedTime time = new ElapsedTime();
+        time.reset();
+        if (opmode.opModeIsActive()){
+            openMax();
+            while (opmode.opModeIsActive() && time.seconds() < timeout && motor.isBusy()){
+                ;
+            }
+
+            //stop all motion (yeah)
+            setPower(0);
+        }
+    }
+
+    //overloaded version of open gripper with default timeout value that we acquired from TESTING
+    public void openGripper(){
+        openGripper(1.2);
     }
 
     //method to grab the stone
