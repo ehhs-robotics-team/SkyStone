@@ -271,10 +271,14 @@ public class Motor{
         to(degrees, defaultPower);
     }
 
-    public void timedTo(double degrees, double timeout, double dependentAngle){
+    public void timedTo(double degrees, double timeout, double dependentAngle) throws ExceptionInInitializerError
+    {
         ElapsedTime time = new ElapsedTime();
         time.reset();
         to((int)degrees);
+        if(opmode == null){
+            throw new ExceptionInInitializerError("Please initialize Motor with a opMode variable.");
+        }
         while (opmode.opModeIsActive() && time.seconds() < timeout && motor.isBusy()){
             ;
         }
