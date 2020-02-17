@@ -161,6 +161,11 @@ public class Gripper extends Motor{
     //temp closing to boundary position
     public void closeUntilTouching(){
         toPosition(motor_CLOSED_POS);
+        while (opmode.opModeIsActive() && !isTouching()){
+            ;
+        }
+        setPower(0);
+
     }
 
     //method to open the gripper (goes to max boundary)
@@ -175,4 +180,6 @@ public class Gripper extends Motor{
         closeUntilTouching();
         driveTrain.encoderDrive(-5, false);
     }
+
+
 }

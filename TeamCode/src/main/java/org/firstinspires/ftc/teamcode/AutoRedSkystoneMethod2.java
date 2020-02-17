@@ -99,16 +99,19 @@ public class AutoRedSkystoneMethod2 extends AutoOP_ClassBased {
             // Bella, make sure getSkystonePosition is returning the correct position.
             telemetry.addData("Skystone Position: ", position);
             telemetry.update();
-            sleep(5000);
+            sleep(2000);
 
             // Change "0" to whatever value works best
-            double inches = (8 * position) - 0;
+            double offset = 5;
+            double inches = (8 * position) - offset;
             encoderDrive(0.4, -inches, -inches, 5);
-            encoderTurn(-90, 5);
+            encoderTurn(-100, 5);
             armElbow.timedTo(0, 10, armShoulder.getCurrentAngle());
             openGripper(3);
-            encoderDrive(.4, 16,16,5);
-
+            encoderDrive(.4, 20,20,5);
+            sleep(3000);
+            gripper.closeUntilTouching();
+            elbowTo(10, 2);
             /*
             Untested, you might want to implement it line by line
             */
@@ -124,7 +127,7 @@ public class AutoRedSkystoneMethod2 extends AutoOP_ClassBased {
         }
 
         while (opModeIsActive()){
-            ;
+            telemetry.addData("Autonoumous: ", "finished");
         }
     }
 

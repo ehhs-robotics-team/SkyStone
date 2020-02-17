@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -14,7 +15,7 @@ public class Claw{
     private final double clawDownPosition = 0.25;
 
     //auto op variable to use opModeIsActive()
-    AutoOP_ClassBased opmode = null;
+    LinearOpMode opmode = null;
 
     public Claw() {
         // Do nothing
@@ -32,7 +33,7 @@ public class Claw{
         opmode = op;
     }
 
-    public Claw(Servo left, Servo right, AutoOP_ClassBased op){
+    public Claw(Servo left, Servo right, LinearOpMode op){
         leftClaw = left;
         rightClaw = right;
 

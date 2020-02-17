@@ -107,7 +107,7 @@ public abstract class TeleOP_ClassBased extends LinearOpMode {
                 0, 1440, 3.5, 0,
                 DcMotor.Direction.FORWARD);
 
-        claw = new Claw(leftClaw, rightClaw);
+        claw = new Claw(leftClaw, rightClaw, this);
 
 
         telemetry.addData("Status", "Initialized");

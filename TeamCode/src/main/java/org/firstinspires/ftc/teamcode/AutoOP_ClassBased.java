@@ -188,7 +188,7 @@ public abstract class AutoOP_ClassBased extends LinearOpMode {
 
         armElbow = new Motor(hardwareMap, "arm_elbow",
                 180, 1120, 3.0/8.0, 0.0005,
-                DcMotorSimple.Direction.FORWARD);
+                DcMotorSimple.Direction.FORWARD, this);
 
         gripper = new Gripper(hardwareMap, "gripperMotor",
                 0, 1440, 3.5, 0,
@@ -474,7 +474,7 @@ public abstract class AutoOP_ClassBased extends LinearOpMode {
         runtime.reset();
         if (opModeIsActive()){
             gripper.openMax();
-            while (opModeIsActive() && runtime.seconds() < timeout){
+            while (opModeIsActive() && runtime.seconds() < timeout && gripper.motor.isBusy()){
                 ;
             }
 
