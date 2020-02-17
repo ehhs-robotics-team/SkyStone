@@ -12,11 +12,11 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class Gripper extends Motor{
 
     //motor final min and max
-    //private int motor_CLOSED_POS = 1100;
-    //private int motor_OPEN_POS = -2900;
+    //private int CLOSED_POS = 1100;
+    //private int OPEN_POS = -2900;
 
-    private int motor_CLOSED_POS = 1200;
-    private int motor_OPEN_POS = -1700;
+    private int CLOSED_POS = 950;//1200
+    private int OPEN_POS = -1900;
 
     //the touch sensor on the gripper
     private TouchSensor touchy;
@@ -44,6 +44,7 @@ public class Gripper extends Motor{
         touchy = hardwareMap.get(TouchSensor.class, "touch");
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     public Gripper(HardwareMap hardwareMap, String deviceName, double start_angle,
@@ -55,38 +56,39 @@ public class Gripper extends Motor{
         touchy = hardwareMap.get(TouchSensor.class, "touch");
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     public void setClosedPosition(int pos){
-        motor_CLOSED_POS = pos;
+        CLOSED_POS = pos;
     }
 
     public void setOpenPosition(int pos){
-        motor_OPEN_POS = pos;
+        OPEN_POS = pos;
     }
 
-    public double getOpenPosition() { return motor_OPEN_POS; }
+    public double getOpenPosition() { return OPEN_POS; }
 
-    public double getClosedPosition() { return motor_CLOSED_POS; }
+    public double getClosedPosition() { return CLOSED_POS; }
 
     public void setEndpoints(int openPosition, int closedPosition){
-        motor_CLOSED_POS = closedPosition;
-        motor_OPEN_POS = openPosition;
+        CLOSED_POS = closedPosition;
+        OPEN_POS = openPosition;
     }
 
     //method to check if the motor motor has exceeded its boundaries
     public boolean boundariesExceeded(){
-        if (motor.getCurrentPosition() > motor_OPEN_POS && motor.getCurrentPosition() < motor_CLOSED_POS){
+        if (motor.getCurrentPosition() > OPEN_POS && motor.getCurrentPosition() < CLOSED_POS){
             return false;
         }
         return true;
     }
 
     //method to check if the max boundary is exceeded
-    public boolean maxBoundaryExceeded() { return motor.getCurrentPosition() <= motor_OPEN_POS; }
+    public boolean maxBoundaryExceeded() { return motor.getCurrentPosition() <= OPEN_POS; }
 
     //method to check if the min boundary is exceeded
-    public boolean minBoundaryExceeded() { return motor.getCurrentPosition() >= motor_CLOSED_POS; }
+    public boolean minBoundaryExceeded() { return motor.getCurrentPosition() >= CLOSED_POS; }
 
     //method to return true or false depending on whether the touch sensor is pressed
     public boolean isTouching() { return touchy.isPressed(); }
@@ -114,7 +116,7 @@ public class Gripper extends Motor{
             motor.setPower((gamepad2.right_trigger - gamepad2.left_trigger));
         }
         else if (boundariesExceeded()){
-            if (motor.getCurrentPosition() <= motor_OPEN_POS){
+            if (motor.getCurrentPosition() <= OPEN_POS){
                 if (gamepad2.right_trigger - gamepad2.left_trigger > 0) {
                     motor.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
                 }
@@ -122,7 +124,7 @@ public class Gripper extends Motor{
                     motor.setPower(0);
                 }
             }
-            else if (motor.getCurrentPosition() >= motor_CLOSED_POS){
+            else if (motor.getCurrentPosition() >= CLOSED_POS){
                 if (gamepad2.right_trigger - gamepad2.left_trigger < 0){
                     motor.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
                 }
@@ -162,25 +164,25 @@ public class Gripper extends Motor{
     //method to close until the touch sensor is pressed
     //temp closing to boundary position
     public void closeUntilTouching(){
-        toPosition(motor_CLOSED_POS);
+        toPosition(CLOSED_POS);
         while (opmode.opModeIsActive() && !isTouching()){
             ;
         }
-        setPower(0);
+        motor.setPower(0);
 
     }
 
     public void closeGripper(double timeout){
         ElapsedTime time = new ElapsedTime();
         time.reset();
-        toPosition(motor_CLOSED_POS);
         if (opmode.opModeIsActive()){
-            while (opmode.opModeIsActive() && time.seconds() < timeout && !isTouching()){
+            toPosition(CLOSED_POS);
+            while (opmode.opModeIsActive() && time.seconds() < timeout && !isTouching() && motor.isBusy()){
                 ;
             }
 
             //stop all motion (yeah)
-            setPower(0);
+            motor.setPower(0);
         }
 
     }
@@ -192,7 +194,7 @@ public class Gripper extends Motor{
 
     //method to open the gripper (goes to max boundary)
     public void openMax(){
-        toPosition(motor_OPEN_POS);
+        toPosition(OPEN_POS);
     }
 
     //method to open the gripper
@@ -206,7 +208,7 @@ public class Gripper extends Motor{
             }
 
             //stop all motion (yeah)
-            setPower(0);
+            motor.setPower(0);
         }
     }
 
