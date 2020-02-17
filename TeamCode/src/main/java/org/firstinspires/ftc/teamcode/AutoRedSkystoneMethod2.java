@@ -105,22 +105,19 @@ public class AutoRedSkystoneMethod2 extends AutoOP_ClassBased {
             double offset = 5;
             double inches = (8 * position) - offset;
             encoderDrive(0.4, -inches, -inches, 5);
-            encoderTurn(-100, 5);
+            encoderTurn(-95, 5);
             armElbow.timedTo(0, 10, armShoulder.getCurrentAngle());
-            openGripper(3);
+            gripper.openGripper(3);
             encoderDrive(.4, 20,20,5);
-            sleep(3000);
-            gripper.closeUntilTouching();
+            //sleep(3000);
+
+
+            gripper.closeGripper(3);
             elbowTo(10, 2);
-            /*
-            Untested, you might want to implement it line by line
-            */
-            //gripper.closeUntilTouching();
-            //elbowTo(10, 2);
-            //encoderTurn(90, 4);
-            //encoderDrive(0.5, 48+inches, 48+inches, 5);
-            //openGripper();
-            //encoderDrive(0.5, -24, -24, 4);
+            encoderTurn(110, 4);
+            encoderDrive(0.5, 48+inches, 48+inches, 5);
+            openGripper();
+            encoderDrive(0.5, -24, -24, 4);
 
 
 
