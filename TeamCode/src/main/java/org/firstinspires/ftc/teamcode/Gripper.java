@@ -15,7 +15,7 @@ public class Gripper extends Motor{
     //private int CLOSED_POS = 1100;
     //private int OPEN_POS = -2900;
 
-    private int CLOSED_POS = 950;//1200
+    private int CLOSED_POS = 1000;//1200
     private int OPEN_POS = -1900;
 
     //the touch sensor on the gripper

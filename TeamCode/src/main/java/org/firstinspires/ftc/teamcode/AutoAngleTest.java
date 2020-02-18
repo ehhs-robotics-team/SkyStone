@@ -92,13 +92,15 @@ public class AutoAngleTest extends AutoOP_ClassBased {
         telemetry.update();
         waitForStart();
 
-        while (opModeIsActive()){
-            int position = getSkystonePosition();
+        double position = getSkystonePosition();
 
-            // For debugging, to tell what position and at what angle the skystone is detected
-            // Bella, make sure getSkystonePosition is returning the correct position.
-            telemetry.addData("Skystone Position: ", position);
-            telemetry.update();
+        // For debugging, to tell what position and at what angle the skystone is detected
+        // Bella, make sure getSkystonePosition is returning the correct position.
+        telemetry.addData("Skystone Position: ", position);
+        telemetry.update();
+
+        while (opModeIsActive()){
+            ;
         }
     }
 
@@ -114,9 +116,9 @@ public class AutoAngleTest extends AutoOP_ClassBased {
         SkyStoneVisible(5);
         double angle = rec.estimateAngleToObject(AngleUnit.DEGREES);
         telemetry.addData("Angle: ", angle);
-        if (angle < -22){
+        if (angle > 10){
             position = 2;
-        } else if (angle >= -22 && angle < -12) {
+        } else if (angle < 10 && angle > 1) {
             position = 1;
         }
         return position;
@@ -168,6 +170,49 @@ public class AutoAngleTest extends AutoOP_ClassBased {
 
     }
 
+    public double SkyStoneVisibleCenter(double timeout) {
+        ElapsedTime timey = new ElapsedTime();
+        timey.reset();
+        while(timey.seconds() < timeout) {
+            if (tfod != null) {
+                // getUpdatedRecognitions() will return null if no new information is available since
+                // the last time that call was made.
+                List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+                if (updatedRecognitions != null) {
+                    telemetry.addData("# Object Detected", updatedRecognitions.size());
+
+                    // step through the list of recognitions and display boundary info.
+                    int i = 0;
+
+                    for (Recognition recognition : updatedRecognitions) {
+                        rec = recognition;
+                        telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
+                        telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
+                                recognition.getLeft(), recognition.getTop());
+                        telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
+                                recognition.getRight(), recognition.getBottom());
+
+                        float centerPos = recognition.getRight() - recognition.getLeft();
+
+
+                        if (recognition.getLabel().equals("Skystone")) {
+                            skystoneFound = true;
+                            return centerPos;
+                        }
+                    }
+
+                    telemetry.update();
+
+                }
+            }
+
+
+        }
+
+        return 0;
+    }
+
+
 
     /**
      * Initialize the Vuforia localization engine.
@@ -194,7 +239,7 @@ public class AutoAngleTest extends AutoOP_ClassBased {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minimumConfidence = 0.4;
+        tfodParameters.minimumConfidence = 0.6;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }
