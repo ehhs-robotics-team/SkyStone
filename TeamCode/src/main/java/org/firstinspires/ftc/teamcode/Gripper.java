@@ -214,7 +214,7 @@ public class Gripper extends Motor{
 
     //overloaded version of open gripper with default timeout value that we acquired from TESTING
     public void openGripper(){
-        openGripper(1.2);
+        openGripper(1.7);
     }
 
     //method to grab the stone

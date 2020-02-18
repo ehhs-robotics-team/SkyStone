@@ -41,9 +41,9 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import java.util.List;
 
 
-@Autonomous(name="Red SkyStone 2", group="Linear Opmode")
+@Autonomous(name="Angle Test", group="Linear Opmode")
 
-public class AutoRedSkystoneMethod2 extends AutoOP_ClassBased {
+public class AutoAngleTest extends AutoOP_ClassBased {
 
 
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
@@ -92,39 +92,13 @@ public class AutoRedSkystoneMethod2 extends AutoOP_ClassBased {
         telemetry.update();
         waitForStart();
 
-        if (opModeIsActive()){
+        while (opModeIsActive()){
             int position = getSkystonePosition();
 
             // For debugging, to tell what position and at what angle the skystone is detected
             // Bella, make sure getSkystonePosition is returning the correct position.
             telemetry.addData("Skystone Position: ", position);
             telemetry.update();
-            sleep(2000);
-
-            // Change "0" to whatever value works best
-            double offset = 5;
-            double inches = (9.5 * position) - offset;
-            encoderDrive(0.4, -inches, -inches, 5);
-            encoderTurn(-95, 5);
-            armElbow.timedTo(0, 10, armShoulder.getCurrentAngle());
-            gripper.openGripper(3);
-            encoderDrive(.4, 20,20,5);
-            //sleep(3000);
-
-
-            gripper.closeGripper();
-            elbowTo(10, 2);
-            encoderTurn(110, 4);
-            encoderDrive(0.5, 48+inches, 48+inches, 5);
-            openGripper();
-            encoderDrive(0.5, -24, -24, 4);
-
-
-
-        }
-
-        while (opModeIsActive()){
-            telemetry.addData("Autonoumous: ", "finished");
         }
     }
 
@@ -147,15 +121,6 @@ public class AutoRedSkystoneMethod2 extends AutoOP_ClassBased {
         }
         return position;
 
-    }
-
-    public void elbowTo(double degrees, double timeout){
-        encoderTime.reset();
-        armElbow.to((int)degrees);
-        while (opModeIsActive() && encoderTime.seconds() < timeout && armElbow.motor.isBusy()){
-            ;
-        }
-        armElbow.setPower(armElbow.calculateAid(armShoulder.getCurrentAngle(),telemetry));
     }
 
 
@@ -201,50 +166,6 @@ public class AutoRedSkystoneMethod2 extends AutoOP_ClassBased {
 
         return false;
 
-    }
-
-    public void hitSkyStone(double inches){
-        encoderMovement(9.5 + inches, 3,false);
-        driveTrain.encoderTurn(90, inchesPerDegrees, false);
-        encoderMovement(-24, 5, false);
-        gripper.grabStone(driveTrain);
-    }
-
-    public void hitSkyStone2(double inches){
-        encoderMovement(9.5 + inches, 3, false);
-        driveTrain.encoderTurn(90, inchesPerDegrees, false);
-        armShoulder.to(85);
-        armElbow.to(-40);
-        gripper.openMax();
-        armShoulder.to(15);
-    }
-
-    public void collectSkyStone(double inches){
-        encoderMovement(-2.5 + inches, 2, false);
-        driveTrain.encoderTurn(93, inchesPerDegrees, false);
-        encoderMovement(-16, 5, false);
-        armShoulder.to(120);
-        gripper.openMax();
-
-        //need to add in a method that moves shoulder and elbow at the same time, the two lines are what need to be replaced with one
-        armShoulder.to(15);
-        armElbow.to(-40);
-
-        encoderMovement(12, 4,false);
-        armElbow.to(-10);
-        armShoulder.to(60);
-        encoderMovement(-4, 2, false);
-        gripper.closeUntilTouching();
-
-        //need a method that moves elbow and shoulder at same time, next two lines are what need replaced with one line
-        armShoulder.to(180);
-        armElbow.to(-100);
-
-        encoderMovement(6, 3,false);
-        driveTrain.encoderTurn(90, inchesPerDegrees,false);
-        encoderMovement(-50, 6, false);
-        gripper.openMax();
-        encoderMovement(10, 4,  false);
     }
 
 
