@@ -131,11 +131,12 @@ public class AutoIMU_Test extends AutoOP_ClassBased {
         currentHeading = angles.firstAngle;
         navTime.reset();
 
-        double basePower = 0.1;
+        double basePower = 1;
         double power;
-        double additionalPower = 0.1;
+        double additionalPower = 0.125;
+        double accuracy = 0.3;
 
-        while (opModeIsActive() && Math.abs(currentHeading - target) > 0.5 && navTime.seconds() < timeOut){
+        while (opModeIsActive() && Math.abs(currentHeading - target) > accuracy && navTime.seconds() < timeOut){
             if(target<-180) {target+=360;}
             if(target>180){target-=360;}
             if (currentHeading > target){

@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -40,6 +41,10 @@ import com.qualcomm.robotcore.util.Hardware;
 
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
+import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
@@ -78,6 +83,14 @@ public abstract class AutoOP_ClassBased extends LinearOpMode {
     public Gripper gripper;
     public Claw claw;
     public DriveTrain driveTrain;
+
+    //IMU sensor variables
+    // The IMU sensor object
+    BNO055IMU imu;
+
+    // State used for updating telemetry
+    Orientation angles;
+    Acceleration gravity;
 
     //Declare drive encoder variables
     static final double COUNTS_PER_MOTOR_TETRIX = 1440;    // Tetrix Matrix 12V motor with 52.8:1 gearbox
@@ -486,5 +499,55 @@ public abstract class AutoOP_ClassBased extends LinearOpMode {
     //overloaded version of open gripper with default timeout value that we acquired from TESTING
     public void openGripper(){
         openGripper(1.2);
+    }
+
+    /** Very hypothetical imu turn program based on https://www.youtube.com/watch?v=ZdBbAKsgiQI&feature=youtu.be
+     *
+     * @param target
+     * @param timeOut
+     */
+    public void turnByIMUabsolute(int target, double timeOut){
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        currentHeading = angles.firstAngle;
+        navTime.reset();
+
+        double basePower = 1;
+        double power;
+        double additionalPower = 0.125;
+        double accuracy = 0.3;
+
+        while (opModeIsActive() && Math.abs(currentHeading - target) > accuracy && navTime.seconds() < timeOut){
+            if(target<-180) {target+=360;}
+            if(target>180){target-=360;}
+
+            if (currentHeading > target){
+                power = ((basePower * (currentHeading-target)/100) + additionalPower);
+                b_leftDrive.setPower(-1*power);
+                b_rightDrive.setPower(power);
+                f_leftDrive.setPower(-1*power);
+                f_rightDrive.setPower(power);
+
+            }
+
+            if (currentHeading < target){
+                power = ((basePower * (target - currentHeading)/100) + additionalPower);
+
+                b_leftDrive.setPower(power);
+                b_rightDrive.setPower(-1*power);
+                f_leftDrive.setPower(power);
+                f_rightDrive.setPower(-1*power);
+            }
+
+            angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+            currentHeading = angles.firstAngle;
+
+            telemetry.addData("Current Heading", currentHeading);
+            telemetry.update();
+        }
+        stopRobot();
+
+        telemetry.addData("Current Heading", currentHeading);
+        telemetry.update();
     }
 }

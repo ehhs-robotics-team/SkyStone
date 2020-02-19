@@ -29,6 +29,8 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -87,6 +89,24 @@ public class AutoBlueSkystoneMethod2 extends AutoOP_ClassBased {
             tfod.activate();
         }
 
+        // Set up the parameters with which we will use our IMU. Note that integration
+        // algorithm here just reports accelerations to the logcat log; it doesn't actually
+        // provide positional information.
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled      = true;
+        parameters.loggingTag          = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+
+        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
+        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+        // and named "imu".
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
+
+
         //actual auto
         telemetry.addData(">", "Press Play to start op mode");
         telemetry.update();
@@ -105,7 +125,8 @@ public class AutoBlueSkystoneMethod2 extends AutoOP_ClassBased {
             double offset = 1.5;
             double inches = (8 * position) - offset;
             encoderDrive(0.4, inches, inches, 5);
-            encoderTurn(-99 + position, 5);
+            sleep(1000);
+            turnByIMUabsolute(88, 5);
             armElbow.timedTo(-3, 10, armShoulder.getCurrentAngle());
             gripper.openGripper(3);
             encoderDrive(.4, 20,20,5);
@@ -115,7 +136,7 @@ public class AutoBlueSkystoneMethod2 extends AutoOP_ClassBased {
             gripper.closeGripper(3);
             elbowTo(10, 2);
             encoderDrive(0.5, -5,-5,2);
-            encoderTurn(-110, 4);
+            encoderTurn(-100, 5);
             encoderDrive(0.5, 48+inches, 48+inches, 5);
             openGripper();
             encoderDrive(0.5, -24, -24, 4);
