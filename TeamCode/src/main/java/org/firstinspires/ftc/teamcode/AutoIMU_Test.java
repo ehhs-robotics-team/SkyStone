@@ -83,9 +83,10 @@ public class AutoIMU_Test extends AutoOP_ClassBased {
         telemetry.update();
         waitForStart();
 
-        while (opModeIsActive()){
+        if (opModeIsActive()){
             turnByIMUabsolute(90, 5);
         }
+        stopRobot();
     }
 
     public void turnLeft(double turnAngle, double timeoutS) {
@@ -130,25 +131,29 @@ public class AutoIMU_Test extends AutoOP_ClassBased {
         currentHeading = angles.firstAngle;
         navTime.reset();
 
-        double basePower = 0.2;
+        double basePower = 0.1;
         double power;
         double additionalPower = 0.1;
 
-        while (Math.abs(currentHeading - target) > 3 && navTime.seconds() < time){
+        while (opModeIsActive() && Math.abs(currentHeading - target) > 0.5 && navTime.seconds() < timeOut){
+            if(target<-180) {target+=360;}
+            if(target>180){target-=360;}
             if (currentHeading > target){
-                power = ((basePower * (currentHeading-target)) + additionalPower);
-                b_leftDrive.setPower(power);
-                b_rightDrive.setPower(-1*power);
-                f_leftDrive.setPower(power);
-                f_rightDrive.setPower(-1*power);
-            }
-
-            if (currentHeading < target){
-                power = ((basePower * (target - currentHeading)) + additionalPower);
+                power = ((basePower * (currentHeading-target)/100) + additionalPower);
                 b_leftDrive.setPower(-1*power);
                 b_rightDrive.setPower(power);
                 f_leftDrive.setPower(-1*power);
                 f_rightDrive.setPower(power);
+
+            }
+
+            if (currentHeading < target){
+                power = ((basePower * (target - currentHeading)/100) + additionalPower);
+
+                b_leftDrive.setPower(power);
+                b_rightDrive.setPower(-1*power);
+                f_leftDrive.setPower(power);
+                f_rightDrive.setPower(-1*power);
             }
 
             angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
@@ -157,11 +162,7 @@ public class AutoIMU_Test extends AutoOP_ClassBased {
             telemetry.addData("Current Heading", currentHeading);
             telemetry.update();
         }
-
-        b_leftDrive.setPower(0);
-        b_rightDrive.setPower(0);
-        f_leftDrive.setPower(0);
-        f_rightDrive.setPower(0);
+        stopRobot();
 
         telemetry.addData("Current Heading", currentHeading);
         telemetry.update();
