@@ -511,7 +511,7 @@ public abstract class AutoOP_ClassBased extends LinearOpMode {
         currentHeading = angles.firstAngle;
         navTime.reset();
 
-        double basePower = 1;
+        double basePower = .7;
         double power;
         double additionalPower = 0.125;
         double accuracy = 0.3;

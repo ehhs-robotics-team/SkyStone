@@ -106,6 +106,8 @@ public class AutoBlueSkystoneMethod2 extends AutoOP_ClassBased {
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
 
+        sleep(1000);
+
 
         //actual auto
         telemetry.addData(">", "Press Play to start op mode");
@@ -119,24 +121,28 @@ public class AutoBlueSkystoneMethod2 extends AutoOP_ClassBased {
             // Bella, make sure getSkystonePosition is returning the correct position.
             telemetry.addData("Skystone Position: ", position);
             telemetry.update();
-            sleep(2000);
+
+            tfod.shutdown();
 
             // Change "0" to whatever value works best
-            double offset = 1.5;
+            double offset = 2.0;//1.5;
             double inches = (8 * position) - offset;
             encoderDrive(0.4, inches, inches, 5);
             sleep(1000);
-            turnByIMUabsolute(88, 5);
-            armElbow.timedTo(-3, 10, armShoulder.getCurrentAngle());
+            turnByIMUabsolute(92, 5);
+            armElbow.timedTo(0, 10, armShoulder.getCurrentAngle());
             gripper.openGripper(3);
-            encoderDrive(.4, 20,20,5);
+            encoderDrive(.4, 24,24,5);
             //sleep(3000);
 
 
             gripper.closeGripper(3);
+            if (position == 0){
+                encoderDrive(0.5, -12,-12,2);
+            }
+            encoderDrive(0.5, -9,-9,2);
             elbowTo(10, 2);
-            encoderDrive(0.5, -5,-5,2);
-            encoderTurn(-100, 5);
+            encoderTurn(-110, 5);
             encoderDrive(0.5, 48+inches, 48+inches, 5);
             openGripper();
             encoderDrive(0.5, -24, -24, 4);
@@ -164,7 +170,7 @@ public class AutoBlueSkystoneMethod2 extends AutoOP_ClassBased {
             angle = rec.estimateAngleToObject(AngleUnit.DEGREES);
         } else {
             // Default skystone index if none is detected.
-            return 2;
+            return 1;
         }
         telemetry.addData("Angle: ", angle);
         if (angle > 10){
