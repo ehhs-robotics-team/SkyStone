@@ -106,6 +106,9 @@ public class AutoBlueSkystoneMethod2 extends AutoOP_ClassBased {
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
 
+        gripper.setClosedPosition(1150);
+        gripper.setOpenPosition(-1900);
+
         sleep(1000);
 
 
@@ -126,21 +129,26 @@ public class AutoBlueSkystoneMethod2 extends AutoOP_ClassBased {
 
             // Change "0" to whatever value works best
             double offset = 2.0;//1.5;
-            double inches = (8 * position) - offset;
+            double inches = (9 * position) - offset;
             encoderDrive(0.4, inches, inches, 5);
             sleep(1000);
-            turnByIMUabsolute(92, 5);
+            turnByIMUabsolute(90, 5);
             armElbow.timedTo(0, 10, armShoulder.getCurrentAngle());
             gripper.openGripper(3);
             encoderDrive(.4, 24,24,5);
+            armElbow.timedTo(-10, 10, armShoulder.getCurrentAngle());
             //sleep(3000);
 
 
             gripper.closeGripper(3);
             if (position == 0){
                 encoderDrive(0.5, -12,-12,2);
+                encoderTurn(20,2);
+            } else if (position == 1){
+                encoderDrive(0.5, -9, -9, 2);
+            } else if (position == 2){
+                encoderDrive(0.5, -9, -9, 2);
             }
-            encoderDrive(0.5, -9,-9,2);
             elbowTo(10, 2);
             encoderTurn(-110, 5);
             encoderDrive(0.5, 48+inches, 48+inches, 5);
