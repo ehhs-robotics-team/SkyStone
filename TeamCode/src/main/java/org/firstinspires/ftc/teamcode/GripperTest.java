@@ -45,6 +45,7 @@ public class GripperTest extends AutoOP_ClassBased {
         waitForStart();
 
         boolean isPowerMode = false;
+        gripper.setEndpoints(-1900, 1100);
 
         if (opModeIsActive()) {
             gripper.openGripper(3);
