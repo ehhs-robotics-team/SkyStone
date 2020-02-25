@@ -29,6 +29,8 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -87,6 +89,28 @@ public class AutoRedSkystoneMethod2 extends AutoOP_ClassBased {
             tfod.activate();
         }
 
+        // Set up the parameters with which we will use our IMU. Note that integration
+        // algorithm here just reports accelerations to the logcat log; it doesn't actually
+        // provide positional information.
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled      = true;
+        parameters.loggingTag          = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+
+        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
+        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+        // and named "imu".
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
+
+
+
+        gripper.setClosedPosition(1000);
+        gripper.setOpenPosition(-2100);
+
         //actual auto
         telemetry.addData(">", "Press Play to start op mode");
         telemetry.update();
@@ -101,24 +125,36 @@ public class AutoRedSkystoneMethod2 extends AutoOP_ClassBased {
             telemetry.update();
             sleep(2000);
 
-            // Change "0" to whatever value works best
+            // Change offset to whatever value works best
             double offset = 5;
             double inches = (9.5 * position) - offset;
             encoderDrive(0.4, -inches, -inches, 5);
-            encoderTurn(-95, 5);
-            armElbow.timedTo(0, 10, armShoulder.getCurrentAngle());
+            //encoderTurn(-95, 5);
+            turnByIMUabsolute(90, 5);
+            armElbow.timedTo(-5, 5, armShoulder.getCurrentAngle());
             gripper.openGripper(3);
-            encoderDrive(.4, 20,20,5);
+            encoderDrive(.4, 24,24,5);
             //sleep(3000);
+            armElbow.timedTo(-10, 3, armShoulder.getCurrentAngle());
 
 
-            gripper.closeGripper();
+
+            gripper.closeGripper(3);
+
             elbowTo(10, 2);
-            encoderTurn(110, 4);
+            //encoderTurn(110, 4);
+            turnByIMUabsolute(0, 5);
             encoderDrive(0.5, 48+inches, 48+inches, 5);
-            openGripper();
-            encoderDrive(0.5, -24, -24, 4);
+            gripper.openGripper();
 
+            armElbow.to(90);
+            gripper.closeGripper(2);
+            armElbow.to(170);
+            sleep (1000);
+
+
+            encoderDrive(0.5, -20, -20, 4);
+            gripper.motor.setPower(0);
 
 
         }

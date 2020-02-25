@@ -185,7 +185,7 @@ public class Gripper extends Motor{
             motor.setPower(0);
         }
         if (opmode.opModeIsActive()) {
-            toPosition(motor.getCurrentPosition() + 100);
+            toPosition(motor.getCurrentPosition() + 150);
         }
 
     }
