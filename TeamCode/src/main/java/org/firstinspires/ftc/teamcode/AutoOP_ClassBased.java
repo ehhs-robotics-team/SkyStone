@@ -513,7 +513,7 @@ public abstract class AutoOP_ClassBased extends LinearOpMode {
 
         double basePower = .7;
         double power;
-        double additionalPower = 0.125;
+        double additionalPower = 0.13;//0.125;
         double accuracy = 0.3;
 
         while (opModeIsActive() && Math.abs(currentHeading - target) > accuracy && navTime.seconds() < timeOut){

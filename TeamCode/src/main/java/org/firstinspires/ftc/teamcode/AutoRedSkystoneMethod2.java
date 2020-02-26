@@ -108,7 +108,7 @@ public class AutoRedSkystoneMethod2 extends AutoOP_ClassBased {
 
 
 
-        gripper.setClosedPosition(1000);
+        gripper.setClosedPosition(1150);
         gripper.setOpenPosition(-2100);
 
         //actual auto
@@ -133,10 +133,10 @@ public class AutoRedSkystoneMethod2 extends AutoOP_ClassBased {
             turnByIMUabsolute(90, 5);
             armElbow.timedTo(-5, 5, armShoulder.getCurrentAngle());
             gripper.openGripper(3);
-            encoderDrive(.4, 24,24,5);
+            encoderDrive(.4, 16,16,5);
             //sleep(3000);
             armElbow.timedTo(-10, 3, armShoulder.getCurrentAngle());
-
+            encoderDrive(.4, 8,8,5);
 
 
             gripper.closeGripper(3);
