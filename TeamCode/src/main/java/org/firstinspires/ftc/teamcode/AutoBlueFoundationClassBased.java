@@ -29,32 +29,30 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 
-@TeleOp(name="Gripper test", group="Linear Opmode")
-//@Disabled
-public class GripperTest extends AutoOP_ClassBased {
+@Autonomous(name="Auto Blue Foundation 2", group="Linear Opmode")
 
-    public int newGripperTarget;
+public class AutoBlueFoundationClassBased extends AutoOP_ClassBased {
+
     @Override
-    public void main() {
-
+    public void main(){
         waitForStart();
+        claw.up();
+        driveTrain.encoderDrive(-32, -32, 1);
+        claw.down();
+        sleep(2000);
+        driveTrain.encoderDrive(40, 40, 1);
+        encoderTurn(-300, 1, 5);
+        claw.up();
+        encoderTurn(-90, 10); //
+        driveTrain.encoderDrive(46, 46, 1);
+        gripper.closeGripper(3);
 
-        boolean isPowerMode = false;
-        gripper.setEndpoints(-2300, 1000);
 
-        if (opModeIsActive()) {
-            gripper.openGripper(3);
-            sleep(3000);
-            gripper.closeGripper(3);
 
-            telemetry.addData("Gripper: ",  "closed");
-            telemetry.addData("Power: ",gripper.motor.getPower());
-            telemetry.update();
-        }
+
+
     }
 }
