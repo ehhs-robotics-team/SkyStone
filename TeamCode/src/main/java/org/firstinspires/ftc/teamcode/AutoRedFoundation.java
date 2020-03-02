@@ -48,5 +48,6 @@ public class AutoRedFoundation extends AutoOP {
         clawUp();
         encoderTurn(120, 10); //
         encoderLinear(-46, 5);
+        closeGripper();
     }
 }
