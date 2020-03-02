@@ -49,6 +49,7 @@ public class AutoBlueFoundation extends AutoOP {
         clawUp();
         encoderTurn(-90, 10); //
         encoderLinear(-46, 5);
+        encoderElbow(.4, 5, 3);
         closeGripper();
 
 

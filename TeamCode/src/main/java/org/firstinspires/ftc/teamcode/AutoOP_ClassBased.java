@@ -516,7 +516,7 @@ public abstract class AutoOP_ClassBased extends LinearOpMode {
         double additionalPower = 0.13;//0.125;
         double accuracy = 0.3;
 
-        while (opModeIsActive() && Math.abs(currentHeading - target) > accuracy && navTime.seconds() < timeOut){
+        while (opModeIsActive() && navTime.seconds() < timeOut){
             if(target<-180) {target+=360;}
             if(target>180){target-=360;}
 
@@ -537,6 +537,10 @@ public abstract class AutoOP_ClassBased extends LinearOpMode {
                 f_leftDrive.setPower(power);
                 f_rightDrive.setPower(-1*power);
             }
+            if (Math.abs(currentHeading - target) < accuracy){
+                break;
+            }
+
 
             angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
@@ -545,6 +549,7 @@ public abstract class AutoOP_ClassBased extends LinearOpMode {
             telemetry.addData("Current Heading", currentHeading);
             telemetry.update();
         }
+
         stopRobot();
 
         telemetry.addData("Current Heading", currentHeading);

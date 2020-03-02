@@ -128,10 +128,23 @@ public class AutoBlueSkystoneMethod2 extends AutoOP_ClassBased {
 
             // Change offset to the value from the center of the robot to the center of the block at position 0;
             double offset = 3;//1.5;
-            double inches = (8 * position) - offset;
+            double interval = 8;
+            int targetAngle = 90;
+            if (position == 1){
+                interval += 1;
+                targetAngle = 90;
+            }
+            else if (position == 2){
+                targetAngle = 90;
+                interval += 0.3;
+            }
+            else{
+                offset = 3.5;
+            }
+            double inches = (interval * position) - offset;
             encoderDrive(0.4, inches, inches, 5);
-            sleep(1000);
-            turnByIMUabsolute(90, 5);
+            sleep(2000);
+            turnByIMUabsolute(targetAngle, 5);
             armElbow.timedTo(0, 10, armShoulder.getCurrentAngle());
             gripper.openGripper(3);
             encoderDrive(.4, 16,16,5);
@@ -143,6 +156,7 @@ public class AutoBlueSkystoneMethod2 extends AutoOP_ClassBased {
 
             gripper.closeGripper(3);
             if (position == 0){
+                //inches were -12
                 encoderDrive(0.5, -12,-12,2);
                 encoderTurn(20,2);
             } else if (position == 1){
