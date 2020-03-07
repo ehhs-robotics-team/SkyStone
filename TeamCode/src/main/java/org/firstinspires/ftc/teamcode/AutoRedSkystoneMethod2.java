@@ -108,8 +108,8 @@ public class AutoRedSkystoneMethod2 extends AutoOP_ClassBased {
 
 
 
-        gripper.setClosedPosition(1150);
-        gripper.setOpenPosition(-2100);
+        gripper.setClosedPosition(1000);
+        gripper.setOpenPosition(-2300);
 
         //actual auto
         telemetry.addData(">", "Press Play to start op mode");
@@ -126,10 +126,22 @@ public class AutoRedSkystoneMethod2 extends AutoOP_ClassBased {
             sleep(2000);
 
             // Change offset to whatever value works best
-            double offset = 5;
-            double inches = (9.5 * position) - offset;
+            double offset = -5.5;
+
+            if (position == 0){
+                offset = -2;
+            }
+            else if (position == 1){
+                offset = 7.5;
+            }
+            else if (position == 2){
+                offset = 16;
+            }
+
+            double inches = offset;
             encoderDrive(0.4, -inches, -inches, 5);
             //encoderTurn(-95, 5);
+            sleep(2000);
             turnByIMUabsolute(90, 5);
             armElbow.timedTo(-5, 5, armShoulder.getCurrentAngle());
             gripper.openGripper(3);
@@ -142,6 +154,7 @@ public class AutoRedSkystoneMethod2 extends AutoOP_ClassBased {
             gripper.closeGripper(3);
 
             elbowTo(10, 2);
+            encoderDrive(.5, -4, -4, 2);
             //encoderTurn(110, 4);
             turnByIMUabsolute(0, 5);
             encoderDrive(0.5, 48+inches, 48+inches, 5);
@@ -172,7 +185,7 @@ public class AutoRedSkystoneMethod2 extends AutoOP_ClassBased {
      * Currently it only works on the RED side.
      */
     public int getSkystonePosition(){
-        int position = 0;
+        int position = 1;
         SkyStoneVisible(5);
         double angle = rec.estimateAngleToObject(AngleUnit.DEGREES);
         telemetry.addData("Angle: ", angle);

@@ -103,7 +103,26 @@ public class Gripper extends Motor{
 
     //method that is ran for the motor during TeleOp
     public void teleopRun(Gamepad gamepad2){
-        //programming the motor
+
+        /*//Allow override
+        if (gamepad2.left_bumper){
+            motor.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
+            return;
+        }
+
+        //reset encoder and endpoints
+        // assumes the driver stops the gripper in the position
+        if (gamepad2.right_bumper && !isResetting){
+            isResetting = true;
+            reset();
+            return;
+        } else if (!gamepad2.right_bumper){
+            isResetting = false;
+        }
+
+         */
+
+        //programming the gripper
         if (gamepad2.right_trigger - gamepad2.left_trigger > 0){
             if (!touchy.isPressed() && !boundariesExceeded()){
                 motor.setPower((gamepad2.right_trigger - gamepad2.left_trigger));
@@ -136,19 +155,54 @@ public class Gripper extends Motor{
                 motor.setPower(0);
             }
         }
-    }
 
+
+    }
+    private boolean isResetting = false;
     public void run(Gamepad gp, Telemetry telemetry){
         //programming the motor
-        double power = gp.right_trigger - gp.left_trigger;
-        if (maxBoundaryExceeded() && power < 0){
+        double power = 0;
+
+        //Allow override
+        if (gp.left_bumper){
+            motor.setPower(gp.right_trigger - gp.left_trigger);
+            return;
+        }
+
+        //reset encoder and endpoints
+        // assumes the driver stops the gripper in the position
+        if (gp.right_bumper && !isResetting){
+            isResetting = true;
+            reset();
+            return;
+        } else if (!gp.right_bumper){
+            isResetting = false;
+        }
+
+        power = gp.right_trigger - gp.left_trigger;
+        if (maxBoundaryExceeded() && power < 0) {
             power = 0;
         }
         if (minBoundaryExceeded() && power > 0 || isTouching() && power > 0) {
             power = 0;
         }
+
         motor.setPower(power);
     }
+
+    // Run without boundary limitations
+    public void run2(Gamepad gp, Telemetry telemetry){
+        //programming the motor
+        double power = gp.right_trigger - gp.left_trigger;
+        if (isTouching() && power > 0) {
+            power = 0;
+        }
+
+
+        motor.setPower(power);
+    }
+
+
 
     //method to run to a position
     public void toPosition(int target){
@@ -226,6 +280,11 @@ public class Gripper extends Motor{
         driveTrain.encoderDrive(5, false);
         closeUntilTouching();
         driveTrain.encoderDrive(-5, false);
+    }
+
+    public void reset(){
+        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
 

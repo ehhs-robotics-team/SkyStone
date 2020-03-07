@@ -40,7 +40,7 @@ public class TeleOPDoubleDrive_ClassBased extends TeleOP_ClassBased {
     @Override
     public void main() {
         // Assumes the autonomous leaves the
-        gripper.setEndpoints(-3900, 200);
+        gripper.setEndpoints(-3900, 0);
         waitForStart();
         while(opModeIsActive()) {
 

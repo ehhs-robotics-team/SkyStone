@@ -127,21 +127,20 @@ public class AutoBlueSkystoneMethod2 extends AutoOP_ClassBased {
             tfod.shutdown();
 
             // Change offset to the value from the center of the robot to the center of the block at position 0;
-            double offset = 3;//1.5;
-            double interval = 8;
+            double offset=0;
             int targetAngle = 90;
-            if (position == 1){
-                interval += 1;
+            if (position == 0){
+                offset = -3.5;
+            }
+            else if (position == 1){
+                offset = 5;
                 targetAngle = 90;
             }
             else if (position == 2){
                 targetAngle = 90;
-                interval += 0.3;
+                offset = 15.5;
             }
-            else{
-                offset = 3.5;
-            }
-            double inches = (interval * position) - offset;
+            double inches = offset;
             encoderDrive(0.4, inches, inches, 5);
             sleep(2000);
             turnByIMUabsolute(targetAngle, 5);
